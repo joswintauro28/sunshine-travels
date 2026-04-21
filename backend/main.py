@@ -76,5 +76,19 @@ def create_booking(booking: dict, db: Session = Depends(get_db)):
     db.refresh(new_booking)
     return new_booking
 
+@app.post("/contact")
+def create_contact_message(message: dict, db: Session = Depends(get_db)):
+    new_message = models.ContactMessage(
+        name=message.get("name"),
+        email=message.get("email"),
+        phone=message.get("phone"),
+        service=message.get("service"),
+        message=message.get("message")
+    )
+    db.add(new_message)
+    db.commit()
+    db.refresh(new_message)
+    return {"status": "success", "message": "Inquiry submitted successfully", "data": new_message}
+
 if __name__ == "__main__":
     uvicorn.run("main:app", host="0.0.0.0", port=8000, reload=True)

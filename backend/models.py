@@ -35,3 +35,13 @@ class Booking(Base):
     check_out = Column(String)
     guests = Column(Integer)
     created_at = Column(DateTime, default=datetime.utcnow)
+
+class ContactMessage(Base):
+    __tablename__ = "contact_messages"
+    id = Column(Integer, primary_key=True, index=True)
+    name = Column(String)
+    email = Column(String)
+    phone = Column(String)
+    service = Column(String)
+    message = Column(Text)
+    created_at = Column(DateTime, default=datetime.utcnow)
