@@ -82,7 +82,6 @@ def create_contact_message(message: dict, db: Session = Depends(get_db)):
         name=message.get("name"),
         email=message.get("email"),
         phone=message.get("phone"),
-        service=message.get("service"),
         message=message.get("message")
     )
     db.add(new_message)

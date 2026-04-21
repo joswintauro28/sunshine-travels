@@ -42,6 +42,5 @@ class ContactMessage(Base):
     name = Column(String)
     email = Column(String)
     phone = Column(String)
-    service = Column(String)
     message = Column(Text)
     created_at = Column(DateTime, default=datetime.utcnow)
