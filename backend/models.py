@@ -45,10 +45,13 @@ class ContactMessage(Base):
     message = Column(Text)
     created_at = Column(DateTime, default=datetime.utcnow)
 
+from sqlalchemy import Column, Integer, String, Text, Float, DateTime, Boolean
+
 class User(Base):
     __tablename__ = "users"
     id = Column(Integer, primary_key=True, index=True)
     name = Column(String)
     email = Column(String, unique=True, index=True)
     password = Column(String)
+    is_superuser = Column(Boolean, default=False)
     created_at = Column(DateTime, default=datetime.utcnow)

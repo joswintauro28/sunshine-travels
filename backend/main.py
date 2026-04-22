@@ -50,6 +50,15 @@ def seed_data(db: Session):
             models.Testimonial(name="Michael Chen", role="Family Trip", content="Our kids loved the Bali excursion. Everything was perfectly organized from start to finish.", avatar_url="https://i.pravatar.cc/150?u=michael")
         ]
         db.add_all(testimonials)
+
+        # Seed admin user
+        admin_user = models.User(
+            name="Admin User",
+            email="admin@sunshine.com",
+            password=security.get_password_hash("admin123"),
+            is_superuser=True
+        )
+        db.add(admin_user)
         db.commit()
 
 @app.on_event("startup")
