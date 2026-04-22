@@ -3,7 +3,6 @@ from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.orm import Session
 from typing import List
 import uvicorn
-from passlib.context import CryptContext
 
 import models, database
 from database import engine, get_db
@@ -11,15 +10,13 @@ from database import engine, get_db
 # Create tables
 models.Base.metadata.create_all(bind=engine)
 
-pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
+from app.core import security
 
-def get_password_hash(password):
-    return pwd_context.hash(password)
-
-def verify_password(plain_password, hashed_password):
-    return pwd_context.verify(plain_password, hashed_password)
+from app.api.api import api_router
 
 app = FastAPI(title="Sunshine Travels API")
+
+app.include_router(api_router, prefix="/api/v1")
 
 # Configure CORS
 app.add_middleware(
@@ -108,7 +105,7 @@ def signup(user: dict, db: Session = Depends(get_db)):
     new_user = models.User(
         name=user.get("name"),
         email=user.get("email"),
-        password=get_password_hash(user.get("password"))
+        password=security.get_password_hash(user.get("password"))
     )
     db.add(new_user)
     db.commit()
@@ -118,7 +115,7 @@ def signup(user: dict, db: Session = Depends(get_db)):
 @app.post("/auth/login")
 def login(user: dict, db: Session = Depends(get_db)):
     db_user = db.query(models.User).filter(models.User.email == user.get("email")).first()
-    if not db_user or not verify_password(user.get("password"), db_user.password):
+    if not db_user or not security.verify_password(user.get("password"), db_user.password):
         raise HTTPException(status_code=401, detail="Invalid email or password")
     
     return {"status": "success", "message": "Login successful", "user": {"name": db_user.name, "email": db_user.email}}
