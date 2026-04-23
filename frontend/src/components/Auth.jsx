@@ -140,7 +140,7 @@ const Auth = () => {
                 onLater={handleLater}
             />
             
-            <section className="relative min-h-screen flex items-center justify-center overflow-hidden bg-slate-900 px-6 py-20">
+            <section className="relative min-h-screen flex items-center justify-center overflow-hidden bg-slate-900 px-6 py-32 md:py-40">
                 {/* High-End Background */}
                 <div className="absolute inset-0 z-0">
                     <img 
