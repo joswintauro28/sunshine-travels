@@ -14,7 +14,8 @@ import {
     TrendingUp,
     MoreVertical,
     Plus,
-    X
+    X,
+    Trash2
 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
@@ -96,6 +97,35 @@ const AdminDashboard = () => {
             alert("Error adding destination.");
         } finally {
             setIsSubmitting(false);
+        }
+    };
+
+    const handleDeleteUser = async (id) => {
+        if (!window.confirm("Are you sure you want to delete this user?")) return;
+        try {
+            const token = localStorage.getItem('token');
+            await axios.delete(`http://localhost:8000/api/v1/admin/users/${id}`, {
+                headers: { Authorization: `Bearer ${token}` }
+            });
+            setUsersList(usersList.filter(user => user.id !== id));
+            setStats(prev => ({ ...prev, users: prev.users - 1 }));
+        } catch (err) {
+            console.error("Failed to delete user", err);
+            alert(err.response?.data?.detail || "Error deleting user.");
+        }
+    };
+
+    const handleDeleteTestimonial = async (id) => {
+        if (!window.confirm("Are you sure you want to delete this testimonial?")) return;
+        try {
+            const token = localStorage.getItem('token');
+            await axios.delete(`http://localhost:8000/api/v1/admin/testimonials/${id}`, {
+                headers: { Authorization: `Bearer ${token}` }
+            });
+            setTestimonialsList(testimonialsList.filter(t => t.id !== id));
+        } catch (err) {
+            console.error("Failed to delete testimonial", err);
+            alert(err.response?.data?.detail || "Error deleting testimonial.");
         }
     };
 
@@ -294,6 +324,7 @@ const AdminDashboard = () => {
                                                 <th className="px-8 py-5">Email</th>
                                                 <th className="px-8 py-5">Role</th>
                                                 <th className="px-8 py-5">Joined</th>
+                                                <th className="px-8 py-5 text-right">Actions</th>
                                             </tr>
                                         </thead>
                                         <tbody className="divide-y divide-slate-100">
@@ -307,11 +338,20 @@ const AdminDashboard = () => {
                                                         </span>
                                                     </td>
                                                     <td className="px-8 py-5 text-slate-500 text-sm">{new Date(user.created_at).toLocaleDateString()}</td>
+                                                    <td className="px-8 py-5 text-right">
+                                                        <button
+                                                            onClick={() => handleDeleteUser(user.id)}
+                                                            className="text-slate-400 hover:text-red-500 transition-colors p-2 rounded-lg hover:bg-red-50"
+                                                            title="Delete User"
+                                                        >
+                                                            <Trash2 size={18} />
+                                                        </button>
+                                                    </td>
                                                 </tr>
                                             ))}
                                             {usersList.length === 0 && (
                                                 <tr>
-                                                    <td colSpan="4" className="px-8 py-8 text-center text-slate-500">No users found.</td>
+                                                    <td colSpan="5" className="px-8 py-8 text-center text-slate-500">No users found.</td>
                                                 </tr>
                                             )}
                                         </tbody>
@@ -374,6 +414,7 @@ const AdminDashboard = () => {
                                                 <th className="px-8 py-5">Author</th>
                                                 <th className="px-8 py-5">Role</th>
                                                 <th className="px-8 py-5">Content</th>
+                                                <th className="px-8 py-5 text-right">Actions</th>
                                             </tr>
                                         </thead>
                                         <tbody className="divide-y divide-slate-100">
@@ -393,11 +434,20 @@ const AdminDashboard = () => {
                                                     <td className="px-8 py-5 text-slate-600 text-sm max-w-md truncate" title={testimonial.content}>
                                                         "{testimonial.content}"
                                                     </td>
+                                                    <td className="px-8 py-5 text-right">
+                                                        <button
+                                                            onClick={() => handleDeleteTestimonial(testimonial.id)}
+                                                            className="text-slate-400 hover:text-red-500 transition-colors p-2 rounded-lg hover:bg-red-50"
+                                                            title="Delete Testimonial"
+                                                        >
+                                                            <Trash2 size={18} />
+                                                        </button>
+                                                    </td>
                                                 </tr>
                                             ))}
                                             {testimonialsList.length === 0 && (
                                                 <tr>
-                                                    <td colSpan="3" className="px-8 py-8 text-center text-slate-500">No testimonials found.</td>
+                                                    <td colSpan="4" className="px-8 py-8 text-center text-slate-500">No testimonials found.</td>
                                                 </tr>
                                             )}
                                         </tbody>

@@ -74,3 +74,34 @@ def create_destination(destination: dict, db: Session = Depends(get_db), current
         "rating": new_dest.rating,
         "location": new_dest.location
     }
+
+@router.delete("/users/{user_id}")
+def delete_user(user_id: int, db: Session = Depends(get_db), current_user: models.User = Depends(get_current_active_superuser)):
+    user = db.query(models.User).filter(models.User.id == user_id).first()
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+    
+    if user.id == current_user.id:
+        raise HTTPException(status_code=400, detail="Cannot delete your own account")
+        
+    db.delete(user)
+    
+    new_log = models.ActivityLog(user_email=current_user.email, action=f"Deleted user: {user.email}")
+    db.add(new_log)
+    db.commit()
+    
+    return {"message": "User deleted successfully"}
+
+@router.delete("/testimonials/{testimonial_id}")
+def delete_testimonial(testimonial_id: int, db: Session = Depends(get_db), current_user: models.User = Depends(get_current_active_superuser)):
+    testimonial = db.query(models.Testimonial).filter(models.Testimonial.id == testimonial_id).first()
+    if not testimonial:
+        raise HTTPException(status_code=404, detail="Testimonial not found")
+        
+    db.delete(testimonial)
+    
+    new_log = models.ActivityLog(user_email=current_user.email, action=f"Deleted testimonial from: {testimonial.name}")
+    db.add(new_log)
+    db.commit()
+    
+    return {"message": "Testimonial deleted successfully"}
