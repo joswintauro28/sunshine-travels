@@ -28,6 +28,7 @@ const AdminDashboard = () => {
     });
     const [usersList, setUsersList] = useState([]);
     const [activityLogs, setActivityLogs] = useState([]);
+    const [inquiriesList, setInquiriesList] = useState([]);
     const [loading, setLoading] = useState(true);
     const navigate = useNavigate();
 
@@ -41,14 +42,16 @@ const AdminDashboard = () => {
 
         const fetchDashboardData = async () => {
             try {
-                const [statsRes, usersRes, logsRes] = await Promise.all([
+                const [statsRes, usersRes, logsRes, inquiriesRes] = await Promise.all([
                     axios.get('http://localhost:8000/api/v1/admin/stats', { headers: { Authorization: `Bearer ${token}` } }),
                     axios.get('http://localhost:8000/api/v1/admin/users', { headers: { Authorization: `Bearer ${token}` } }),
-                    axios.get('http://localhost:8000/api/v1/admin/activity_logs', { headers: { Authorization: `Bearer ${token}` } })
+                    axios.get('http://localhost:8000/api/v1/admin/activity_logs', { headers: { Authorization: `Bearer ${token}` } }),
+                    axios.get('http://localhost:8000/api/v1/admin/inquiries', { headers: { Authorization: `Bearer ${token}` } })
                 ]);
                 setStats(statsRes.data);
                 setUsersList(usersRes.data);
                 setActivityLogs(logsRes.data);
+                setInquiriesList(inquiriesRes.data);
             } catch (err) {
                 console.error('Failed to fetch admin data', err);
             } finally {
@@ -270,6 +273,48 @@ const AdminDashboard = () => {
                                             {usersList.length === 0 && (
                                                 <tr>
                                                     <td colSpan="4" className="px-8 py-8 text-center text-slate-500">No users found.</td>
+                                                </tr>
+                                            )}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        )}
+
+                        {activeTab === 'inquiries' && (
+                            <div className="bg-white rounded-[2.5rem] shadow-sm border border-slate-100 overflow-hidden">
+                                <div className="p-8 border-b border-slate-100 flex items-center justify-between">
+                                    <h3 className="text-xl font-semibold text-slate-900">Contact Inquiries</h3>
+                                </div>
+                                <div className="overflow-x-auto">
+                                    <table className="w-full text-left">
+                                        <thead className="bg-slate-50 text-slate-500 text-xs uppercase tracking-widest font-bold">
+                                            <tr>
+                                                <th className="px-8 py-5">Name</th>
+                                                <th className="px-8 py-5">Contact Details</th>
+                                                <th className="px-8 py-5">Message</th>
+                                                <th className="px-8 py-5">Date</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody className="divide-y divide-slate-100">
+                                            {inquiriesList.map((inquiry) => (
+                                                <tr key={inquiry.id} className="hover:bg-slate-50/50 transition-colors group">
+                                                    <td className="px-8 py-5 font-semibold text-slate-900">{inquiry.name}</td>
+                                                    <td className="px-8 py-5">
+                                                        <p className="text-slate-600 text-sm">{inquiry.email}</p>
+                                                        <p className="text-slate-500 text-xs mt-1">{inquiry.phone}</p>
+                                                    </td>
+                                                    <td className="px-8 py-5 text-slate-600 text-sm max-w-xs truncate" title={inquiry.message}>
+                                                        {inquiry.message}
+                                                    </td>
+                                                    <td className="px-8 py-5 text-slate-500 text-sm whitespace-nowrap">
+                                                        {new Date(inquiry.created_at).toLocaleDateString()}
+                                                    </td>
+                                                </tr>
+                                            ))}
+                                            {inquiriesList.length === 0 && (
+                                                <tr>
+                                                    <td colSpan="4" className="px-8 py-8 text-center text-slate-500">No inquiries found.</td>
                                                 </tr>
                                             )}
                                         </tbody>

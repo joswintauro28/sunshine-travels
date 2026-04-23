@@ -33,3 +33,7 @@ def get_users(db: Session = Depends(get_db), current_user: models.User = Depends
 @router.get("/activity_logs")
 def get_activity_logs(db: Session = Depends(get_db), current_user: models.User = Depends(get_current_active_superuser)):
     return db.query(models.ActivityLog).order_by(models.ActivityLog.timestamp.desc()).all()
+
+@router.get("/inquiries")
+def get_inquiries(db: Session = Depends(get_db), current_user: models.User = Depends(get_current_active_superuser)):
+    return db.query(models.ContactMessage).order_by(models.ContactMessage.created_at.desc()).all()
