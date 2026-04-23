@@ -78,6 +78,19 @@ def get_services(db: Session = Depends(get_db)):
 def get_testimonials(db: Session = Depends(get_db)):
     return db.query(models.Testimonial).all()
 
+@app.post("/testimonials")
+def create_testimonial(testimonial: dict, db: Session = Depends(get_db)):
+    new_testimonial = models.Testimonial(
+        name=testimonial.get("name"),
+        role=testimonial.get("role", "Verified Traveler"),
+        content=testimonial.get("content"),
+        avatar_url=testimonial.get("avatar_url")
+    )
+    db.add(new_testimonial)
+    db.commit()
+    db.refresh(new_testimonial)
+    return new_testimonial
+
 @app.post("/bookings")
 def create_booking(booking: dict, db: Session = Depends(get_db)):
     new_booking = models.Booking(
