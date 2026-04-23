@@ -158,7 +158,13 @@ const AdminDashboard = () => {
             {/* Main Content */}
             <main className="flex-1 flex flex-col overflow-hidden relative">
                 {/* Header */}
-                <header className="h-[88px] bg-white/80 backdrop-blur-xl border-b border-white/50 flex items-center justify-end px-10 z-10 sticky top-0 shadow-sm">
+                <header className="h-[88px] bg-white/80 backdrop-blur-xl border-b border-white/50 flex items-center justify-between px-10 z-10 sticky top-0 shadow-sm">
+                    {/* Header Title */}
+                    <div>
+                        <h2 className="text-xl font-black text-[#0B1120] uppercase tracking-widest">Admin Portal</h2>
+                        <p className="text-xs text-orange-500 font-bold uppercase tracking-[0.2em] mt-1">A reason to smile</p>
+                    </div>
+
                     <div className="flex items-center space-x-6">
                         <div className="flex items-center space-x-4">
                             <div className="text-right">
