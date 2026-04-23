@@ -87,6 +87,14 @@ def create_testimonial(testimonial: dict, db: Session = Depends(get_db)):
         avatar_url=testimonial.get("avatar_url")
     )
     db.add(new_testimonial)
+    
+    # Log the action for admin notification
+    new_log = models.ActivityLog(
+        user_email=testimonial.get("name", "Guest"),
+        action=f"New feedback submitted: '{testimonial.get('content')[:30]}...'"
+    )
+    db.add(new_log)
+    
     db.commit()
     db.refresh(new_testimonial)
     return new_testimonial

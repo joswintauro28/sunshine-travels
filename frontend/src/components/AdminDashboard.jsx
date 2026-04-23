@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { motion } from 'framer-motion';
+import React, { useState, useEffect, useRef } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import {
     Users,
     BookOpen,
@@ -16,7 +16,7 @@ import {
     Plus,
     X,
     Trash2,
-    Key
+    Quote
 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
@@ -24,6 +24,7 @@ import logo from '../assets/logo.png';
 
 const AdminDashboard = () => {
     const user = JSON.parse(localStorage.getItem('user'));
+    const navigate = useNavigate();
 
     const [activeTab, setActiveTab] = useState('dashboard');
     const [stats, setStats] = useState({
@@ -38,13 +39,70 @@ const AdminDashboard = () => {
     const [testimonialsList, setTestimonialsList] = useState([]);
     const [destinationsList, setDestinationsList] = useState([]);
     const [showAddDestModal, setShowAddDestModal] = useState(false);
-    const [showEditPasswordModal, setShowEditPasswordModal] = useState(false);
-    const [editingUserId, setEditingUserId] = useState(null);
-    const [newPassword, setNewPassword] = useState('');
     const [newDest, setNewDest] = useState({ name: '', description: '', location: '', price: '', rating: '', image_url: '' });
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [loading, setLoading] = useState(true);
-    const navigate = useNavigate();
+    
+    // Notifications State
+    const [notifications, setNotifications] = useState([]);
+    const [showNotifications, setShowNotifications] = useState(false);
+    const [unreadCount, setUnreadCount] = useState(0);
+    const [toast, setToast] = useState(null);
+    const lastLogId = useRef(null);
+
+    const fetchData = async () => {
+        const token = localStorage.getItem('token');
+        if (!token) return;
+
+        try {
+            const [statsRes, usersRes, logsRes, inquiriesRes, testimonialsRes, destinationsRes] = await Promise.all([
+                axios.get('http://localhost:8000/api/v1/admin/stats', { headers: { Authorization: `Bearer ${token}` } }),
+                axios.get('http://localhost:8000/api/v1/admin/users', { headers: { Authorization: `Bearer ${token}` } }),
+                axios.get('http://localhost:8000/api/v1/admin/activity_logs', { headers: { Authorization: `Bearer ${token}` } }),
+                axios.get('http://localhost:8000/api/v1/admin/inquiries', { headers: { Authorization: `Bearer ${token}` } }),
+                axios.get('http://localhost:8000/api/v1/admin/testimonials', { headers: { Authorization: `Bearer ${token}` } }),
+                axios.get('http://localhost:8000/api/v1/admin/destinations', { headers: { Authorization: `Bearer ${token}` } })
+            ]);
+            
+            setStats(statsRes.data);
+            setUsersList(usersRes.data);
+            
+            const logs = logsRes.data;
+            const feedbackLogs = logs.filter(log => log.action.toLowerCase().includes("feedback submitted"));
+
+            if (lastLogId.current === null) {
+                // First load: Show last 5 feedback submissions as "recent" but not "unread"
+                setNotifications(feedbackLogs.slice(0, 5));
+                if (logs.length > 0) {
+                    lastLogId.current = Math.max(...logs.map(l => l.id));
+                }
+            } else {
+                // Subsequent loads: Check for truly new feedback
+                const newFeedbackLogs = feedbackLogs.filter(log => log.id > lastLogId.current);
+
+                if (newFeedbackLogs.length > 0) {
+                    setNotifications(prev => [...newFeedbackLogs, ...prev]);
+                    setUnreadCount(prev => prev + newFeedbackLogs.length);
+                    setToast({
+                        title: "New Feedback!",
+                        message: newFeedbackLogs[0].action,
+                        count: newFeedbackLogs.length
+                    });
+                    setTimeout(() => setToast(null), 5000);
+                    lastLogId.current = Math.max(...logs.map(l => l.id));
+                }
+            }
+            
+            setActivityLogs(logs);
+            setInquiriesList(inquiriesRes.data);
+            setTestimonialsList(testimonialsRes.data);
+            setDestinationsList(destinationsRes.data);
+        } catch (err) {
+            console.error('Failed to fetch admin data', err);
+        } finally {
+            setLoading(false);
+        }
+    };
 
     useEffect(() => {
         const user = JSON.parse(localStorage.getItem('user'));
@@ -54,30 +112,9 @@ const AdminDashboard = () => {
             return;
         }
 
-        const fetchDashboardData = async () => {
-            try {
-                const [statsRes, usersRes, logsRes, inquiriesRes, testimonialsRes, destinationsRes] = await Promise.all([
-                    axios.get('http://localhost:8000/api/v1/admin/stats', { headers: { Authorization: `Bearer ${token}` } }),
-                    axios.get('http://localhost:8000/api/v1/admin/users', { headers: { Authorization: `Bearer ${token}` } }),
-                    axios.get('http://localhost:8000/api/v1/admin/activity_logs', { headers: { Authorization: `Bearer ${token}` } }),
-                    axios.get('http://localhost:8000/api/v1/admin/inquiries', { headers: { Authorization: `Bearer ${token}` } }),
-                    axios.get('http://localhost:8000/api/v1/admin/testimonials', { headers: { Authorization: `Bearer ${token}` } }),
-                    axios.get('http://localhost:8000/api/v1/admin/destinations', { headers: { Authorization: `Bearer ${token}` } })
-                ]);
-                setStats(statsRes.data);
-                setUsersList(usersRes.data);
-                setActivityLogs(logsRes.data);
-                setInquiriesList(inquiriesRes.data);
-                setTestimonialsList(testimonialsRes.data);
-                setDestinationsList(destinationsRes.data);
-            } catch (err) {
-                console.error('Failed to fetch admin data', err);
-            } finally {
-                setLoading(false);
-            }
-        };
-
-        fetchDashboardData();
+        fetchData();
+        const interval = setInterval(fetchData, 10000); // Poll every 10s
+        return () => clearInterval(interval);
     }, [navigate]);
 
     const handleAddDestination = async (e) => {
@@ -115,7 +152,7 @@ const AdminDashboard = () => {
             setStats(prev => ({ ...prev, destinations: prev.destinations - 1 }));
         } catch (err) {
             console.error("Failed to delete destination", err);
-            alert(err.response?.data?.detail || "Error deleting destination.");
+            alert("Error deleting destination.");
         }
     };
 
@@ -130,29 +167,7 @@ const AdminDashboard = () => {
             setStats(prev => ({ ...prev, users: prev.users - 1 }));
         } catch (err) {
             console.error("Failed to delete user", err);
-            alert(err.response?.data?.detail || "Error deleting user.");
-        }
-    };
-
-    const handleUpdatePassword = async (e) => {
-        e.preventDefault();
-        setIsSubmitting(true);
-        try {
-            const token = localStorage.getItem('token');
-            await axios.put(`http://localhost:8000/api/v1/admin/users/${editingUserId}/password`, {
-                password: newPassword
-            }, {
-                headers: { Authorization: `Bearer ${token}` }
-            });
-            alert("Password updated successfully!");
-            setShowEditPasswordModal(false);
-            setNewPassword('');
-            setEditingUserId(null);
-        } catch (err) {
-            console.error("Failed to update password", err);
-            alert(err.response?.data?.detail || "Error updating password.");
-        } finally {
-            setIsSubmitting(false);
+            alert("Error deleting user.");
         }
     };
 
@@ -166,7 +181,7 @@ const AdminDashboard = () => {
             setTestimonialsList(testimonialsList.filter(t => t.id !== id));
         } catch (err) {
             console.error("Failed to delete testimonial", err);
-            alert(err.response?.data?.detail || "Error deleting testimonial.");
+            alert("Error deleting testimonial.");
         }
     };
 
@@ -174,7 +189,7 @@ const AdminDashboard = () => {
         { id: 'dashboard', label: 'Dashboard', icon: LayoutDashboard },
         { id: 'users', label: 'Users', icon: Users },
         { id: 'destinations', label: 'Destinations', icon: BookOpen },
-        { id: 'testimonials', label: 'Testimonials', icon: Bell },
+        { id: 'testimonials', label: 'Testimonials', icon: Quote },
         { id: 'inquiries', label: 'Inquiries', icon: FileText },
         { id: 'settings', label: 'Settings', icon: Settings },
     ];
@@ -186,7 +201,7 @@ const AdminDashboard = () => {
     };
 
     return (
-        <div className="flex h-screen bg-[#F4F7FA] overflow-hidden font-sans">
+        <div className="flex h-screen bg-[#F4F7FA] overflow-hidden font-sans text-slate-900">
             {/* Sidebar */}
             <aside className="w-72 bg-[#0B1120] text-white flex flex-col z-20 relative shadow-2xl">
                 <div className="absolute top-0 left-0 w-full h-64 bg-orange-500/10 blur-[100px] pointer-events-none"></div>
@@ -236,6 +251,71 @@ const AdminDashboard = () => {
                     </div>
 
                     <div className="flex items-center space-x-6">
+                        {/* Notification Bell */}
+                        <div className="relative">
+                            <button 
+                                onClick={() => {
+                                    setShowNotifications(!showNotifications);
+                                    setUnreadCount(0);
+                                }}
+                                className="p-3 text-slate-400 hover:text-orange-500 hover:bg-orange-50 rounded-2xl transition-all relative"
+                            >
+                                <Bell size={22} />
+                                {unreadCount > 0 && (
+                                    <span className="absolute top-2 right-2 w-5 h-5 bg-orange-500 text-white text-[10px] font-black flex items-center justify-center rounded-full border-2 border-white animate-bounce">
+                                        {unreadCount}
+                                    </span>
+                                )}
+                            </button>
+
+                            <AnimatePresence>
+                                {showNotifications && (
+                                    <motion.div
+                                        initial={{ opacity: 0, y: 10, scale: 0.95 }}
+                                        animate={{ opacity: 1, y: 0, scale: 1 }}
+                                        exit={{ opacity: 0, y: 10, scale: 0.95 }}
+                                        className="absolute right-0 mt-4 w-80 bg-white rounded-3xl shadow-2xl border border-slate-100 overflow-hidden z-50"
+                                    >
+                                        <div className="p-5 border-b border-slate-50 flex items-center justify-between bg-slate-50/50">
+                                            <h4 className="font-bold text-slate-900">Notifications</h4>
+                                            <span className="text-[10px] font-black text-orange-500 uppercase tracking-widest bg-orange-100 px-2 py-1 rounded-md">Real-time</span>
+                                        </div>
+                                        <div className="max-h-[350px] overflow-y-auto">
+                                            {notifications.length > 0 ? (
+                                                notifications.map((n, idx) => (
+                                                    <div key={idx} className="p-4 border-b border-slate-50 hover:bg-slate-50 transition-colors flex items-start space-x-3">
+                                                        <div className="w-10 h-10 rounded-xl bg-orange-100 text-orange-500 flex items-center justify-center shrink-0">
+                                                            <Bell size={18} />
+                                                        </div>
+                                                        <div>
+                                                            <p className="text-sm font-bold text-slate-900">{n.user_email}</p>
+                                                            <p className="text-xs text-slate-500 mt-1">{n.action}</p>
+                                                            <p className="text-[9px] text-slate-400 mt-1 uppercase font-bold">{new Date(n.timestamp).toLocaleTimeString()}</p>
+                                                        </div>
+                                                    </div>
+                                                ))
+                                            ) : (
+                                                <div className="p-10 text-center">
+                                                    <div className="w-16 h-16 bg-slate-50 rounded-full flex items-center justify-center mx-auto mb-4 text-slate-300">
+                                                        <Bell size={32} />
+                                                    </div>
+                                                    <p className="text-slate-400 text-sm font-medium">No new notifications</p>
+                                                </div>
+                                            )}
+                                        </div>
+                                        {notifications.length > 0 && (
+                                            <button 
+                                                onClick={() => setNotifications([])}
+                                                className="w-full py-4 text-xs font-bold text-slate-400 hover:text-orange-500 hover:bg-slate-50 transition-all uppercase tracking-widest border-t border-slate-50"
+                                            >
+                                                Clear all
+                                            </button>
+                                        )}
+                                    </motion.div>
+                                )}
+                            </AnimatePresence>
+                        </div>
+
                         <div className="flex items-center space-x-4">
                             <div className="text-right">
                                 <p className="text-sm font-bold text-[#0B1120] tracking-wide">
@@ -258,7 +338,7 @@ const AdminDashboard = () => {
                 </header>
 
                 {/* Content Area */}
-                <div className="flex-1 overflow-y-auto p-10">
+                <div className="flex-1 overflow-y-auto p-10 bg-[#F8FAFC]">
                     <motion.div
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
@@ -272,259 +352,174 @@ const AdminDashboard = () => {
                             </div>
                         </div>
 
-                        {/* Stats Grid */}
+                        {/* Dashboard View */}
                         {activeTab === 'dashboard' && (
-                            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
-                                {[
-                                    { label: 'Total Users', value: stats.users, icon: Users, color: 'blue' },
-                                    { label: 'Destinations', value: stats.destinations, icon: BookOpen, color: 'orange' },
-                                    { label: 'Inquiries', value: stats.inquiries, icon: FileText, color: 'purple' },
-                                ].map((stat, i) => (
-                                    <motion.div
-                                        key={stat.label}
-                                        initial={{ opacity: 0, y: 20 }}
-                                        animate={{ opacity: 1, y: 0 }}
-                                        transition={{ delay: i * 0.1, ease: "easeOut" }}
-                                        className="bg-white p-7 rounded-[2rem] shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-white hover:shadow-[0_8px_30px_rgb(0,0,0,0.08)] transition-all group relative overflow-hidden"
-                                    >
-                                        <div className={`absolute top-0 right-0 w-32 h-32 bg-${stat.color}-500/5 rounded-bl-full -mr-8 -mt-8 transition-transform group-hover:scale-110`}></div>
-                                        <div className="flex items-center justify-between mb-6 relative">
-                                            <div className={`p-4 rounded-2xl bg-${stat.color}-50 text-${stat.color}-600 group-hover:scale-110 transition-transform duration-300`}>
-                                                <stat.icon size={24} strokeWidth={2.5} />
+                            <>
+                                <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
+                                    {[
+                                        { label: 'Total Users', value: stats.users, icon: Users, color: 'blue' },
+                                        { label: 'Destinations', value: stats.destinations, icon: BookOpen, color: 'orange' },
+                                        { label: 'Inquiries', value: stats.inquiries, icon: FileText, color: 'purple' },
+                                    ].map((stat, i) => (
+                                        <motion.div
+                                            key={stat.label}
+                                            initial={{ opacity: 0, y: 20 }}
+                                            animate={{ opacity: 1, y: 0 }}
+                                            transition={{ delay: i * 0.1 }}
+                                            className="bg-white p-7 rounded-[2.5rem] shadow-sm border border-slate-100 hover:shadow-xl hover:shadow-slate-200/50 transition-all group relative overflow-hidden"
+                                        >
+                                            <div className={`p-4 rounded-2xl bg-${stat.color}-50 text-${stat.color}-500 mb-6 w-fit`}>
+                                                <stat.icon size={24} />
                                             </div>
-                                            <div className="flex items-center text-green-600 text-xs font-bold bg-green-50/80 px-3 py-1.5 rounded-full border border-green-100">
-                                                <TrendingUp size={14} className="mr-1.5" />
-                                                +12%
-                                            </div>
-                                        </div>
-                                        <div className="relative">
                                             <p className="text-slate-500 text-sm font-bold tracking-wide uppercase mb-1">{stat.label}</p>
-                                            <h3 className="text-4xl font-black text-[#0B1120] tracking-tight">{loading ? '...' : stat.value.toLocaleString()}</h3>
-                                        </div>
-                                    </motion.div>
-                                ))}
-                            </div>
-                        )}
-
-                        {activeTab === 'dashboard' && (
-                            <div className="bg-white rounded-[2.5rem] shadow-sm border border-slate-100 overflow-hidden">
-                                <div className="p-8 border-b border-slate-100 flex items-center justify-between">
-                                    <h3 className="text-xl font-semibold text-slate-900">Recent Activity</h3>
-                                    <button className="text-orange-500 hover:text-orange-600 font-medium text-sm flex items-center">
-                                        View All <ChevronRight size={16} className="ml-1" />
-                                    </button>
+                                            <h3 className="text-4xl font-black text-[#0B1120] tracking-tight">{loading ? '...' : stat.value}</h3>
+                                        </motion.div>
+                                    ))}
                                 </div>
-                                <div className="overflow-x-auto">
-                                    <table className="w-full text-left">
-                                        <thead className="bg-slate-50 text-slate-500 text-xs uppercase tracking-widest font-bold">
-                                            <tr>
-                                                <th className="px-8 py-5">User</th>
-                                                <th className="px-8 py-5">Action</th>
-                                                <th className="px-8 py-5">Date</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody className="divide-y divide-slate-100">
-                                            {activityLogs.slice(0, 10).map((log) => (
-                                                <tr key={log.id} className="hover:bg-slate-50/50 transition-colors group">
-                                                    <td className="px-8 py-5">
-                                                        <div className="flex items-center space-x-3">
-                                                            <div className="w-10 h-10 rounded-full bg-slate-200 flex items-center justify-center font-bold text-slate-500">
-                                                                {log.user_email[0].toUpperCase()}
-                                                            </div>
-                                                            <div>
-                                                                <p className="font-semibold text-slate-900">{log.user_email.split('@')[0]}</p>
-                                                                <p className="text-xs text-slate-500">{log.user_email}</p>
-                                                            </div>
-                                                        </div>
-                                                    </td>
-                                                    <td className="px-8 py-5 text-slate-600 text-sm">{log.action}</td>
-                                                    <td className="px-8 py-5 text-slate-500 text-sm">{new Date(log.timestamp).toLocaleString()}</td>
-                                                </tr>
-                                            ))}
-                                            {activityLogs.length === 0 && (
+
+                                <div className="bg-white rounded-[2.5rem] shadow-sm border border-slate-100 overflow-hidden">
+                                    <div className="p-8 border-b border-slate-100 flex items-center justify-between">
+                                        <h3 className="text-xl font-bold text-slate-900">Recent Activity</h3>
+                                    </div>
+                                    <div className="overflow-x-auto">
+                                        <table className="w-full text-left">
+                                            <thead className="bg-slate-50/50 text-slate-500 text-[10px] uppercase tracking-[0.2em] font-black">
                                                 <tr>
-                                                    <td colSpan="3" className="px-8 py-8 text-center text-slate-500">No recent activity.</td>
+                                                    <th className="px-8 py-5">User</th>
+                                                    <th className="px-8 py-5">Action</th>
+                                                    <th className="px-8 py-5 text-right">Time</th>
                                                 </tr>
-                                            )}
-                                        </tbody>
-                                    </table>
+                                            </thead>
+                                            <tbody className="divide-y divide-slate-50">
+                                                {activityLogs.slice(0, 10).map((log) => (
+                                                    <tr key={log.id} className="hover:bg-slate-50/50 transition-colors">
+                                                        <td className="px-8 py-5">
+                                                            <div className="flex items-center space-x-3">
+                                                                <div className="w-10 h-10 rounded-xl bg-slate-100 flex items-center justify-center font-black text-slate-400">
+                                                                    {log.user_email[0].toUpperCase()}
+                                                                </div>
+                                                                <span className="font-bold text-slate-900">{log.user_email}</span>
+                                                            </div>
+                                                        </td>
+                                                        <td className="px-8 py-5 text-slate-600 font-medium">{log.action}</td>
+                                                        <td className="px-8 py-5 text-slate-400 text-xs text-right font-bold uppercase tracking-wider">{new Date(log.timestamp).toLocaleTimeString()}</td>
+                                                    </tr>
+                                                ))}
+                                            </tbody>
+                                        </table>
+                                    </div>
                                 </div>
-                            </div>
+                            </>
                         )}
 
+                        {/* Users Table */}
                         {activeTab === 'users' && (
                             <div className="bg-white rounded-[2.5rem] shadow-sm border border-slate-100 overflow-hidden">
-                                <div className="p-8 border-b border-slate-100 flex items-center justify-between">
-                                    <h3 className="text-xl font-semibold text-slate-900">Registered Users</h3>
-                                </div>
                                 <div className="overflow-x-auto">
                                     <table className="w-full text-left">
-                                        <thead className="bg-slate-50 text-slate-500 text-xs uppercase tracking-widest font-bold">
+                                        <thead className="bg-slate-50/50 text-slate-500 text-[10px] uppercase tracking-[0.2em] font-black">
                                             <tr>
-                                                <th className="px-8 py-5">Name</th>
-                                                <th className="px-8 py-5">Email</th>
+                                                <th className="px-8 py-5">User Details</th>
                                                 <th className="px-8 py-5">Role</th>
                                                 <th className="px-8 py-5">Joined</th>
                                                 <th className="px-8 py-5 text-right">Actions</th>
                                             </tr>
                                         </thead>
-                                        <tbody className="divide-y divide-slate-100">
+                                        <tbody className="divide-y divide-slate-50">
                                             {usersList.map((user) => (
-                                                <tr key={user.id} className="hover:bg-slate-50/50 transition-colors group">
-                                                    <td className="px-8 py-5 font-semibold text-slate-900">{user.name || 'N/A'}</td>
-                                                    <td className="px-8 py-5 text-slate-600 text-sm">{user.email}</td>
+                                                <tr key={user.id} className="hover:bg-slate-50/50 transition-colors">
                                                     <td className="px-8 py-5">
-                                                        <span className={`px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider ${user.is_superuser ? 'bg-orange-100 text-orange-700 border border-orange-200' : 'bg-slate-100 text-slate-700 border border-slate-200'}`}>
+                                                        <div className="flex items-center space-x-4">
+                                                            <div className="w-12 h-12 rounded-2xl bg-orange-50 flex items-center justify-center font-black text-orange-500 text-xl">
+                                                                {user.name ? user.name[0] : (user.email ? user.email[0].toUpperCase() : '?')}
+                                                            </div>
+                                                            <div>
+                                                                <p className="font-bold text-slate-900">{user.name || 'N/A'}</p>
+                                                                <p className="text-xs text-slate-500 font-medium">{user.email}</p>
+                                                            </div>
+                                                        </div>
+                                                    </td>
+                                                    <td className="px-8 py-5">
+                                                        <span className={`px-3 py-1.5 rounded-xl text-[10px] font-black uppercase tracking-widest ${user.is_superuser ? 'bg-orange-100 text-orange-600 border border-orange-200' : 'bg-slate-100 text-slate-600 border border-slate-200'}`}>
                                                             {user.is_superuser ? 'Admin' : 'User'}
                                                         </span>
                                                     </td>
-                                                    <td className="px-8 py-5 text-slate-500 text-sm">{new Date(user.created_at).toLocaleDateString()}</td>
+                                                    <td className="px-8 py-5 text-slate-400 text-sm font-bold">{new Date(user.created_at).toLocaleDateString()}</td>
                                                     <td className="px-8 py-5 text-right">
-                                                        <div className="flex items-center justify-end space-x-2">
-                                                            {user.id !== (JSON.parse(localStorage.getItem('user'))?.id) && (
-                                                                <button
-                                                                    onClick={() => {
-                                                                        setEditingUserId(user.id);
-                                                                        setShowEditPasswordModal(true);
-                                                                    }}
-                                                                    className="text-slate-400 hover:text-orange-500 transition-colors p-2 rounded-lg hover:bg-orange-50"
-                                                                    title="Edit Password"
-                                                                >
-                                                                    <Key size={18} />
-                                                                </button>
-                                                            )}
+                                                        {user.id !== (JSON.parse(localStorage.getItem('user'))?.id) && (
                                                             <button
                                                                 onClick={() => handleDeleteUser(user.id)}
-                                                                className="text-slate-400 hover:text-red-500 transition-colors p-2 rounded-lg hover:bg-red-50"
-                                                                title="Delete User"
+                                                                className="p-3 text-slate-400 hover:text-red-500 hover:bg-red-50 rounded-2xl transition-all"
                                                             >
-                                                                <Trash2 size={18} />
+                                                                <Trash2 size={20} />
                                                             </button>
-                                                        </div>
+                                                        )}
                                                     </td>
                                                 </tr>
                                             ))}
-                                            {usersList.length === 0 && (
-                                                <tr>
-                                                    <td colSpan="5" className="px-8 py-8 text-center text-slate-500">No users found.</td>
-                                                </tr>
-                                            )}
                                         </tbody>
                                     </table>
                                 </div>
                             </div>
                         )}
 
-                        {activeTab === 'inquiries' && (
-                            <div className="bg-white rounded-[2.5rem] shadow-sm border border-slate-100 overflow-hidden">
-                                <div className="p-8 border-b border-slate-100 flex items-center justify-between">
-                                    <h3 className="text-xl font-semibold text-slate-900">Contact Inquiries</h3>
-                                </div>
-                                <div className="overflow-x-auto">
-                                    <table className="w-full text-left">
-                                        <thead className="bg-slate-50 text-slate-500 text-xs uppercase tracking-widest font-bold">
-                                            <tr>
-                                                <th className="px-8 py-5">Name</th>
-                                                <th className="px-8 py-5">Contact Details</th>
-                                                <th className="px-8 py-5">Message</th>
-                                                <th className="px-8 py-5">Date</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody className="divide-y divide-slate-100">
-                                            {inquiriesList.map((inquiry) => (
-                                                <tr key={inquiry.id} className="hover:bg-slate-50/50 transition-colors group">
-                                                    <td className="px-8 py-5 font-semibold text-slate-900">{inquiry.name}</td>
-                                                    <td className="px-8 py-5">
-                                                        <p className="text-slate-600 text-sm">{inquiry.email}</p>
-                                                        <p className="text-slate-500 text-xs mt-1">{inquiry.phone}</p>
-                                                    </td>
-                                                    <td className="px-8 py-5 text-slate-600 text-sm max-w-xs truncate" title={inquiry.message}>
-                                                        {inquiry.message}
-                                                    </td>
-                                                    <td className="px-8 py-5 text-slate-500 text-sm whitespace-nowrap">
-                                                        {new Date(inquiry.created_at).toLocaleDateString()}
-                                                    </td>
-                                                </tr>
-                                            ))}
-                                            {inquiriesList.length === 0 && (
-                                                <tr>
-                                                    <td colSpan="4" className="px-8 py-8 text-center text-slate-500">No inquiries found.</td>
-                                                </tr>
-                                            )}
-                                        </tbody>
-                                    </table>
-                                </div>
-                            </div>
-                        )}
-
+                        {/* Testimonials Table */}
                         {activeTab === 'testimonials' && (
                             <div className="bg-white rounded-[2.5rem] shadow-sm border border-slate-100 overflow-hidden">
-                                <div className="p-8 border-b border-slate-100 flex items-center justify-between">
-                                    <h3 className="text-xl font-semibold text-slate-900">User Testimonials</h3>
-                                </div>
                                 <div className="overflow-x-auto">
                                     <table className="w-full text-left">
-                                        <thead className="bg-slate-50 text-slate-500 text-xs uppercase tracking-widest font-bold">
+                                        <thead className="bg-slate-50/50 text-slate-500 text-[10px] uppercase tracking-[0.2em] font-black">
                                             <tr>
                                                 <th className="px-8 py-5">Author</th>
-                                                <th className="px-8 py-5">Role</th>
                                                 <th className="px-8 py-5">Content</th>
                                                 <th className="px-8 py-5 text-right">Actions</th>
                                             </tr>
                                         </thead>
-                                        <tbody className="divide-y divide-slate-100">
-                                            {testimonialsList.map((testimonial) => (
-                                                <tr key={testimonial.id} className="hover:bg-slate-50/50 transition-colors group">
+                                        <tbody className="divide-y divide-slate-50">
+                                            {testimonialsList.map((t) => (
+                                                <tr key={t.id} className="hover:bg-slate-50/50 transition-colors">
                                                     <td className="px-8 py-5">
-                                                        <div className="flex items-center space-x-3">
-                                                            <img
-                                                                src={testimonial.avatar_url || `https://ui-avatars.com/api/?name=${encodeURIComponent(testimonial.name)}&background=f97316&color=fff`}
-                                                                alt={testimonial.name}
-                                                                className="w-10 h-10 rounded-full border border-slate-200"
-                                                            />
-                                                            <span className="font-semibold text-slate-900">{testimonial.name}</span>
+                                                        <div className="flex items-center space-x-4">
+                                                            <img src={t.avatar_url || `https://ui-avatars.com/api/?name=${encodeURIComponent(t.name)}&background=f97316&color=fff`} className="w-12 h-12 rounded-2xl border-2 border-white shadow-sm" alt="" />
+                                                            <div>
+                                                                <p className="font-bold text-slate-900">{t.name}</p>
+                                                                <p className="text-xs text-slate-500 font-medium">{t.role}</p>
+                                                            </div>
                                                         </div>
                                                     </td>
-                                                    <td className="px-8 py-5 text-slate-600 text-sm">{testimonial.role}</td>
-                                                    <td className="px-8 py-5 text-slate-600 text-sm max-w-md truncate" title={testimonial.content}>
-                                                        "{testimonial.content}"
-                                                    </td>
+                                                    <td className="px-8 py-5 text-slate-600 font-medium max-w-lg">"{t.content}"</td>
                                                     <td className="px-8 py-5 text-right">
                                                         <button
-                                                            onClick={() => handleDeleteTestimonial(testimonial.id)}
-                                                            className="text-slate-400 hover:text-red-500 transition-colors p-2 rounded-lg hover:bg-red-50"
-                                                            title="Delete Testimonial"
+                                                            onClick={() => handleDeleteTestimonial(t.id)}
+                                                            className="p-3 text-slate-400 hover:text-red-500 hover:bg-red-50 rounded-2xl transition-all"
                                                         >
-                                                            <Trash2 size={18} />
+                                                            <Trash2 size={20} />
                                                         </button>
                                                     </td>
                                                 </tr>
                                             ))}
-                                            {testimonialsList.length === 0 && (
-                                                <tr>
-                                                    <td colSpan="4" className="px-8 py-8 text-center text-slate-500">No testimonials found.</td>
-                                                </tr>
-                                            )}
                                         </tbody>
                                     </table>
                                 </div>
                             </div>
                         )}
+
+                        {/* Destinations Table */}
                         {activeTab === 'destinations' && (
                             <div className="bg-white rounded-[2.5rem] shadow-sm border border-slate-100 overflow-hidden">
                                 <div className="p-8 border-b border-slate-100 flex items-center justify-between">
-                                    <h3 className="text-xl font-semibold text-slate-900">Manage Destinations</h3>
+                                    <h3 className="text-xl font-bold text-slate-900">All Destinations</h3>
                                     <button
                                         onClick={() => setShowAddDestModal(true)}
-                                        className="flex items-center space-x-2 bg-orange-500 text-white px-4 py-2 rounded-xl hover:bg-orange-600 transition-all shadow-md shadow-orange-500/20"
+                                        className="flex items-center space-x-2 bg-orange-500 text-white px-6 py-3 rounded-2xl hover:bg-orange-600 transition-all shadow-lg shadow-orange-500/30"
                                     >
-                                        <Plus size={18} />
-                                        <span className="font-medium text-sm">Add Destination</span>
+                                        <Plus size={20} strokeWidth={3} />
+                                        <span className="font-black text-sm uppercase tracking-widest">Add New</span>
                                     </button>
                                 </div>
                                 <div className="overflow-x-auto">
                                     <table className="w-full text-left">
-                                        <thead className="bg-slate-50 text-slate-500 text-xs uppercase tracking-widest font-bold">
+                                        <thead className="bg-slate-50/50 text-slate-500 text-[10px] uppercase tracking-[0.2em] font-black">
                                             <tr>
                                                 <th className="px-8 py-5">Destination</th>
                                                 <th className="px-8 py-5">Location</th>
@@ -533,88 +528,33 @@ const AdminDashboard = () => {
                                                 <th className="px-8 py-5 text-right">Actions</th>
                                             </tr>
                                         </thead>
-                                        <tbody className="divide-y divide-slate-100">
+                                        <tbody className="divide-y divide-slate-50">
                                             {destinationsList.map((dest) => (
-                                                <tr key={dest.id} className="hover:bg-slate-50/50 transition-colors group">
+                                                <tr key={dest.id} className="hover:bg-slate-50/50 transition-colors">
                                                     <td className="px-8 py-5">
-                                                        <div className="flex items-center space-x-3">
-                                                            <div className="w-12 h-12 rounded-xl overflow-hidden bg-slate-100">
-                                                                <img
-                                                                    src={dest.image_url || 'https://via.placeholder.com/150'}
-                                                                    alt={dest.name}
-                                                                    className="w-full h-full object-cover"
-                                                                />
-                                                            </div>
+                                                        <div className="flex items-center space-x-4">
+                                                            <img src={dest.image_url} className="w-16 h-12 rounded-xl object-cover border-2 border-white shadow-sm" alt="" />
                                                             <div>
-                                                                <span className="font-semibold text-slate-900 block">{dest.name}</span>
-                                                                <span className="text-xs text-slate-500 max-w-[200px] truncate block">{dest.description}</span>
+                                                                <p className="font-bold text-slate-900">{dest.name}</p>
+                                                                <p className="text-xs text-slate-500 font-medium truncate max-w-[200px]">{dest.description}</p>
                                                             </div>
                                                         </div>
                                                     </td>
-                                                    <td className="px-8 py-5 text-slate-600 text-sm">{dest.location}</td>
-                                                    <td className="px-8 py-5 font-semibold text-slate-900">${dest.price}</td>
-                                                    <td className="px-8 py-5 text-slate-600 text-sm flex items-center mt-3">
-                                                        ⭐ {dest.rating}
-                                                    </td>
+                                                    <td className="px-8 py-5 text-slate-600 font-bold text-sm uppercase tracking-wide">{dest.location}</td>
+                                                    <td className="px-8 py-5 font-black text-[#0B1120]">${dest.price}</td>
+                                                    <td className="px-8 py-5 text-orange-500 font-black text-sm">⭐ {dest.rating}</td>
                                                     <td className="px-8 py-5 text-right">
-                                                        <div className="flex items-center justify-end space-x-2">
-                                                            <button
-                                                                onClick={() => handleDeleteDestination(dest.id)}
-                                                                className="text-slate-400 hover:text-red-500 transition-colors p-2 rounded-lg hover:bg-red-50"
-                                                                title="Delete Destination"
-                                                            >
-                                                                <Trash2 size={18} />
-                                                            </button>
-                                                        </div>
+                                                        <button
+                                                            onClick={() => handleDeleteDestination(dest.id)}
+                                                            className="p-3 text-slate-400 hover:text-red-500 hover:bg-red-50 rounded-2xl transition-all"
+                                                        >
+                                                            <Trash2 size={20} />
+                                                        </button>
                                                     </td>
                                                 </tr>
                                             ))}
-                                            {destinationsList.length === 0 && (
-                                                <tr>
-                                                    <td colSpan="5" className="px-8 py-8 text-center text-slate-500">No destinations found.</td>
-                                                </tr>
-                                            )}
                                         </tbody>
                                     </table>
-                                </div>
-                            </div>
-                        )}
-                        {activeTab === 'settings' && (
-                            <div className="bg-white rounded-[2.5rem] shadow-sm border border-slate-100 overflow-hidden">
-                                <div className="p-8 border-b border-slate-100">
-                                    <h3 className="text-xl font-semibold text-slate-900">Platform Settings</h3>
-                                    <p className="text-sm text-slate-500 mt-1">Configure your system preferences.</p>
-                                </div>
-                                <div className="p-8 space-y-6">
-                                    <div className="flex items-center justify-between p-4 bg-slate-50 rounded-2xl border border-slate-100 hover:shadow-md transition-shadow">
-                                        <div>
-                                            <h4 className="font-semibold text-slate-900">Email Notifications</h4>
-                                            <p className="text-sm text-slate-500">Receive alerts for new inquiries and user registrations.</p>
-                                        </div>
-                                        <div className="w-12 h-6 bg-orange-500 rounded-full relative cursor-pointer shadow-inner">
-                                            <div className="w-4 h-4 bg-white rounded-full absolute right-1 top-1 shadow"></div>
-                                        </div>
-                                    </div>
-
-                                    <div className="flex items-center justify-between p-4 bg-slate-50 rounded-2xl border border-slate-100 hover:shadow-md transition-shadow">
-                                        <div>
-                                            <h4 className="font-semibold text-slate-900">Maintenance Mode</h4>
-                                            <p className="text-sm text-slate-500">Temporarily disable public access to the platform.</p>
-                                        </div>
-                                        <div className="w-12 h-6 bg-slate-200 rounded-full relative cursor-pointer shadow-inner">
-                                            <div className="w-4 h-4 bg-white rounded-full absolute left-1 top-1 shadow"></div>
-                                        </div>
-                                    </div>
-
-                                    <div className="flex items-center justify-between p-4 bg-slate-50 rounded-2xl border border-slate-100 hover:shadow-md transition-shadow">
-                                        <div>
-                                            <h4 className="font-semibold text-slate-900">Auto-Approve Testimonials</h4>
-                                            <p className="text-sm text-slate-500">Automatically publish new testimonials to the website.</p>
-                                        </div>
-                                        <div className="w-12 h-6 bg-slate-200 rounded-full relative cursor-pointer shadow-inner">
-                                            <div className="w-4 h-4 bg-white rounded-full absolute left-1 top-1 shadow"></div>
-                                        </div>
-                                    </div>
                                 </div>
                             </div>
                         )}
@@ -623,199 +563,90 @@ const AdminDashboard = () => {
             </main>
 
             {/* Add Destination Modal */}
-            {showAddDestModal && (
-                <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm overflow-y-auto">
-                    <motion.div
-                        initial={{ opacity: 0, scale: 0.95, y: 20 }}
-                        animate={{ opacity: 1, scale: 1, y: 0 }}
-                        className="bg-white rounded-[2rem] shadow-2xl w-full max-w-2xl my-8 relative overflow-hidden"
-                    >
-                        <div className="px-8 py-6 border-b border-slate-100 flex items-center justify-between sticky top-0 bg-white z-10">
-                            <h3 className="text-xl font-bold text-slate-900">Add New Destination</h3>
-                            <button
-                                onClick={() => setShowAddDestModal(false)}
-                                className="p-2 text-slate-400 hover:text-slate-600 hover:bg-slate-100 rounded-full transition-colors"
-                            >
-                                <X size={20} />
-                            </button>
-                        </div>
+            <AnimatePresence>
+                {showAddDestModal && (
+                    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm overflow-y-auto">
+                        <motion.div
+                            initial={{ opacity: 0, scale: 0.95, y: 20 }}
+                            animate={{ opacity: 1, scale: 1, y: 0 }}
+                            exit={{ opacity: 0, scale: 0.95, y: 20 }}
+                            className="bg-white rounded-[3rem] shadow-2xl w-full max-w-2xl my-8 relative overflow-hidden"
+                        >
+                            <div className="px-10 py-8 border-b border-slate-100 flex items-center justify-between sticky top-0 bg-white z-10">
+                                <h3 className="text-2xl font-black text-[#0B1120] tracking-tight">New Destination</h3>
+                                <button onClick={() => setShowAddDestModal(false)} className="p-3 text-slate-400 hover:text-orange-500 transition-colors">
+                                    <X size={24} strokeWidth={3} />
+                                </button>
+                            </div>
 
-                        <div className="p-8">
-                            <form onSubmit={handleAddDestination} className="space-y-6">
-                                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <form onSubmit={handleAddDestination} className="p-10 space-y-8">
+                                <div className="grid grid-cols-2 gap-8">
                                     <div className="space-y-2">
-                                        <label className="text-sm font-semibold text-slate-700">Destination Name</label>
-                                        <input
-                                            required
-                                            type="text"
-                                            value={newDest.name}
-                                            onChange={e => setNewDest({ ...newDest, name: e.target.value })}
-                                            className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-orange-500/20 focus:border-orange-500 transition-all bg-slate-50 focus:bg-white"
-                                            placeholder="e.g. Bali, Indonesia"
-                                        />
+                                        <label className="text-xs font-black text-slate-400 uppercase tracking-widest ml-1">Name</label>
+                                        <input required type="text" value={newDest.name} onChange={e => setNewDest({ ...newDest, name: e.target.value })} className="w-full px-6 py-4 rounded-2xl border-2 border-slate-50 bg-slate-50 focus:bg-white focus:border-orange-500 focus:outline-none transition-all font-bold" placeholder="e.g. Maldives" />
                                     </div>
                                     <div className="space-y-2">
-                                        <label className="text-sm font-semibold text-slate-700">Location</label>
-                                        <input
-                                            required
-                                            type="text"
-                                            value={newDest.location}
-                                            onChange={e => setNewDest({ ...newDest, location: e.target.value })}
-                                            className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-orange-500/20 focus:border-orange-500 transition-all bg-slate-50 focus:bg-white"
-                                            placeholder="e.g. Southeast Asia"
-                                        />
+                                        <label className="text-xs font-black text-slate-400 uppercase tracking-widest ml-1">Location</label>
+                                        <input required type="text" value={newDest.location} onChange={e => setNewDest({ ...newDest, location: e.target.value })} className="w-full px-6 py-4 rounded-2xl border-2 border-slate-50 bg-slate-50 focus:bg-white focus:border-orange-500 focus:outline-none transition-all font-bold" placeholder="e.g. Indian Ocean" />
                                     </div>
                                 </div>
-
                                 <div className="space-y-2">
-                                    <label className="text-sm font-semibold text-slate-700">Description</label>
-                                    <textarea
-                                        required
-                                        rows="3"
-                                        value={newDest.description}
-                                        onChange={e => setNewDest({ ...newDest, description: e.target.value })}
-                                        className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-orange-500/20 focus:border-orange-500 transition-all bg-slate-50 focus:bg-white resize-none"
-                                        placeholder="Brief description of the destination..."
-                                    />
+                                    <label className="text-xs font-black text-slate-400 uppercase tracking-widest ml-1">Description</label>
+                                    <textarea required rows="3" value={newDest.description} onChange={e => setNewDest({ ...newDest, description: e.target.value })} className="w-full px-6 py-4 rounded-2xl border-2 border-slate-50 bg-slate-50 focus:bg-white focus:border-orange-500 focus:outline-none transition-all font-bold resize-none" placeholder="Describe this paradise..." />
                                 </div>
-
+                                <div className="grid grid-cols-2 gap-8">
+                                    <div className="space-y-2">
+                                        <label className="text-xs font-black text-slate-400 uppercase tracking-widest ml-1">Price ($)</label>
+                                        <input required type="number" value={newDest.price} onChange={e => setNewDest({ ...newDest, price: e.target.value })} className="w-full px-6 py-4 rounded-2xl border-2 border-slate-50 bg-slate-50 focus:bg-white focus:border-orange-500 focus:outline-none transition-all font-black" placeholder="e.g. 1200" />
+                                    </div>
+                                    <div className="space-y-2">
+                                        <label className="text-xs font-black text-slate-400 uppercase tracking-widest ml-1">Rating (0-5)</label>
+                                        <input required type="number" step="0.1" min="0" max="5" value={newDest.rating} onChange={e => setNewDest({ ...newDest, rating: e.target.value })} className="w-full px-6 py-4 rounded-2xl border-2 border-slate-50 bg-slate-50 focus:bg-white focus:border-orange-500 focus:outline-none transition-all font-black" placeholder="e.g. 4.9" />
+                                    </div>
+                                </div>
                                 <div className="space-y-2">
-                                    <label className="text-sm font-semibold text-slate-700">Destination Image</label>
-                                    <div className="flex items-center space-x-4">
-                                        <div className="flex-1">
-                                            <input
-                                                required
-                                                type="file"
-                                                accept="image/*"
-                                                onChange={(e) => {
-                                                    const file = e.target.files[0];
-                                                    if (file) {
-                                                        const reader = new FileReader();
-                                                        reader.onloadend = () => {
-                                                            setNewDest({ ...newDest, image_url: reader.result });
-                                                        };
-                                                        reader.readAsDataURL(file);
-                                                    }
-                                                }}
-                                                className="w-full px-4 py-2.5 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-orange-500/20 focus:border-orange-500 transition-all bg-slate-50 focus:bg-white file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-orange-50 file:text-orange-600 hover:file:bg-orange-100 cursor-pointer text-sm"
-                                            />
-                                        </div>
-                                        {newDest.image_url && (
-                                            <div className="w-14 h-14 rounded-xl overflow-hidden border border-slate-200 shrink-0 shadow-sm">
-                                                <img src={newDest.image_url} alt="Preview" className="w-full h-full object-cover" />
-                                            </div>
-                                        )}
-                                    </div>
+                                    <label className="text-xs font-black text-slate-400 uppercase tracking-widest ml-1">Image URL</label>
+                                    <input required type="url" value={newDest.image_url} onChange={e => setNewDest({ ...newDest, image_url: e.target.value })} className="w-full px-6 py-4 rounded-2xl border-2 border-slate-50 bg-slate-50 focus:bg-white focus:border-orange-500 focus:outline-none transition-all font-medium" placeholder="https://images.unsplash.com/..." />
                                 </div>
-
-                                <div className="grid grid-cols-2 gap-6">
-                                    <div className="space-y-2">
-                                        <label className="text-sm font-semibold text-slate-700">Price ($)</label>
-                                        <input
-                                            required
-                                            type="number"
-                                            step="0.01"
-                                            value={newDest.price}
-                                            onChange={e => setNewDest({ ...newDest, price: e.target.value })}
-                                            className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-orange-500/20 focus:border-orange-500 transition-all bg-slate-50 focus:bg-white"
-                                            placeholder="e.g. 1299.99"
-                                        />
-                                    </div>
-                                    <div className="space-y-2">
-                                        <label className="text-sm font-semibold text-slate-700">Rating (0-5)</label>
-                                        <input
-                                            required
-                                            type="number"
-                                            step="0.1"
-                                            min="0"
-                                            max="5"
-                                            value={newDest.rating}
-                                            onChange={e => setNewDest({ ...newDest, rating: e.target.value })}
-                                            className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-orange-500/20 focus:border-orange-500 transition-all bg-slate-50 focus:bg-white"
-                                            placeholder="e.g. 4.8"
-                                        />
-                                    </div>
-                                </div>
-
-                                <div className="pt-4 flex justify-end space-x-4 border-t border-slate-100">
-                                    <button
-                                        type="button"
-                                        onClick={() => setShowAddDestModal(false)}
-                                        className="px-6 py-3 rounded-xl font-medium text-slate-600 hover:bg-slate-100 transition-colors"
-                                    >
-                                        Cancel
-                                    </button>
-                                    <button
-                                        type="submit"
-                                        disabled={isSubmitting}
-                                        className="px-6 py-3 rounded-xl font-medium bg-orange-500 text-white hover:bg-orange-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed shadow-lg shadow-orange-500/20"
-                                    >
-                                        {isSubmitting ? 'Adding...' : 'Add Destination'}
+                                <div className="pt-6 flex justify-end">
+                                    <button type="submit" disabled={isSubmitting} className="w-full bg-orange-500 text-white py-5 rounded-[2rem] font-black uppercase tracking-[0.2em] hover:bg-orange-600 transition-all shadow-xl shadow-orange-500/30 disabled:opacity-50">
+                                        {isSubmitting ? 'Adding Paradise...' : 'Confirm Addition'}
                                     </button>
                                 </div>
                             </form>
-                        </div>
-                    </motion.div>
-                </div>
-            )}
+                        </motion.div>
+                    </div>
+                )}
+            </AnimatePresence>
 
-            {/* Edit Password Modal */}
-            {showEditPasswordModal && (
-                <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm">
+            {/* Notification Toast */}
+            <AnimatePresence>
+                {toast && (
                     <motion.div
-                        initial={{ opacity: 0, scale: 0.95, y: 20 }}
-                        animate={{ opacity: 1, scale: 1, y: 0 }}
-                        className="bg-white rounded-[2rem] shadow-2xl w-full max-w-md relative overflow-hidden"
+                        initial={{ opacity: 0, x: 50, y: 0 }}
+                        animate={{ opacity: 1, x: 0, y: 0 }}
+                        exit={{ opacity: 0, x: 50 }}
+                        className="fixed bottom-10 right-10 z-[100] w-80 bg-[#0B1120] text-white p-6 rounded-[2rem] shadow-2xl border border-white/10 overflow-hidden"
                     >
-                        <div className="px-8 py-6 border-b border-slate-100 flex items-center justify-between">
-                            <h3 className="text-xl font-bold text-slate-900">Change User Password</h3>
-                            <button
-                                onClick={() => setShowEditPasswordModal(false)}
-                                className="p-2 text-slate-400 hover:text-slate-600 hover:bg-slate-100 rounded-full transition-colors"
-                            >
-                                <X size={20} />
+                        <div className="absolute top-0 left-0 w-2 h-full bg-orange-500"></div>
+                        <div className="flex items-start justify-between">
+                            <div className="flex items-center space-x-3">
+                                <div className="p-2 bg-orange-500 rounded-xl text-white">
+                                    <Bell size={18} />
+                                </div>
+                                <h5 className="font-bold text-sm tracking-wide">{toast.title}</h5>
+                            </div>
+                            <button onClick={() => setToast(null)} className="text-slate-400 hover:text-white">
+                                <X size={16} />
                             </button>
                         </div>
-
-                        <div className="p-8">
-                            <form onSubmit={handleUpdatePassword} className="space-y-6">
-                                <div className="space-y-2">
-                                    <label className="text-sm font-semibold text-slate-700">New Password</label>
-                                    <div className="relative">
-                                        <input
-                                            required
-                                            type="password"
-                                            value={newPassword}
-                                            onChange={e => setNewPassword(e.target.value)}
-                                            className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-orange-500/20 focus:border-orange-500 transition-all bg-slate-50 focus:bg-white"
-                                            placeholder="Enter new password"
-                                            minLength={6}
-                                        />
-                                    </div>
-                                    <p className="text-[10px] text-slate-400 italic">Minimum 6 characters recommended.</p>
-                                </div>
-
-                                <div className="pt-4 flex justify-end space-x-4 border-t border-slate-100">
-                                    <button
-                                        type="button"
-                                        onClick={() => setShowEditPasswordModal(false)}
-                                        className="px-6 py-3 rounded-xl font-medium text-slate-600 hover:bg-slate-100 transition-colors"
-                                    >
-                                        Cancel
-                                    </button>
-                                    <button
-                                        type="submit"
-                                        disabled={isSubmitting}
-                                        className="px-6 py-3 rounded-xl font-medium bg-orange-500 text-white hover:bg-orange-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed shadow-lg shadow-orange-500/20"
-                                    >
-                                        {isSubmitting ? 'Updating...' : 'Update Password'}
-                                    </button>
-                                </div>
-                            </form>
-                        </div>
+                        <p className="mt-3 text-xs text-slate-400 leading-relaxed font-medium">{toast.message}</p>
+                        {toast.count > 1 && (
+                            <p className="mt-2 text-[10px] font-black text-orange-500 uppercase tracking-widest">+ {toast.count - 1} more new alerts</p>
+                        )}
                     </motion.div>
-                </div>
-            )}
+                )}
+            </AnimatePresence>
         </div>
     );
 };
