@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, Body
 from sqlalchemy.orm import Session
 import models
 from database import get_db
@@ -48,7 +48,7 @@ def get_destinations(db: Session = Depends(get_db), current_user: models.User = 
     return db.query(models.Destination).order_by(models.Destination.id.desc()).all()
 
 @router.post("/destinations")
-def create_destination(destination: dict, db: Session = Depends(get_db), current_user: models.User = Depends(get_current_active_superuser)):
+def create_destination(destination: dict = Body(...), db: Session = Depends(get_db), current_user: models.User = Depends(get_current_active_superuser)):
     new_dest = models.Destination(
         name=destination.get("name"),
         description=destination.get("description"),
@@ -76,9 +76,9 @@ def create_destination(destination: dict, db: Session = Depends(get_db), current
         "location": new_dest.location
     }
 
-@router.delete("/users/{user_id}")
-def delete_user(user_id: int, db: Session = Depends(get_db), current_user: models.User = Depends(get_current_active_superuser)):
-    user = db.query(models.User).filter(models.User.id == user_id).first()
+@router.delete("/users/{id}")
+def delete_user(id: int, db: Session = Depends(get_db), current_user: models.User = Depends(get_current_active_superuser)):
+    user = db.query(models.User).filter(models.User.id == id).first()
     if not user:
         raise HTTPException(status_code=404, detail="User not found")
     
@@ -93,9 +93,9 @@ def delete_user(user_id: int, db: Session = Depends(get_db), current_user: model
     
     return {"message": "User deleted successfully"}
 
-@router.delete("/testimonials/{testimonial_id}")
-def delete_testimonial(testimonial_id: int, db: Session = Depends(get_db), current_user: models.User = Depends(get_current_active_superuser)):
-    testimonial = db.query(models.Testimonial).filter(models.Testimonial.id == testimonial_id).first()
+@router.delete("/testimonials/{id}")
+def delete_testimonial(id: int, db: Session = Depends(get_db), current_user: models.User = Depends(get_current_active_superuser)):
+    testimonial = db.query(models.Testimonial).filter(models.Testimonial.id == id).first()
     if not testimonial:
         raise HTTPException(status_code=404, detail="Testimonial not found")
         
@@ -107,29 +107,17 @@ def delete_testimonial(testimonial_id: int, db: Session = Depends(get_db), curre
     
     return {"message": "Testimonial deleted successfully"}
 
-@router.put("/users/{user_id}/password")
-def update_user_password(
-    user_id: int, 
-    password_data: dict, 
-    db: Session = Depends(get_db), 
-    current_user: models.User = Depends(get_current_active_superuser)
-):
-    user = db.query(models.User).filter(models.User.id == user_id).first()
-    if not user:
-        raise HTTPException(status_code=404, detail="User not found")
-    
-    if user.id == current_user.id:
-        raise HTTPException(status_code=400, detail="Cannot change your own password via this endpoint")
-    
-    new_password = password_data.get("password")
-    if not new_password:
-        raise HTTPException(status_code=400, detail="Password is required")
-    
-    user.password = security.get_password_hash(new_password)
+@router.delete("/destinations/{id}")
+def delete_destination(id: int, db: Session = Depends(get_db), current_user: models.User = Depends(get_current_active_superuser)):
+    dest = db.query(models.Destination).filter(models.Destination.id == id).first()
+    if not dest:
+        raise HTTPException(status_code=404, detail="Destination not found")
+        
+    db.delete(dest)
     
     # Log the action
-    new_log = models.ActivityLog(user_email=current_user.email, action=f"Updated password for user: {user.email}")
+    new_log = models.ActivityLog(user_email=current_user.email, action=f"Deleted destination: {dest.name}")
     db.add(new_log)
-    
     db.commit()
-    return {"message": "Password updated successfully"}
+    
+    return {"message": "Destination deleted successfully"}

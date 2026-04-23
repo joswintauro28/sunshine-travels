@@ -104,6 +104,21 @@ const AdminDashboard = () => {
         }
     };
 
+    const handleDeleteDestination = async (id) => {
+        if (!window.confirm("Are you sure you want to delete this destination?")) return;
+        try {
+            const token = localStorage.getItem('token');
+            await axios.delete(`http://localhost:8000/api/v1/admin/destinations/${id}`, {
+                headers: { Authorization: `Bearer ${token}` }
+            });
+            setDestinationsList(destinationsList.filter(dest => dest.id !== id));
+            setStats(prev => ({ ...prev, destinations: prev.destinations - 1 }));
+        } catch (err) {
+            console.error("Failed to delete destination", err);
+            alert(err.response?.data?.detail || "Error deleting destination.");
+        }
+    };
+
     const handleDeleteUser = async (id) => {
         if (!window.confirm("Are you sure you want to delete this user?")) return;
         try {
@@ -365,7 +380,7 @@ const AdminDashboard = () => {
                                                     </td>
                                                     <td className="px-8 py-5 text-slate-500 text-sm">{new Date(user.created_at).toLocaleDateString()}</td>
                                                     <td className="px-8 py-5 text-right">
-                                                         <div className="flex items-center justify-end space-x-2">
+                                                        <div className="flex items-center justify-end space-x-2">
                                                             {user.id !== (JSON.parse(localStorage.getItem('user'))?.id) && (
                                                                 <button
                                                                     onClick={() => {
@@ -385,7 +400,7 @@ const AdminDashboard = () => {
                                                             >
                                                                 <Trash2 size={18} />
                                                             </button>
-                                                         </div>
+                                                        </div>
                                                     </td>
                                                 </tr>
                                             ))}
@@ -515,6 +530,7 @@ const AdminDashboard = () => {
                                                 <th className="px-8 py-5">Location</th>
                                                 <th className="px-8 py-5">Price</th>
                                                 <th className="px-8 py-5">Rating</th>
+                                                <th className="px-8 py-5 text-right">Actions</th>
                                             </tr>
                                         </thead>
                                         <tbody className="divide-y divide-slate-100">
@@ -540,11 +556,22 @@ const AdminDashboard = () => {
                                                     <td className="px-8 py-5 text-slate-600 text-sm flex items-center mt-3">
                                                         ⭐ {dest.rating}
                                                     </td>
+                                                    <td className="px-8 py-5 text-right">
+                                                        <div className="flex items-center justify-end space-x-2">
+                                                            <button
+                                                                onClick={() => handleDeleteDestination(dest.id)}
+                                                                className="text-slate-400 hover:text-red-500 transition-colors p-2 rounded-lg hover:bg-red-50"
+                                                                title="Delete Destination"
+                                                            >
+                                                                <Trash2 size={18} />
+                                                            </button>
+                                                        </div>
+                                                    </td>
                                                 </tr>
                                             ))}
                                             {destinationsList.length === 0 && (
                                                 <tr>
-                                                    <td colSpan="4" className="px-8 py-8 text-center text-slate-500">No destinations found.</td>
+                                                    <td colSpan="5" className="px-8 py-8 text-center text-slate-500">No destinations found.</td>
                                                 </tr>
                                             )}
                                         </tbody>
@@ -731,7 +758,7 @@ const AdminDashboard = () => {
                     </motion.div>
                 </div>
             )}
-            
+
             {/* Edit Password Modal */}
             {showEditPasswordModal && (
                 <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm">
