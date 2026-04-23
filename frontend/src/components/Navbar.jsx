@@ -55,13 +55,13 @@ const Navbar = () => {
 
         {/* Desktop Menu */}
         <div className="hidden lg:flex items-center gap-6 text-slate-900 font-bold text-[12px]">
-          <Link to="/" className="hover:text-orange-500 transition-colors uppercase tracking-widest">Home</Link>
-          <Link to="/destinations" className="hover:text-orange-500 transition-colors uppercase tracking-widest">Destinations</Link>
-          <Link to="/services" className="hover:text-orange-500 transition-colors uppercase tracking-widest">Services</Link>
-          <Link to="/our-difference" className="hover:text-orange-500 transition-colors uppercase tracking-widest whitespace-nowrap">Our Difference</Link>
-          <Link to="/testimonials" className="hover:text-orange-500 transition-colors uppercase tracking-widest">Testimonials</Link>
-          <Link to="/about" className="hover:text-orange-500 transition-colors uppercase tracking-widest">About us</Link>
-          <Link to="/contact" className="hover:text-orange-500 transition-colors uppercase tracking-widest">Contact</Link>
+          <Link to="/" className={`${location.pathname === '/' ? 'text-orange-500' : ''} hover:text-orange-500 transition-colors uppercase tracking-widest`}>Home</Link>
+          <Link to="/destinations" className={`${location.pathname === '/destinations' ? 'text-orange-500' : ''} hover:text-orange-500 transition-colors uppercase tracking-widest`}>Destinations</Link>
+          <Link to="/services" className={`${location.pathname === '/services' ? 'text-orange-500' : ''} hover:text-orange-500 transition-colors uppercase tracking-widest`}>Services</Link>
+          <Link to="/our-difference" className={`${location.pathname === '/our-difference' ? 'text-orange-500' : ''} hover:text-orange-500 transition-colors uppercase tracking-widest whitespace-nowrap`}>Our Difference</Link>
+          <Link to="/testimonials" className={`${location.pathname === '/testimonials' ? 'text-orange-500' : ''} hover:text-orange-500 transition-colors uppercase tracking-widest`}>Testimonials</Link>
+          <Link to="/about" className={`${location.pathname === '/about' ? 'text-orange-500' : ''} hover:text-orange-500 transition-colors uppercase tracking-widest`}>About us</Link>
+          <Link to="/contact" className={`${location.pathname === '/contact' ? 'text-orange-500' : ''} hover:text-orange-500 transition-colors uppercase tracking-widest`}>Contact</Link>
 
           <div className="flex items-center gap-3 ml-6">
             {!user && !isAuthPage && (
@@ -96,13 +96,13 @@ const Navbar = () => {
           animate={{ opacity: 1, y: 0 }}
           className="lg:hidden bg-[#F8F8F8] border-b border-slate-100 absolute w-full py-8 flex flex-col items-center gap-6 text-slate-900 font-bold uppercase tracking-widest text-xs"
         >
-          <Link to="/" onClick={() => setIsMobileMenuOpen(false)}>Home</Link>
-          <Link to="/destinations" onClick={() => setIsMobileMenuOpen(false)}>Destinations</Link>
-          <Link to="/services" onClick={() => setIsMobileMenuOpen(false)}>Services</Link>
-          <Link to="/our-difference" onClick={() => setIsMobileMenuOpen(false)}>Our Difference</Link>
-          <Link to="/testimonials" onClick={() => setIsMobileMenuOpen(false)}>Testimonials</Link>
-          <Link to="/about" onClick={() => setIsMobileMenuOpen(false)}>About us</Link>
-          <Link to="/contact" onClick={() => setIsMobileMenuOpen(false)}>Contact</Link>
+          <Link to="/" onClick={() => setIsMobileMenuOpen(false)} className={`${location.pathname === '/' ? 'text-orange-500' : ''}`}>Home</Link>
+          <Link to="/destinations" onClick={() => setIsMobileMenuOpen(false)} className={`${location.pathname === '/destinations' ? 'text-orange-500' : ''}`}>Destinations</Link>
+          <Link to="/services" onClick={() => setIsMobileMenuOpen(false)} className={`${location.pathname === '/services' ? 'text-orange-500' : ''}`}>Services</Link>
+          <Link to="/our-difference" onClick={() => setIsMobileMenuOpen(false)} className={`${location.pathname === '/our-difference' ? 'text-orange-500' : ''}`}>Our Difference</Link>
+          <Link to="/testimonials" onClick={() => setIsMobileMenuOpen(false)} className={`${location.pathname === '/testimonials' ? 'text-orange-500' : ''}`}>Testimonials</Link>
+          <Link to="/about" onClick={() => setIsMobileMenuOpen(false)} className={`${location.pathname === '/about' ? 'text-orange-500' : ''}`}>About us</Link>
+          <Link to="/contact" onClick={() => setIsMobileMenuOpen(false)} className={`${location.pathname === '/contact' ? 'text-orange-500' : ''}`}>Contact</Link>
 
           <div className="flex flex-col w-full px-8 gap-4 mt-4">
             {!user && !isAuthPage && (
