@@ -46,10 +46,10 @@ const Navbar = () => {
 
   return (
     <nav className={`fixed w-full z-50 transition-all duration-500 border-b border-slate-100 ${isScrolled ? 'bg-[#F8F8F8]/95 backdrop-blur-md shadow-lg py-1' : 'bg-[#F8F8F8] py-1 shadow-sm'}`}>
-      <div className="container mx-auto px-6 flex justify-between items-center py-1">
+      <div className="container mx-auto px-6 flex justify-between items-center h-16 md:h-24">
         <div className="flex items-center gap-3">
           <Link to="/">
-            <img src={logo} alt="Sunshine Travels Logo" className="h-16 md:h-24 w-auto object-contain transition-all duration-300" />
+            <img src={logo} alt="Sunshine Travels Logo" className="h-16 md:h-24 w-auto object-contain transition-all duration-300 scale-100 md:scale-[1.1] origin-left" />
           </Link>
         </div>
 
