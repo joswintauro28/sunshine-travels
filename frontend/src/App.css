@@ -1,0 +1,6 @@
+/* App.css cleared to use index.css variables */
+.app-container {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
