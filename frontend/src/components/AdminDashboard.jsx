@@ -103,7 +103,6 @@ const AdminDashboard = () => {
         { id: 'dashboard', label: 'Dashboard', icon: LayoutDashboard },
         { id: 'users', label: 'Users', icon: Users },
         { id: 'destinations', label: 'Destinations', icon: BookOpen },
-        { id: 'bookings', label: 'Bookings', icon: CheckSquare },
         { id: 'testimonials', label: 'Testimonials', icon: Bell },
         { id: 'inquiries', label: 'Inquiries', icon: FileText },
         { id: 'settings', label: 'Settings', icon: Settings },
@@ -460,6 +459,45 @@ const AdminDashboard = () => {
                                             )}
                                         </tbody>
                                     </table>
+                                </div>
+                            </div>
+                        )}
+                        {activeTab === 'settings' && (
+                            <div className="bg-white rounded-[2.5rem] shadow-sm border border-slate-100 overflow-hidden">
+                                <div className="p-8 border-b border-slate-100">
+                                    <h3 className="text-xl font-semibold text-slate-900">Platform Settings</h3>
+                                    <p className="text-sm text-slate-500 mt-1">Configure your system preferences.</p>
+                                </div>
+                                <div className="p-8 space-y-6">
+                                    <div className="flex items-center justify-between p-4 bg-slate-50 rounded-2xl border border-slate-100 hover:shadow-md transition-shadow">
+                                        <div>
+                                            <h4 className="font-semibold text-slate-900">Email Notifications</h4>
+                                            <p className="text-sm text-slate-500">Receive alerts for new inquiries and user registrations.</p>
+                                        </div>
+                                        <div className="w-12 h-6 bg-orange-500 rounded-full relative cursor-pointer shadow-inner">
+                                            <div className="w-4 h-4 bg-white rounded-full absolute right-1 top-1 shadow"></div>
+                                        </div>
+                                    </div>
+                                    
+                                    <div className="flex items-center justify-between p-4 bg-slate-50 rounded-2xl border border-slate-100 hover:shadow-md transition-shadow">
+                                        <div>
+                                            <h4 className="font-semibold text-slate-900">Maintenance Mode</h4>
+                                            <p className="text-sm text-slate-500">Temporarily disable public access to the platform.</p>
+                                        </div>
+                                        <div className="w-12 h-6 bg-slate-200 rounded-full relative cursor-pointer shadow-inner">
+                                            <div className="w-4 h-4 bg-white rounded-full absolute left-1 top-1 shadow"></div>
+                                        </div>
+                                    </div>
+
+                                    <div className="flex items-center justify-between p-4 bg-slate-50 rounded-2xl border border-slate-100 hover:shadow-md transition-shadow">
+                                        <div>
+                                            <h4 className="font-semibold text-slate-900">Auto-Approve Testimonials</h4>
+                                            <p className="text-sm text-slate-500">Automatically publish new testimonials to the website.</p>
+                                        </div>
+                                        <div className="w-12 h-6 bg-slate-200 rounded-full relative cursor-pointer shadow-inner">
+                                            <div className="w-4 h-4 bg-white rounded-full absolute left-1 top-1 shadow"></div>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         )}
