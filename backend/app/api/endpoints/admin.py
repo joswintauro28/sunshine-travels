@@ -121,3 +121,18 @@ def delete_destination(id: int, db: Session = Depends(get_db), current_user: mod
     db.commit()
     
     return {"message": "Destination deleted successfully"}
+
+@router.delete("/inquiries/{id}")
+def delete_inquiry(id: int, db: Session = Depends(get_db), current_user: models.User = Depends(get_current_active_superuser)):
+    inquiry = db.query(models.ContactMessage).filter(models.ContactMessage.id == id).first()
+    if not inquiry:
+        raise HTTPException(status_code=404, detail="Inquiry not found")
+        
+    db.delete(inquiry)
+    
+    # Log the action
+    new_log = models.ActivityLog(user_email=current_user.email, action=f"Deleted inquiry from: {inquiry.email}")
+    db.add(new_log)
+    db.commit()
+    
+    return {"message": "Inquiry deleted successfully"}

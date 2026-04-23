@@ -185,6 +185,21 @@ const AdminDashboard = () => {
         }
     };
 
+    const handleDeleteInquiry = async (id) => {
+        if (!window.confirm("Are you sure you want to delete this inquiry?")) return;
+        try {
+            const token = localStorage.getItem('token');
+            await axios.delete(`http://localhost:8000/api/v1/admin/inquiries/${id}`, {
+                headers: { Authorization: `Bearer ${token}` }
+            });
+            setInquiriesList(inquiriesList.filter(i => i.id !== id));
+            setStats(prev => ({ ...prev, inquiries: prev.inquiries - 1 }));
+        } catch (err) {
+            console.error("Failed to delete inquiry", err);
+            alert("Error deleting inquiry.");
+        }
+    };
+
     const menuItems = [
         { id: 'dashboard', label: 'Dashboard', icon: LayoutDashboard },
         { id: 'users', label: 'Users', icon: Users },
@@ -553,6 +568,61 @@ const AdminDashboard = () => {
                                                     </td>
                                                 </tr>
                                             ))}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        )}
+                        {/* Inquiries Table */}
+                        {activeTab === 'inquiries' && (
+                            <div className="bg-white rounded-[2.5rem] shadow-sm border border-slate-100 overflow-hidden">
+                                <div className="overflow-x-auto">
+                                    <table className="w-full text-left">
+                                        <thead className="bg-slate-50/50 text-slate-500 text-[10px] uppercase tracking-[0.2em] font-black">
+                                            <tr>
+                                                <th className="px-8 py-5">Sender</th>
+                                                <th className="px-8 py-5">Contact Details</th>
+                                                <th className="px-8 py-5">Message</th>
+                                                <th className="px-8 py-5">Date</th>
+                                                <th className="px-8 py-5 text-right">Actions</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody className="divide-y divide-slate-50">
+                                            {inquiriesList.map((inquiry) => (
+                                                <tr key={inquiry.id} className="hover:bg-slate-50/50 transition-colors">
+                                                    <td className="px-8 py-5">
+                                                        <div className="flex items-center space-x-3">
+                                                            <div className="w-10 h-10 rounded-xl bg-purple-50 text-purple-500 flex items-center justify-center font-black">
+                                                                {inquiry.name[0].toUpperCase()}
+                                                            </div>
+                                                            <span className="font-bold text-slate-900">{inquiry.name}</span>
+                                                        </div>
+                                                    </td>
+                                                    <td className="px-8 py-5">
+                                                        <p className="text-xs font-bold text-slate-900">{inquiry.email}</p>
+                                                        <p className="text-[10px] text-slate-400 font-medium">{inquiry.phone || 'No phone'}</p>
+                                                    </td>
+                                                    <td className="px-8 py-5 text-slate-600 font-medium max-w-md">
+                                                        <p className="line-clamp-2" title={inquiry.message}>{inquiry.message}</p>
+                                                    </td>
+                                                    <td className="px-8 py-5 text-slate-400 text-xs font-bold uppercase tracking-wider">
+                                                        {new Date(inquiry.created_at).toLocaleDateString()}
+                                                    </td>
+                                                    <td className="px-8 py-5 text-right">
+                                                        <button
+                                                            onClick={() => handleDeleteInquiry(inquiry.id)}
+                                                            className="p-3 text-slate-400 hover:text-red-500 hover:bg-red-50 rounded-2xl transition-all"
+                                                        >
+                                                            <Trash2 size={20} />
+                                                        </button>
+                                                    </td>
+                                                </tr>
+                                            ))}
+                                            {inquiriesList.length === 0 && (
+                                                <tr>
+                                                    <td colSpan="5" className="px-8 py-10 text-center text-slate-400 font-medium">No inquiries found.</td>
+                                                </tr>
+                                            )}
                                         </tbody>
                                     </table>
                                 </div>
