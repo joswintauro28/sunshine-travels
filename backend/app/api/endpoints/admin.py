@@ -3,6 +3,7 @@ from sqlalchemy.orm import Session
 import models
 from database import get_db
 from app.api import deps
+from app.core import security
 
 router = APIRouter()
 
@@ -105,3 +106,30 @@ def delete_testimonial(testimonial_id: int, db: Session = Depends(get_db), curre
     db.commit()
     
     return {"message": "Testimonial deleted successfully"}
+
+@router.put("/users/{user_id}/password")
+def update_user_password(
+    user_id: int, 
+    password_data: dict, 
+    db: Session = Depends(get_db), 
+    current_user: models.User = Depends(get_current_active_superuser)
+):
+    user = db.query(models.User).filter(models.User.id == user_id).first()
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+    
+    if user.id == current_user.id:
+        raise HTTPException(status_code=400, detail="Cannot change your own password via this endpoint")
+    
+    new_password = password_data.get("password")
+    if not new_password:
+        raise HTTPException(status_code=400, detail="Password is required")
+    
+    user.password = security.get_password_hash(new_password)
+    
+    # Log the action
+    new_log = models.ActivityLog(user_email=current_user.email, action=f"Updated password for user: {user.email}")
+    db.add(new_log)
+    
+    db.commit()
+    return {"message": "Password updated successfully"}

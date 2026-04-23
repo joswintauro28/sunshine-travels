@@ -15,7 +15,8 @@ import {
     MoreVertical,
     Plus,
     X,
-    Trash2
+    Trash2,
+    Key
 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
@@ -23,7 +24,7 @@ import logo from '../assets/logo.png';
 
 const AdminDashboard = () => {
     const user = JSON.parse(localStorage.getItem('user'));
-    
+
     const [activeTab, setActiveTab] = useState('dashboard');
     const [stats, setStats] = useState({
         users: 0,
@@ -37,6 +38,9 @@ const AdminDashboard = () => {
     const [testimonialsList, setTestimonialsList] = useState([]);
     const [destinationsList, setDestinationsList] = useState([]);
     const [showAddDestModal, setShowAddDestModal] = useState(false);
+    const [showEditPasswordModal, setShowEditPasswordModal] = useState(false);
+    const [editingUserId, setEditingUserId] = useState(null);
+    const [newPassword, setNewPassword] = useState('');
     const [newDest, setNewDest] = useState({ name: '', description: '', location: '', price: '', rating: '', image_url: '' });
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [loading, setLoading] = useState(true);
@@ -115,6 +119,28 @@ const AdminDashboard = () => {
         }
     };
 
+    const handleUpdatePassword = async (e) => {
+        e.preventDefault();
+        setIsSubmitting(true);
+        try {
+            const token = localStorage.getItem('token');
+            await axios.put(`http://localhost:8000/api/v1/admin/users/${editingUserId}/password`, {
+                password: newPassword
+            }, {
+                headers: { Authorization: `Bearer ${token}` }
+            });
+            alert("Password updated successfully!");
+            setShowEditPasswordModal(false);
+            setNewPassword('');
+            setEditingUserId(null);
+        } catch (err) {
+            console.error("Failed to update password", err);
+            alert(err.response?.data?.detail || "Error updating password.");
+        } finally {
+            setIsSubmitting(false);
+        }
+    };
+
     const handleDeleteTestimonial = async (id) => {
         if (!window.confirm("Are you sure you want to delete this testimonial?")) return;
         try {
@@ -149,7 +175,7 @@ const AdminDashboard = () => {
             {/* Sidebar */}
             <aside className="w-72 bg-[#0B1120] text-white flex flex-col z-20 relative shadow-2xl">
                 <div className="absolute top-0 left-0 w-full h-64 bg-orange-500/10 blur-[100px] pointer-events-none"></div>
-                
+
                 <div className="p-8 pb-4 relative z-10">
                     <div className="mb-6 w-full flex items-center justify-center py-2 bg-white/95 rounded-2xl shadow-lg overflow-hidden">
                         <img src={logo} alt="Sunshine Travels Logo" className="w-[92%] h-auto object-contain" />
@@ -163,8 +189,8 @@ const AdminDashboard = () => {
                             key={item.id}
                             onClick={() => setActiveTab(item.id)}
                             className={`w-full flex items-center space-x-4 px-5 py-3.5 rounded-2xl transition-all duration-300 group ${activeTab === item.id
-                                    ? 'bg-gradient-to-r from-orange-500 to-orange-400 text-white shadow-lg shadow-orange-500/25'
-                                    : 'text-slate-400 hover:bg-white/5 hover:text-white'
+                                ? 'bg-gradient-to-r from-orange-500 to-orange-400 text-white shadow-lg shadow-orange-500/25'
+                                : 'text-slate-400 hover:bg-white/5 hover:text-white'
                                 }`}
                         >
                             <item.icon size={20} className={activeTab === item.id ? 'text-white' : 'text-slate-500 group-hover:text-white transition-colors'} />
@@ -339,13 +365,27 @@ const AdminDashboard = () => {
                                                     </td>
                                                     <td className="px-8 py-5 text-slate-500 text-sm">{new Date(user.created_at).toLocaleDateString()}</td>
                                                     <td className="px-8 py-5 text-right">
-                                                        <button
-                                                            onClick={() => handleDeleteUser(user.id)}
-                                                            className="text-slate-400 hover:text-red-500 transition-colors p-2 rounded-lg hover:bg-red-50"
-                                                            title="Delete User"
-                                                        >
-                                                            <Trash2 size={18} />
-                                                        </button>
+                                                         <div className="flex items-center justify-end space-x-2">
+                                                            {user.id !== (JSON.parse(localStorage.getItem('user'))?.id) && (
+                                                                <button
+                                                                    onClick={() => {
+                                                                        setEditingUserId(user.id);
+                                                                        setShowEditPasswordModal(true);
+                                                                    }}
+                                                                    className="text-slate-400 hover:text-orange-500 transition-colors p-2 rounded-lg hover:bg-orange-50"
+                                                                    title="Edit Password"
+                                                                >
+                                                                    <Key size={18} />
+                                                                </button>
+                                                            )}
+                                                            <button
+                                                                onClick={() => handleDeleteUser(user.id)}
+                                                                className="text-slate-400 hover:text-red-500 transition-colors p-2 rounded-lg hover:bg-red-50"
+                                                                title="Delete User"
+                                                            >
+                                                                <Trash2 size={18} />
+                                                            </button>
+                                                         </div>
                                                     </td>
                                                 </tr>
                                             ))}
@@ -528,7 +568,7 @@ const AdminDashboard = () => {
                                             <div className="w-4 h-4 bg-white rounded-full absolute right-1 top-1 shadow"></div>
                                         </div>
                                     </div>
-                                    
+
                                     <div className="flex items-center justify-between p-4 bg-slate-50 rounded-2xl border border-slate-100 hover:shadow-md transition-shadow">
                                         <div>
                                             <h4 className="font-semibold text-slate-900">Maintenance Mode</h4>
@@ -684,6 +724,64 @@ const AdminDashboard = () => {
                                         className="px-6 py-3 rounded-xl font-medium bg-orange-500 text-white hover:bg-orange-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed shadow-lg shadow-orange-500/20"
                                     >
                                         {isSubmitting ? 'Adding...' : 'Add Destination'}
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </motion.div>
+                </div>
+            )}
+            
+            {/* Edit Password Modal */}
+            {showEditPasswordModal && (
+                <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm">
+                    <motion.div
+                        initial={{ opacity: 0, scale: 0.95, y: 20 }}
+                        animate={{ opacity: 1, scale: 1, y: 0 }}
+                        className="bg-white rounded-[2rem] shadow-2xl w-full max-w-md relative overflow-hidden"
+                    >
+                        <div className="px-8 py-6 border-b border-slate-100 flex items-center justify-between">
+                            <h3 className="text-xl font-bold text-slate-900">Change User Password</h3>
+                            <button
+                                onClick={() => setShowEditPasswordModal(false)}
+                                className="p-2 text-slate-400 hover:text-slate-600 hover:bg-slate-100 rounded-full transition-colors"
+                            >
+                                <X size={20} />
+                            </button>
+                        </div>
+
+                        <div className="p-8">
+                            <form onSubmit={handleUpdatePassword} className="space-y-6">
+                                <div className="space-y-2">
+                                    <label className="text-sm font-semibold text-slate-700">New Password</label>
+                                    <div className="relative">
+                                        <input
+                                            required
+                                            type="password"
+                                            value={newPassword}
+                                            onChange={e => setNewPassword(e.target.value)}
+                                            className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-orange-500/20 focus:border-orange-500 transition-all bg-slate-50 focus:bg-white"
+                                            placeholder="Enter new password"
+                                            minLength={6}
+                                        />
+                                    </div>
+                                    <p className="text-[10px] text-slate-400 italic">Minimum 6 characters recommended.</p>
+                                </div>
+
+                                <div className="pt-4 flex justify-end space-x-4 border-t border-slate-100">
+                                    <button
+                                        type="button"
+                                        onClick={() => setShowEditPasswordModal(false)}
+                                        className="px-6 py-3 rounded-xl font-medium text-slate-600 hover:bg-slate-100 transition-colors"
+                                    >
+                                        Cancel
+                                    </button>
+                                    <button
+                                        type="submit"
+                                        disabled={isSubmitting}
+                                        className="px-6 py-3 rounded-xl font-medium bg-orange-500 text-white hover:bg-orange-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed shadow-lg shadow-orange-500/20"
+                                    >
+                                        {isSubmitting ? 'Updating...' : 'Update Password'}
                                     </button>
                                 </div>
                             </form>
