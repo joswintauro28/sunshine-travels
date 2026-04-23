@@ -29,6 +29,7 @@ const AdminDashboard = () => {
     const [usersList, setUsersList] = useState([]);
     const [activityLogs, setActivityLogs] = useState([]);
     const [inquiriesList, setInquiriesList] = useState([]);
+    const [testimonialsList, setTestimonialsList] = useState([]);
     const [loading, setLoading] = useState(true);
     const navigate = useNavigate();
 
@@ -42,16 +43,18 @@ const AdminDashboard = () => {
 
         const fetchDashboardData = async () => {
             try {
-                const [statsRes, usersRes, logsRes, inquiriesRes] = await Promise.all([
+                const [statsRes, usersRes, logsRes, inquiriesRes, testimonialsRes] = await Promise.all([
                     axios.get('http://localhost:8000/api/v1/admin/stats', { headers: { Authorization: `Bearer ${token}` } }),
                     axios.get('http://localhost:8000/api/v1/admin/users', { headers: { Authorization: `Bearer ${token}` } }),
                     axios.get('http://localhost:8000/api/v1/admin/activity_logs', { headers: { Authorization: `Bearer ${token}` } }),
-                    axios.get('http://localhost:8000/api/v1/admin/inquiries', { headers: { Authorization: `Bearer ${token}` } })
+                    axios.get('http://localhost:8000/api/v1/admin/inquiries', { headers: { Authorization: `Bearer ${token}` } }),
+                    axios.get('http://localhost:8000/api/v1/admin/testimonials', { headers: { Authorization: `Bearer ${token}` } })
                 ]);
                 setStats(statsRes.data);
                 setUsersList(usersRes.data);
                 setActivityLogs(logsRes.data);
                 setInquiriesList(inquiriesRes.data);
+                setTestimonialsList(testimonialsRes.data);
             } catch (err) {
                 console.error('Failed to fetch admin data', err);
             } finally {
@@ -127,10 +130,6 @@ const AdminDashboard = () => {
                     </div>
 
                     <div className="flex items-center space-x-6">
-                        <button className="relative text-slate-600 hover:text-orange-500 transition-colors">
-                            <Bell size={22} />
-                            <span className="absolute -top-1 -right-1 w-4 h-4 bg-red-500 border-2 border-white rounded-full flex items-center justify-center text-[10px] text-white font-bold">3</span>
-                        </button>
                         <div className="flex items-center space-x-3 border-l border-slate-200 pl-6">
                             <div className="text-right">
                                 <p className="text-sm font-semibold text-slate-900">Admin User</p>
@@ -158,10 +157,6 @@ const AdminDashboard = () => {
                                 <h2 className="text-3xl font-bold text-slate-900 uppercase">{activeTab} Overview</h2>
                                 <p className="text-slate-500 mt-1">Management and analytics for Sunshine Travels.</p>
                             </div>
-                            <button className="flex items-center space-x-2 bg-slate-900 text-white px-6 py-3 rounded-2xl hover:bg-slate-800 transition-all shadow-xl shadow-slate-900/10">
-                                <Plus size={20} />
-                                <span className="font-medium">Add New Record</span>
-                            </button>
                         </div>
 
                         {/* Stats Grid */}
@@ -315,6 +310,50 @@ const AdminDashboard = () => {
                                             {inquiriesList.length === 0 && (
                                                 <tr>
                                                     <td colSpan="4" className="px-8 py-8 text-center text-slate-500">No inquiries found.</td>
+                                                </tr>
+                                            )}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        )}
+
+                        {activeTab === 'testimonials' && (
+                            <div className="bg-white rounded-[2.5rem] shadow-sm border border-slate-100 overflow-hidden">
+                                <div className="p-8 border-b border-slate-100 flex items-center justify-between">
+                                    <h3 className="text-xl font-semibold text-slate-900">User Testimonials</h3>
+                                </div>
+                                <div className="overflow-x-auto">
+                                    <table className="w-full text-left">
+                                        <thead className="bg-slate-50 text-slate-500 text-xs uppercase tracking-widest font-bold">
+                                            <tr>
+                                                <th className="px-8 py-5">Author</th>
+                                                <th className="px-8 py-5">Role</th>
+                                                <th className="px-8 py-5">Content</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody className="divide-y divide-slate-100">
+                                            {testimonialsList.map((testimonial) => (
+                                                <tr key={testimonial.id} className="hover:bg-slate-50/50 transition-colors group">
+                                                    <td className="px-8 py-5">
+                                                        <div className="flex items-center space-x-3">
+                                                            <img 
+                                                                src={testimonial.avatar_url || `https://ui-avatars.com/api/?name=${encodeURIComponent(testimonial.name)}&background=f97316&color=fff`} 
+                                                                alt={testimonial.name}
+                                                                className="w-10 h-10 rounded-full border border-slate-200"
+                                                            />
+                                                            <span className="font-semibold text-slate-900">{testimonial.name}</span>
+                                                        </div>
+                                                    </td>
+                                                    <td className="px-8 py-5 text-slate-600 text-sm">{testimonial.role}</td>
+                                                    <td className="px-8 py-5 text-slate-600 text-sm max-w-md truncate" title={testimonial.content}>
+                                                        "{testimonial.content}"
+                                                    </td>
+                                                </tr>
+                                            ))}
+                                            {testimonialsList.length === 0 && (
+                                                <tr>
+                                                    <td colSpan="3" className="px-8 py-8 text-center text-slate-500">No testimonials found.</td>
                                                 </tr>
                                             )}
                                         </tbody>

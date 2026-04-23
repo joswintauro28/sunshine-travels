@@ -37,3 +37,7 @@ def get_activity_logs(db: Session = Depends(get_db), current_user: models.User =
 @router.get("/inquiries")
 def get_inquiries(db: Session = Depends(get_db), current_user: models.User = Depends(get_current_active_superuser)):
     return db.query(models.ContactMessage).order_by(models.ContactMessage.created_at.desc()).all()
+
+@router.get("/testimonials")
+def get_testimonials(db: Session = Depends(get_db), current_user: models.User = Depends(get_current_active_superuser)):
+    return db.query(models.Testimonial).order_by(models.Testimonial.id.desc()).all()
