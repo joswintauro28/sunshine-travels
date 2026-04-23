@@ -563,15 +563,32 @@ const AdminDashboard = () => {
                                 </div>
 
                                 <div className="space-y-2">
-                                    <label className="text-sm font-semibold text-slate-700">Image URL</label>
-                                    <input
-                                        required
-                                        type="url"
-                                        value={newDest.image_url}
-                                        onChange={e => setNewDest({ ...newDest, image_url: e.target.value })}
-                                        className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-orange-500/20 focus:border-orange-500 transition-all bg-slate-50 focus:bg-white"
-                                        placeholder="https://example.com/image.jpg"
-                                    />
+                                    <label className="text-sm font-semibold text-slate-700">Destination Image</label>
+                                    <div className="flex items-center space-x-4">
+                                        <div className="flex-1">
+                                            <input
+                                                required
+                                                type="file"
+                                                accept="image/*"
+                                                onChange={(e) => {
+                                                    const file = e.target.files[0];
+                                                    if (file) {
+                                                        const reader = new FileReader();
+                                                        reader.onloadend = () => {
+                                                            setNewDest({ ...newDest, image_url: reader.result });
+                                                        };
+                                                        reader.readAsDataURL(file);
+                                                    }
+                                                }}
+                                                className="w-full px-4 py-2.5 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-orange-500/20 focus:border-orange-500 transition-all bg-slate-50 focus:bg-white file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-orange-50 file:text-orange-600 hover:file:bg-orange-100 cursor-pointer text-sm"
+                                            />
+                                        </div>
+                                        {newDest.image_url && (
+                                            <div className="w-14 h-14 rounded-xl overflow-hidden border border-slate-200 shrink-0 shadow-sm">
+                                                <img src={newDest.image_url} alt="Preview" className="w-full h-full object-cover" />
+                                            </div>
+                                        )}
+                                    </div>
                                 </div>
 
                                 <div className="grid grid-cols-2 gap-6">

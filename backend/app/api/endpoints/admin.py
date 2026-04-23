@@ -65,4 +65,12 @@ def create_destination(destination: dict, db: Session = Depends(get_db), current
     db.add(new_log)
     db.commit()
     
-    return new_dest
+    return {
+        "id": new_dest.id,
+        "name": new_dest.name,
+        "description": new_dest.description,
+        "image_url": new_dest.image_url,
+        "price": new_dest.price,
+        "rating": new_dest.rating,
+        "location": new_dest.location
+    }
