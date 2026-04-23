@@ -26,6 +26,8 @@ const AdminDashboard = () => {
         bookings: 0,
         inquiries: 0
     });
+    const [usersList, setUsersList] = useState([]);
+    const [activityLogs, setActivityLogs] = useState([]);
     const [loading, setLoading] = useState(true);
     const navigate = useNavigate();
 
@@ -37,20 +39,24 @@ const AdminDashboard = () => {
             return;
         }
 
-        const fetchStats = async () => {
+        const fetchDashboardData = async () => {
             try {
-                const response = await axios.get('http://localhost:8000/api/v1/admin/stats', {
-                    headers: { Authorization: `Bearer ${token}` }
-                });
-                setStats(response.data);
+                const [statsRes, usersRes, logsRes] = await Promise.all([
+                    axios.get('http://localhost:8000/api/v1/admin/stats', { headers: { Authorization: `Bearer ${token}` } }),
+                    axios.get('http://localhost:8000/api/v1/admin/users', { headers: { Authorization: `Bearer ${token}` } }),
+                    axios.get('http://localhost:8000/api/v1/admin/activity_logs', { headers: { Authorization: `Bearer ${token}` } })
+                ]);
+                setStats(statsRes.data);
+                setUsersList(usersRes.data);
+                setActivityLogs(logsRes.data);
             } catch (err) {
-                console.error('Failed to fetch stats', err);
+                console.error('Failed to fetch admin data', err);
             } finally {
                 setLoading(false);
             }
         };
 
-        fetchStats();
+        fetchDashboardData();
     }, [navigate]);
 
     const menuItems = [
@@ -156,82 +162,121 @@ const AdminDashboard = () => {
                         </div>
 
                         {/* Stats Grid */}
-                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-10">
-                            {[
-                                { label: 'Total Users', value: stats.users, icon: Users, color: 'blue' },
-                                { label: 'Destinations', value: stats.destinations, icon: BookOpen, color: 'orange' },
-                                { label: 'Total Bookings', value: stats.bookings, icon: CheckSquare, color: 'green' },
-                                { label: 'Inquiries', value: stats.inquiries, icon: FileText, color: 'purple' },
-                            ].map((stat, i) => (
-                                <motion.div
-                                    key={stat.label}
-                                    initial={{ opacity: 0, scale: 0.9 }}
-                                    animate={{ opacity: 1, scale: 1 }}
-                                    transition={{ delay: i * 0.1 }}
-                                    className="bg-white p-6 rounded-[2rem] shadow-sm border border-slate-100 hover:shadow-xl hover:shadow-slate-200/50 transition-all group"
-                                >
-                                    <div className="flex items-center justify-between mb-4">
-                                        <div className={`p-3 rounded-2xl bg-${stat.color}-50 text-${stat.color}-600 group-hover:scale-110 transition-transform`}>
-                                            <stat.icon size={24} />
+                        {activeTab === 'dashboard' && (
+                            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-10">
+                                {[
+                                    { label: 'Total Users', value: stats.users, icon: Users, color: 'blue' },
+                                    { label: 'Destinations', value: stats.destinations, icon: BookOpen, color: 'orange' },
+                                    { label: 'Total Bookings', value: stats.bookings, icon: CheckSquare, color: 'green' },
+                                    { label: 'Inquiries', value: stats.inquiries, icon: FileText, color: 'purple' },
+                                ].map((stat, i) => (
+                                    <motion.div
+                                        key={stat.label}
+                                        initial={{ opacity: 0, scale: 0.9 }}
+                                        animate={{ opacity: 1, scale: 1 }}
+                                        transition={{ delay: i * 0.1 }}
+                                        className="bg-white p-6 rounded-[2rem] shadow-sm border border-slate-100 hover:shadow-xl hover:shadow-slate-200/50 transition-all group"
+                                    >
+                                        <div className="flex items-center justify-between mb-4">
+                                            <div className={`p-3 rounded-2xl bg-${stat.color}-50 text-${stat.color}-600 group-hover:scale-110 transition-transform`}>
+                                                <stat.icon size={24} />
+                                            </div>
+                                            <div className="flex items-center text-green-500 text-xs font-bold bg-green-50 px-2 py-1 rounded-full">
+                                                <TrendingUp size={12} className="mr-1" />
+                                                +5%
+                                            </div>
                                         </div>
-                                        <div className="flex items-center text-green-500 text-xs font-bold bg-green-50 px-2 py-1 rounded-full">
-                                            <TrendingUp size={12} className="mr-1" />
-                                            +5%
-                                        </div>
-                                    </div>
-                                    <p className="text-slate-500 text-sm font-medium">{stat.label}</p>
-                                    <h3 className="text-3xl font-bold text-slate-900 mt-1">{loading ? '...' : stat.value.toLocaleString()}</h3>
-                                </motion.div>
-                            ))}
-                        </div>
+                                        <p className="text-slate-500 text-sm font-medium">{stat.label}</p>
+                                        <h3 className="text-3xl font-bold text-slate-900 mt-1">{loading ? '...' : stat.value.toLocaleString()}</h3>
+                                    </motion.div>
+                                ))}
+                            </div>
+                        )}
 
-                        {/* Recent Activity Table (Placeholder) */}
-                        <div className="bg-white rounded-[2.5rem] shadow-sm border border-slate-100 overflow-hidden">
-                            <div className="p-8 border-b border-slate-100 flex items-center justify-between">
-                                <h3 className="text-xl font-semibold text-slate-900">Recent Activity</h3>
-                                <button className="text-orange-500 hover:text-orange-600 font-medium text-sm flex items-center">
-                                    View All <ChevronRight size={16} className="ml-1" />
-                                </button>
-                            </div>
-                            <div className="overflow-x-auto">
-                                <table className="w-full text-left">
-                                    <thead className="bg-slate-50 text-slate-500 text-xs uppercase tracking-widest font-bold">
-                                        <tr>
-                                            <th className="px-8 py-5">User</th>
-                                            <th className="px-8 py-5">Action</th>
-                                            <th className="px-8 py-5">Date</th>
-                                            <th className="px-8 py-5">Status</th>
-                                            <th className="px-8 py-5"></th>
-                                        </tr>
-                                    </thead>
-                                    <tbody className="divide-y divide-slate-100">
-                                        {[1, 2, 3, 4, 5].map((item) => (
-                                            <tr key={item} className="hover:bg-slate-50/50 transition-colors group">
-                                                <td className="px-8 py-5">
-                                                    <div className="flex items-center space-x-3">
-                                                        <div className="w-10 h-10 rounded-full bg-slate-200"></div>
-                                                        <div>
-                                                            <p className="font-semibold text-slate-900">John Doe</p>
-                                                            <p className="text-xs text-slate-500">john@example.com</p>
-                                                        </div>
-                                                    </div>
-                                                </td>
-                                                <td className="px-8 py-5 text-slate-600 text-sm">Booked a trip to Maldives</td>
-                                                <td className="px-8 py-5 text-slate-500 text-sm">Oct 24, 2023</td>
-                                                <td className="px-8 py-5">
-                                                    <span className="px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider bg-green-100 text-green-700 border border-green-200">Success</span>
-                                                </td>
-                                                <td className="px-8 py-5 text-right">
-                                                    <button className="text-slate-400 hover:text-slate-900 transition-colors">
-                                                        <MoreVertical size={20} />
-                                                    </button>
-                                                </td>
+                        {activeTab === 'dashboard' && (
+                            <div className="bg-white rounded-[2.5rem] shadow-sm border border-slate-100 overflow-hidden">
+                                <div className="p-8 border-b border-slate-100 flex items-center justify-between">
+                                    <h3 className="text-xl font-semibold text-slate-900">Recent Activity</h3>
+                                    <button className="text-orange-500 hover:text-orange-600 font-medium text-sm flex items-center">
+                                        View All <ChevronRight size={16} className="ml-1" />
+                                    </button>
+                                </div>
+                                <div className="overflow-x-auto">
+                                    <table className="w-full text-left">
+                                        <thead className="bg-slate-50 text-slate-500 text-xs uppercase tracking-widest font-bold">
+                                            <tr>
+                                                <th className="px-8 py-5">User</th>
+                                                <th className="px-8 py-5">Action</th>
+                                                <th className="px-8 py-5">Date</th>
                                             </tr>
-                                        ))}
-                                    </tbody>
-                                </table>
+                                        </thead>
+                                        <tbody className="divide-y divide-slate-100">
+                                            {activityLogs.slice(0, 10).map((log) => (
+                                                <tr key={log.id} className="hover:bg-slate-50/50 transition-colors group">
+                                                    <td className="px-8 py-5">
+                                                        <div className="flex items-center space-x-3">
+                                                            <div className="w-10 h-10 rounded-full bg-slate-200 flex items-center justify-center font-bold text-slate-500">
+                                                                {log.user_email[0].toUpperCase()}
+                                                            </div>
+                                                            <div>
+                                                                <p className="font-semibold text-slate-900">{log.user_email.split('@')[0]}</p>
+                                                                <p className="text-xs text-slate-500">{log.user_email}</p>
+                                                            </div>
+                                                        </div>
+                                                    </td>
+                                                    <td className="px-8 py-5 text-slate-600 text-sm">{log.action}</td>
+                                                    <td className="px-8 py-5 text-slate-500 text-sm">{new Date(log.timestamp).toLocaleString()}</td>
+                                                </tr>
+                                            ))}
+                                            {activityLogs.length === 0 && (
+                                                <tr>
+                                                    <td colSpan="3" className="px-8 py-8 text-center text-slate-500">No recent activity.</td>
+                                                </tr>
+                                            )}
+                                        </tbody>
+                                    </table>
+                                </div>
                             </div>
-                        </div>
+                        )}
+
+                        {activeTab === 'users' && (
+                            <div className="bg-white rounded-[2.5rem] shadow-sm border border-slate-100 overflow-hidden">
+                                <div className="p-8 border-b border-slate-100 flex items-center justify-between">
+                                    <h3 className="text-xl font-semibold text-slate-900">Registered Users</h3>
+                                </div>
+                                <div className="overflow-x-auto">
+                                    <table className="w-full text-left">
+                                        <thead className="bg-slate-50 text-slate-500 text-xs uppercase tracking-widest font-bold">
+                                            <tr>
+                                                <th className="px-8 py-5">Name</th>
+                                                <th className="px-8 py-5">Email</th>
+                                                <th className="px-8 py-5">Role</th>
+                                                <th className="px-8 py-5">Joined</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody className="divide-y divide-slate-100">
+                                            {usersList.map((user) => (
+                                                <tr key={user.id} className="hover:bg-slate-50/50 transition-colors group">
+                                                    <td className="px-8 py-5 font-semibold text-slate-900">{user.name || 'N/A'}</td>
+                                                    <td className="px-8 py-5 text-slate-600 text-sm">{user.email}</td>
+                                                    <td className="px-8 py-5">
+                                                        <span className={`px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider ${user.is_superuser ? 'bg-orange-100 text-orange-700 border border-orange-200' : 'bg-slate-100 text-slate-700 border border-slate-200'}`}>
+                                                            {user.is_superuser ? 'Admin' : 'User'}
+                                                        </span>
+                                                    </td>
+                                                    <td className="px-8 py-5 text-slate-500 text-sm">{new Date(user.created_at).toLocaleDateString()}</td>
+                                                </tr>
+                                            ))}
+                                            {usersList.length === 0 && (
+                                                <tr>
+                                                    <td colSpan="4" className="px-8 py-8 text-center text-slate-500">No users found.</td>
+                                                </tr>
+                                            )}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        )}
                     </motion.div>
                 </div>
             </main>

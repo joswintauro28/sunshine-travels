@@ -55,3 +55,10 @@ class User(Base):
     password = Column(String)
     is_superuser = Column(Boolean, default=False)
     created_at = Column(DateTime, default=datetime.utcnow)
+
+class ActivityLog(Base):
+    __tablename__ = "activity_logs"
+    id = Column(Integer, primary_key=True, index=True)
+    user_email = Column(String)
+    action = Column(String)
+    timestamp = Column(DateTime, default=datetime.utcnow)

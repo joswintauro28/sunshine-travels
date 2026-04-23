@@ -22,6 +22,11 @@ def login_access_token(
     if not user or not security.verify_password(form_data.password, user.password):
         raise HTTPException(status_code=400, detail="Incorrect email or password")
     
+    # Log the login activity
+    new_log = models.ActivityLog(user_email=user.email, action="Logged in")
+    db.add(new_log)
+    db.commit()
+
     return {
         "access_token": user.email, # Simplified for now
         "token_type": "bearer",

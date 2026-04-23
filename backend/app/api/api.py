@@ -1,5 +1,5 @@
 from fastapi import APIRouter, Depends
-from app.api.endpoints import auth, users
+from app.api.endpoints import auth, users, admin
 from sqlalchemy.orm import Session
 from database import get_db
 import models
@@ -10,6 +10,7 @@ from app.api import deps
 api_router = APIRouter()
 api_router.include_router(auth.router, tags=["login"])
 api_router.include_router(users.router, prefix="/users", tags=["users"])
+api_router.include_router(admin.router, prefix="/admin", tags=["admin"])
 
 @api_router.get("/test-token", response_model=schemas.User)
 def test_token(current_user: models.User = Depends(deps.get_current_user)):
