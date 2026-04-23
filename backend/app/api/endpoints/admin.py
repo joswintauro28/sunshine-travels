@@ -41,3 +41,28 @@ def get_inquiries(db: Session = Depends(get_db), current_user: models.User = Dep
 @router.get("/testimonials")
 def get_testimonials(db: Session = Depends(get_db), current_user: models.User = Depends(get_current_active_superuser)):
     return db.query(models.Testimonial).order_by(models.Testimonial.id.desc()).all()
+
+@router.get("/destinations")
+def get_destinations(db: Session = Depends(get_db), current_user: models.User = Depends(get_current_active_superuser)):
+    return db.query(models.Destination).order_by(models.Destination.id.desc()).all()
+
+@router.post("/destinations")
+def create_destination(destination: dict, db: Session = Depends(get_db), current_user: models.User = Depends(get_current_active_superuser)):
+    new_dest = models.Destination(
+        name=destination.get("name"),
+        description=destination.get("description"),
+        image_url=destination.get("image_url"),
+        price=destination.get("price"),
+        rating=destination.get("rating"),
+        location=destination.get("location")
+    )
+    db.add(new_dest)
+    db.commit()
+    db.refresh(new_dest)
+    
+    # Log the action
+    new_log = models.ActivityLog(user_email=current_user.email, action=f"Added new destination: {new_dest.name}")
+    db.add(new_log)
+    db.commit()
+    
+    return new_dest
