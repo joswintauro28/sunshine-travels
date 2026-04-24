@@ -262,7 +262,7 @@ const AdminDashboard = () => {
             // Ensure we use the updated testimonial from the response, or fallback to the current one with is_approved=true
             const updatedTestimonial = res.data.id ? res.data : { ...testimonialsList.find(t => t.id === id), is_approved: true };
             setTestimonialsList(prev => prev.map(t => t.id === id ? updatedTestimonial : t));
-            
+
             // Log locally for debug
             console.log("Approved testimonial:", id);
         } catch (err) {
@@ -950,8 +950,8 @@ const AdminDashboard = () => {
                                 </div>
                                 <div className="space-y-1.5">
                                     <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Role</label>
-                                    <select 
-                                        value={editUser.is_superuser ? "true" : "false"} 
+                                    <select
+                                        value={editUser.is_superuser ? "true" : "false"}
                                         onChange={e => setEditUser({ ...editUser, is_superuser: e.target.value === "true" })}
                                         className="w-full px-5 py-3 rounded-xl border-2 border-slate-50 bg-slate-50 focus:bg-white focus:border-orange-500 focus:outline-none transition-all font-bold text-sm"
                                     >
