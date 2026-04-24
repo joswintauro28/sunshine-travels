@@ -46,8 +46,8 @@ def seed_data(db: Session):
         db.add_all(services)
         
         testimonials = [
-            models.Testimonial(name="Sarah Johnson", role="Solo Traveler", content="The most seamless travel experience I've ever had. Sunshine Travels truly knows premium.", avatar_url="https://i.pravatar.cc/150?u=sarah"),
-            models.Testimonial(name="Michael Chen", role="Family Trip", content="Our kids loved the Bali excursion. Everything was perfectly organized from start to finish.", avatar_url="https://i.pravatar.cc/150?u=michael")
+            models.Testimonial(name="Sarah Johnson", role="Solo Traveler", content="The most seamless travel experience I've ever had. Sunshine Travels truly knows premium.", avatar_url="https://i.pravatar.cc/150?u=sarah", is_approved=True),
+            models.Testimonial(name="Michael Chen", role="Family Trip", content="Our kids loved the Bali excursion. Everything was perfectly organized from start to finish.", avatar_url="https://i.pravatar.cc/150?u=michael", is_approved=True)
         ]
         db.add_all(testimonials)
 
@@ -76,7 +76,7 @@ def get_services(db: Session = Depends(get_db)):
 
 @app.get("/testimonials")
 def get_testimonials(db: Session = Depends(get_db)):
-    return db.query(models.Testimonial).all()
+    return db.query(models.Testimonial).filter(models.Testimonial.is_approved == True).all()
 
 @app.post("/testimonials")
 def create_testimonial(testimonial: dict, db: Session = Depends(get_db)):

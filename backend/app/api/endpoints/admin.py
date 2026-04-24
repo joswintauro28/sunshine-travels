@@ -107,6 +107,22 @@ def delete_testimonial(id: int, db: Session = Depends(get_db), current_user: mod
     
     return {"message": "Testimonial deleted successfully"}
 
+@router.put("/testimonials/{id}/approve")
+def approve_testimonial(id: int, db: Session = Depends(get_db), current_user: models.User = Depends(get_current_active_superuser)):
+    testimonial = db.query(models.Testimonial).filter(models.Testimonial.id == id).first()
+    if not testimonial:
+        raise HTTPException(status_code=404, detail="Testimonial not found")
+        
+    testimonial.is_approved = True
+    db.commit()
+    db.refresh(testimonial)
+    
+    new_log = models.ActivityLog(user_email=current_user.email, action=f"Approved testimonial from: {testimonial.name}")
+    db.add(new_log)
+    db.commit()
+    
+    return testimonial
+
 @router.delete("/destinations/{id}")
 def delete_destination(id: int, db: Session = Depends(get_db), current_user: models.User = Depends(get_current_active_superuser)):
     dest = db.query(models.Destination).filter(models.Destination.id == id).first()

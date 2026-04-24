@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, Text, Float, DateTime
+from sqlalchemy import Column, Integer, String, Text, Float, DateTime, Boolean
 from datetime import datetime
 from database import Base
 
@@ -26,6 +26,7 @@ class Testimonial(Base):
     role = Column(String)
     content = Column(Text)
     avatar_url = Column(String)
+    is_approved = Column(Boolean, default=False)
 
 class Booking(Base):
     __tablename__ = "bookings"

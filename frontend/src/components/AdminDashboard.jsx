@@ -42,7 +42,7 @@ const AdminDashboard = () => {
     const [newDest, setNewDest] = useState({ name: '', description: '', location: '', price: '', rating: '', image_url: '' });
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [loading, setLoading] = useState(true);
-    
+
     // Notifications State
     const [notifications, setNotifications] = useState([]);
     const [showNotifications, setShowNotifications] = useState(false);
@@ -63,10 +63,10 @@ const AdminDashboard = () => {
                 axios.get('http://localhost:8000/api/v1/admin/testimonials', { headers: { Authorization: `Bearer ${token}` } }),
                 axios.get('http://localhost:8000/api/v1/admin/destinations', { headers: { Authorization: `Bearer ${token}` } })
             ]);
-            
+
             setStats(statsRes.data);
             setUsersList(usersRes.data);
-            
+
             const logs = logsRes.data;
             const feedbackLogs = logs.filter(log => log.action.toLowerCase().includes("feedback submitted"));
 
@@ -92,7 +92,7 @@ const AdminDashboard = () => {
                     lastLogId.current = Math.max(...logs.map(l => l.id));
                 }
             }
-            
+
             setActivityLogs(logs);
             setInquiriesList(inquiriesRes.data);
             setTestimonialsList(testimonialsRes.data);
@@ -185,6 +185,19 @@ const AdminDashboard = () => {
         }
     };
 
+    const handleApproveTestimonial = async (id) => {
+        try {
+            const token = localStorage.getItem('token');
+            const res = await axios.put(`http://localhost:8000/api/v1/admin/testimonials/${id}/approve`, {}, {
+                headers: { Authorization: `Bearer ${token}` }
+            });
+            setTestimonialsList(testimonialsList.map(t => t.id === id ? res.data : t));
+        } catch (err) {
+            console.error("Failed to approve testimonial", err);
+            alert("Error approving testimonial.");
+        }
+    };
+
     const handleDeleteInquiry = async (id) => {
         if (!window.confirm("Are you sure you want to delete this inquiry?")) return;
         try {
@@ -268,7 +281,7 @@ const AdminDashboard = () => {
                     <div className="flex items-center space-x-6">
                         {/* Notification Bell */}
                         <div className="relative">
-                            <button 
+                            <button
                                 onClick={() => {
                                     setShowNotifications(!showNotifications);
                                     setUnreadCount(0);
@@ -319,7 +332,7 @@ const AdminDashboard = () => {
                                             )}
                                         </div>
                                         {notifications.length > 0 && (
-                                            <button 
+                                            <button
                                                 onClick={() => setNotifications([])}
                                                 className="w-full py-4 text-xs font-bold text-slate-400 hover:text-orange-500 hover:bg-slate-50 transition-all uppercase tracking-widest border-t border-slate-50"
                                             >
@@ -487,6 +500,7 @@ const AdminDashboard = () => {
                                             <tr>
                                                 <th className="px-8 py-5">Author</th>
                                                 <th className="px-8 py-5">Content</th>
+                                                <th className="px-8 py-5">Status</th>
                                                 <th className="px-8 py-5 text-right">Actions</th>
                                             </tr>
                                         </thead>
@@ -503,7 +517,20 @@ const AdminDashboard = () => {
                                                         </div>
                                                     </td>
                                                     <td className="px-8 py-5 text-slate-600 font-medium max-w-lg">"{t.content}"</td>
-                                                    <td className="px-8 py-5 text-right">
+                                                    <td className="px-8 py-5">
+                                                        <span className={`px-3 py-1.5 rounded-xl text-[10px] font-black uppercase tracking-widest ${t.is_approved ? 'bg-green-100 text-green-600 border border-green-200' : 'bg-orange-100 text-orange-600 border border-orange-200'}`}>
+                                                            {t.is_approved ? 'Approved' : 'Pending'}
+                                                        </span>
+                                                    </td>
+                                                    <td className="px-8 py-5 text-right space-x-2 flex justify-end">
+                                                        {!t.is_approved && (
+                                                            <button
+                                                                onClick={() => handleApproveTestimonial(t.id)}
+                                                                className="px-4 py-2 bg-green-500 text-white hover:bg-green-600 rounded-xl transition-all font-bold text-xs uppercase tracking-wider"
+                                                            >
+                                                                Approve
+                                                            </button>
+                                                        )}
                                                         <button
                                                             onClick={() => handleDeleteTestimonial(t.id)}
                                                             className="p-3 text-slate-400 hover:text-red-500 hover:bg-red-50 rounded-2xl transition-all"
