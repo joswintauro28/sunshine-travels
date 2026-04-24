@@ -114,6 +114,15 @@ const Contact = () => {
                                     <p className="text-sm font-medium">Ground Floor, Tiger Circle, Manipal, Karnataka 576104</p>
                                 </div>
                             </div>
+
+                            <div className="pt-8 border-t border-white/10">
+                                <h4 className="text-sm font-bold uppercase tracking-widest text-orange-400 mb-6">Looking for connects with:</h4>
+                                <ul className="space-y-4 text-xs font-bold leading-relaxed text-gray-300">
+                                    <li>• MR. ROHIT – REEM INDUSTRIES, INDUSTRIAL AREA, MANIPAL</li>
+                                    <li>• MR. ARNOLD MENEZES – FOUNDER & DIRECTOR, NATURYA FRESH FOODS</li>
+                                    <li>• MS. SHIPRA RAI – VICE PRESIDENT, PEOPLE OPERATIONS, NIVEUS SOLUTIONS</li>
+                                </ul>
+                            </div>
                         </div>
 
                         {/* Right Side: Professional Form */}
