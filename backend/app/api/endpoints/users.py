@@ -29,7 +29,7 @@ def create_user_open(
     new_user = models.User(
         email=user_in.email,
         password=security.get_password_hash(user_in.password),
-        name=user_in.full_name,
+        name=user_in.name,
     )
     db.add(new_user)
     db.commit()

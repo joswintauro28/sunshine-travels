@@ -78,6 +78,10 @@ def create_destination(destination: dict = Body(...), db: Session = Depends(get_
 
 @router.delete("/users/{id}")
 def delete_user(id: int, db: Session = Depends(get_db), current_user: models.User = Depends(get_current_active_superuser)):
+    # Debug: log the ID
+    with open("debug_logs.txt", "a") as f:
+        f.write(f"Attempting to delete user ID: {id}\n")
+    
     user = db.query(models.User).filter(models.User.id == id).first()
     if not user:
         raise HTTPException(status_code=404, detail="User not found")
@@ -183,6 +187,10 @@ def update_destination(id: int, destination: dict = Body(...), db: Session = Dep
 
 @router.put("/users/{id}")
 def update_user(id: int, user_data: dict = Body(...), db: Session = Depends(get_db), current_user: models.User = Depends(get_current_active_superuser)):
+    # Debug: log the ID
+    with open("debug_logs.txt", "a") as f:
+        f.write(f"Attempting to update user ID: {id}\n")
+    
     user = db.query(models.User).filter(models.User.id == id).first()
     if not user:
         raise HTTPException(status_code=404, detail="User not found")

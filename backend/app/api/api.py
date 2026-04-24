@@ -19,7 +19,7 @@ def test_token(current_user: models.User = Depends(deps.get_current_user)):
     """
     return schemas.User(
         email=current_user.email,
-        full_name=current_user.name,
+        name=current_user.name,
         id=current_user.id,
         is_superuser=current_user.is_superuser
     )
