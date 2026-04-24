@@ -165,7 +165,8 @@ const AdminDashboard = () => {
             setStats(prev => ({ ...prev, destinations: prev.destinations - 1 }));
         } catch (err) {
             console.error("Failed to delete destination", err);
-            alert("Error deleting destination.");
+            const errorMsg = err.response?.data?.detail || "Error deleting destination.";
+            alert(errorMsg);
         }
     };
 
@@ -180,7 +181,8 @@ const AdminDashboard = () => {
             setStats(prev => ({ ...prev, users: prev.users - 1 }));
         } catch (err) {
             console.error("Failed to delete user", err);
-            alert("Error deleting user.");
+            const errorMsg = err.response?.data?.detail || "Error deleting user.";
+            alert(errorMsg);
         }
     };
 
@@ -194,7 +196,8 @@ const AdminDashboard = () => {
             setTestimonialsList(testimonialsList.filter(t => t.id !== id));
         } catch (err) {
             console.error("Failed to delete testimonial", err);
-            alert("Error deleting testimonial.");
+            const errorMsg = err.response?.data?.detail || "Error deleting testimonial.";
+            alert(errorMsg);
         }
     };
 
@@ -233,7 +236,8 @@ const AdminDashboard = () => {
             setStats(prev => ({ ...prev, inquiries: prev.inquiries - 1 }));
         } catch (err) {
             console.error("Failed to delete inquiry", err);
-            alert("Error deleting inquiry.");
+            const errorMsg = err.response?.data?.detail || "Error deleting inquiry.";
+            alert(errorMsg);
         }
     };
 
