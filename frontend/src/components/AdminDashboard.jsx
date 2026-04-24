@@ -186,15 +186,26 @@ const AdminDashboard = () => {
     };
 
     const handleApproveTestimonial = async (id) => {
+        if (!id) {
+            console.error("Testimonial ID is undefined");
+            alert("Error: Testimonial ID is missing. Please refresh the page.");
+            return;
+        }
         try {
             const token = localStorage.getItem('token');
             const res = await axios.put(`http://localhost:8000/api/v1/admin/testimonials/${id}/approve`, {}, {
                 headers: { Authorization: `Bearer ${token}` }
             });
-            setTestimonialsList(testimonialsList.map(t => t.id === id ? res.data : t));
+            // Ensure we use the updated testimonial from the response, or fallback to the current one with is_approved=true
+            const updatedTestimonial = res.data.id ? res.data : { ...testimonialsList.find(t => t.id === id), is_approved: true };
+            setTestimonialsList(prev => prev.map(t => t.id === id ? updatedTestimonial : t));
+            
+            // Log locally for debug
+            console.log("Approved testimonial:", id);
         } catch (err) {
             console.error("Failed to approve testimonial", err);
-            alert("Error approving testimonial.");
+            const errorMsg = err.response?.data?.detail || "Error approving testimonial.";
+            alert(errorMsg);
         }
     };
 

@@ -92,18 +92,21 @@ const About = () => {
           <div className="flex flex-col lg:flex-row items-center relative z-10">
             <div className="lg:w-1/2 p-12 lg:p-20">
               <motion.div 
-                initial={{ opacity: 0, x: -30 }}
-                whileInView={{ opacity: 1, x: 0 }}
+                initial={{ opacity: 0, scale: 0.95 }}
+                whileInView={{ opacity: 1, scale: 1 }}
                 viewport={{ once: true }}
-                className="relative"
+                className="relative bg-slate-900 rounded-[4rem] p-4 shadow-[0_50px_100px_-20px_rgba(0,0,0,0.5)]"
               >
-                <img 
-                  src="https://images.unsplash.com/photo-1573497019940-1c28c88b4f3e?auto=format&fit=crop&q=80&w=1200" 
-                  alt="Team Leadership" 
-                  className="w-full aspect-[4/5] object-cover rounded-[3rem] shadow-2xl border border-white/10" 
-                />
-                <div className="absolute -bottom-6 -right-6 bg-orange-500 text-white p-6 rounded-[2rem] shadow-2xl">
-                  <p className="text-[10px] font-black uppercase tracking-widest">Our Spirit</p>
+                <div className="relative aspect-[3/5] overflow-hidden rounded-[3rem] bg-[#E8F5A2]">
+                  {/* IMPORTANT: Replace the URL below with your actual image path (e.g., /assets/founder.png) */}
+                  <img 
+                    src="https://images.unsplash.com/photo-1589156206699-bc21e38c8a7d?auto=format&fit=crop&q=80&w=1200" 
+                    alt="Founder" 
+                    className="w-full h-full object-cover" 
+                  />
+                </div>
+                <div className="absolute -bottom-4 -right-4 bg-orange-500 text-white px-8 py-3 rounded-2xl shadow-xl">
+                  <p className="text-[10px] font-black uppercase tracking-widest">Our Founder</p>
                 </div>
               </motion.div>
             </div>
