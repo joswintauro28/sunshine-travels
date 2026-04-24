@@ -98,12 +98,15 @@ def delete_testimonial(id: int, db: Session = Depends(get_db), current_user: mod
     if not testimonial:
         raise HTTPException(status_code=404, detail="Testimonial not found")
         
-    new_log = models.ActivityLog(user_email=current_user.email, action=f"Deleted testimonial from: {testimonial.name}")
-    db.add(new_log)
-    db.delete(testimonial)
-    db.commit()
-    
-    return {"message": "Testimonial deleted successfully"}
+    try:
+        new_log = models.ActivityLog(user_email=current_user.email, action=f"Deleted testimonial from: {testimonial.name}")
+        db.add(new_log)
+        db.delete(testimonial)
+        db.commit()
+        return {"message": "Testimonial deleted successfully"}
+    except Exception as e:
+        db.rollback()
+        raise HTTPException(status_code=500, detail=f"Database error: {str(e)}")
 
 @router.put("/testimonials/{id}/approve")
 def approve_testimonial(id: int, db: Session = Depends(get_db), current_user: models.User = Depends(get_current_active_superuser)):
@@ -127,13 +130,16 @@ def delete_destination(id: int, db: Session = Depends(get_db), current_user: mod
     if not dest:
         raise HTTPException(status_code=404, detail="Destination not found")
         
-    # Log the action
-    new_log = models.ActivityLog(user_email=current_user.email, action=f"Deleted destination: {dest.name}")
-    db.add(new_log)
-    db.delete(dest)
-    db.commit()
-    
-    return {"message": "Destination deleted successfully"}
+    try:
+        # Log the action
+        new_log = models.ActivityLog(user_email=current_user.email, action=f"Deleted destination: {dest.name}")
+        db.add(new_log)
+        db.delete(dest)
+        db.commit()
+        return {"message": "Destination deleted successfully"}
+    except Exception as e:
+        db.rollback()
+        raise HTTPException(status_code=500, detail=f"Database error: {str(e)}")
 
 @router.delete("/inquiries/{id}")
 def delete_inquiry(id: int, db: Session = Depends(get_db), current_user: models.User = Depends(get_current_active_superuser)):
@@ -141,10 +147,57 @@ def delete_inquiry(id: int, db: Session = Depends(get_db), current_user: models.
     if not inquiry:
         raise HTTPException(status_code=404, detail="Inquiry not found")
         
+    try:
+        # Log the action
+        new_log = models.ActivityLog(user_email=current_user.email, action=f"Deleted inquiry from: {inquiry.email}")
+        db.add(new_log)
+        db.delete(inquiry)
+        db.commit()
+        return {"message": "Inquiry deleted successfully"}
+    except Exception as e:
+        db.rollback()
+        raise HTTPException(status_code=500, detail=f"Database error: {str(e)}")
+
+@router.put("/destinations/{id}")
+def update_destination(id: int, destination: dict = Body(...), db: Session = Depends(get_db), current_user: models.User = Depends(get_current_active_superuser)):
+    dest = db.query(models.Destination).filter(models.Destination.id == id).first()
+    if not dest:
+        raise HTTPException(status_code=404, detail="Destination not found")
+    
+    dest.name = destination.get("name", dest.name)
+    dest.description = destination.get("description", dest.description)
+    dest.image_url = destination.get("image_url", dest.image_url)
+    dest.price = destination.get("price", dest.price)
+    dest.rating = destination.get("rating", dest.rating)
+    dest.location = destination.get("location", dest.location)
+    
+    db.commit()
+    db.refresh(dest)
+    
     # Log the action
-    new_log = models.ActivityLog(user_email=current_user.email, action=f"Deleted inquiry from: {inquiry.email}")
+    new_log = models.ActivityLog(user_email=current_user.email, action=f"Updated destination: {dest.name}")
     db.add(new_log)
-    db.delete(inquiry)
     db.commit()
     
-    return {"message": "Inquiry deleted successfully"}
+    return dest
+
+@router.put("/users/{id}")
+def update_user(id: int, user_data: dict = Body(...), db: Session = Depends(get_db), current_user: models.User = Depends(get_current_active_superuser)):
+    user = db.query(models.User).filter(models.User.id == id).first()
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+    
+    user.name = user_data.get("name", user.name)
+    user.email = user_data.get("email", user.email)
+    if user_data.get("is_superuser") is not None:
+        user.is_superuser = user_data.get("is_superuser")
+    
+    db.commit()
+    db.refresh(user)
+    
+    # Log the action
+    new_log = models.ActivityLog(user_email=current_user.email, action=f"Updated user: {user.email}")
+    db.add(new_log)
+    db.commit()
+    
+    return user

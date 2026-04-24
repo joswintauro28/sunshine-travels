@@ -1,16 +1,18 @@
-import models
-from database import engine, SessionLocal
+import sqlite3
 
-db = SessionLocal()
+def check_tables():
+    conn = sqlite3.connect('travel.db')
+    cursor = conn.cursor()
+    cursor.execute("SELECT name FROM sqlite_master WHERE type='table';")
+    tables = cursor.fetchall()
+    print("Tables in travel.db:", [t[0] for t in tables])
+    
+    for table in [t[0] for t in tables]:
+        cursor.execute(f"PRAGMA table_info({table})")
+        columns = cursor.fetchall()
+        print(f"Columns in {table}:", [c[1] for c in columns])
+    
+    conn.close()
 
-print("--- Users ---")
-users = db.query(models.User).all()
-for u in users:
-    print(f"ID: {u.id}, Email: {u.email}, IsSuperuser: {u.is_superuser}")
-
-print("\n--- Activity Logs ---")
-logs = db.query(models.ActivityLog).order_by(models.ActivityLog.timestamp.desc()).limit(5).all()
-for l in logs:
-    print(f"User: {l.user_email}, Action: {l.action}, Time: {l.timestamp}")
-
-db.close()
+if __name__ == "__main__":
+    check_tables()

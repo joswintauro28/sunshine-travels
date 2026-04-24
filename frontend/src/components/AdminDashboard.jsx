@@ -16,6 +16,7 @@ import {
     Plus,
     X,
     Trash2,
+    Edit2,
     Upload,
     Image as ImageIcon,
     Quote
@@ -42,6 +43,8 @@ const AdminDashboard = () => {
     const [destinationsList, setDestinationsList] = useState([]);
     const [showAddDestModal, setShowAddDestModal] = useState(false);
     const [newDest, setNewDest] = useState({ name: '', description: '', location: '', price: '', rating: '', image_url: '' });
+    const [editDest, setEditDest] = useState(null);
+    const [editUser, setEditUser] = useState(null);
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [loading, setLoading] = useState(true);
 
@@ -143,12 +146,56 @@ const AdminDashboard = () => {
         }
     };
 
-    const handleImageUpload = (e) => {
+    const handleUpdateDestination = async (e) => {
+        e.preventDefault();
+        setIsSubmitting(true);
+        try {
+            const token = localStorage.getItem('token');
+            const res = await axios.put(`http://localhost:8000/api/v1/admin/destinations/${editDest.id}`, {
+                ...editDest,
+                price: parseFloat(editDest.price) || 0,
+                rating: parseFloat(editDest.rating) || 0
+            }, {
+                headers: { Authorization: `Bearer ${token}` }
+            });
+            setDestinationsList(destinationsList.map(d => d.id === editDest.id ? res.data : d));
+            setEditDest(null);
+        } catch (err) {
+            console.error("Failed to update destination", err);
+            alert(err.response?.data?.detail || "Error updating destination.");
+        } finally {
+            setIsSubmitting(false);
+        }
+    };
+
+    const handleUpdateUser = async (e) => {
+        e.preventDefault();
+        setIsSubmitting(true);
+        try {
+            const token = localStorage.getItem('token');
+            const res = await axios.put(`http://localhost:8000/api/v1/admin/users/${editUser.id}`, editUser, {
+                headers: { Authorization: `Bearer ${token}` }
+            });
+            setUsersList(usersList.map(u => u.id === editUser.id ? res.data : u));
+            setEditUser(null);
+        } catch (err) {
+            console.error("Failed to update user", err);
+            alert(err.response?.data?.detail || "Error updating user.");
+        } finally {
+            setIsSubmitting(false);
+        }
+    };
+
+    const handleImageUpload = (e, isEdit = false) => {
         const file = e.target.files[0];
         if (file) {
             const reader = new FileReader();
             reader.onloadend = () => {
-                setNewDest({ ...newDest, image_url: reader.result });
+                if (isEdit) {
+                    setEditDest({ ...editDest, image_url: reader.result });
+                } else {
+                    setNewDest({ ...newDest, image_url: reader.result });
+                }
             };
             reader.readAsDataURL(file);
         }
@@ -502,14 +549,22 @@ const AdminDashboard = () => {
                                                     </td>
                                                     <td className="px-8 py-5 text-slate-400 text-sm font-bold">{new Date(user.created_at).toLocaleDateString()}</td>
                                                     <td className="px-8 py-5 text-right">
-                                                        {user.id !== (JSON.parse(localStorage.getItem('user'))?.id) && (
+                                                        <div className="flex items-center justify-end space-x-2">
                                                             <button
-                                                                onClick={() => handleDeleteUser(user.id)}
-                                                                className="p-3 text-slate-400 hover:text-red-500 hover:bg-red-50 rounded-2xl transition-all"
+                                                                onClick={() => setEditUser(user)}
+                                                                className="p-3 text-slate-400 hover:text-orange-500 hover:bg-orange-50 rounded-2xl transition-all"
                                                             >
-                                                                <Trash2 size={20} />
+                                                                <Edit2 size={20} />
                                                             </button>
-                                                        )}
+                                                            {user.id !== (JSON.parse(localStorage.getItem('user'))?.id) && (
+                                                                <button
+                                                                    onClick={() => handleDeleteUser(user.id)}
+                                                                    className="p-3 text-slate-400 hover:text-red-500 hover:bg-red-50 rounded-2xl transition-all"
+                                                                >
+                                                                    <Trash2 size={20} />
+                                                                </button>
+                                                            )}
+                                                        </div>
                                                     </td>
                                                 </tr>
                                             ))}
@@ -614,12 +669,20 @@ const AdminDashboard = () => {
                                                     <td className="px-8 py-5 font-black text-[#0B1120]">${dest.price}</td>
                                                     <td className="px-8 py-5 text-orange-500 font-black text-sm">⭐ {dest.rating}</td>
                                                     <td className="px-8 py-5 text-right">
-                                                        <button
-                                                            onClick={() => handleDeleteDestination(dest.id)}
-                                                            className="p-3 text-slate-400 hover:text-red-500 hover:bg-red-50 rounded-2xl transition-all"
-                                                        >
-                                                            <Trash2 size={20} />
-                                                        </button>
+                                                        <div className="flex items-center justify-end space-x-2">
+                                                            <button
+                                                                onClick={() => setEditDest(dest)}
+                                                                className="p-3 text-slate-400 hover:text-orange-500 hover:bg-orange-50 rounded-2xl transition-all"
+                                                            >
+                                                                <Edit2 size={20} />
+                                                            </button>
+                                                            <button
+                                                                onClick={() => handleDeleteDestination(dest.id)}
+                                                                className="p-3 text-slate-400 hover:text-red-500 hover:bg-red-50 rounded-2xl transition-all"
+                                                            >
+                                                                <Trash2 size={20} />
+                                                            </button>
+                                                        </div>
                                                     </td>
                                                 </tr>
                                             ))}
@@ -765,6 +828,140 @@ const AdminDashboard = () => {
                                 <div className="pt-4 flex justify-end">
                                     <button type="submit" disabled={isSubmitting} className="w-full bg-orange-500 text-white py-4 rounded-2xl font-black uppercase tracking-[0.2em] hover:bg-orange-600 transition-all shadow-xl shadow-orange-500/30 disabled:opacity-50 text-xs">
                                         {isSubmitting ? 'Adding...' : 'Confirm Addition'}
+                                    </button>
+                                </div>
+                            </form>
+                        </motion.div>
+                    </div>
+                )}
+            </AnimatePresence>
+
+            {/* Edit Destination Modal */}
+            <AnimatePresence>
+                {editDest && (
+                    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm overflow-y-auto">
+                        <motion.div
+                            initial={{ opacity: 0, scale: 0.95, y: 20 }}
+                            animate={{ opacity: 1, scale: 1, y: 0 }}
+                            exit={{ opacity: 0, scale: 0.95, y: 20 }}
+                            className="bg-white rounded-[3rem] shadow-2xl w-full max-w-2xl my-8 relative overflow-hidden"
+                        >
+                            <div className="px-8 py-5 border-b border-slate-100 flex items-center justify-between sticky top-0 bg-white z-10">
+                                <h3 className="text-xl font-black text-[#0B1120] tracking-tight">Edit Destination</h3>
+                                <button onClick={() => setEditDest(null)} className="p-2 text-slate-400 hover:text-orange-500 transition-colors">
+                                    <X size={20} strokeWidth={3} />
+                                </button>
+                            </div>
+
+                            <form onSubmit={handleUpdateDestination} className="p-8 space-y-5">
+                                <div className="grid grid-cols-2 gap-5">
+                                    <div className="space-y-1.5">
+                                        <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Name</label>
+                                        <input required type="text" value={editDest.name} onChange={e => setEditDest({ ...editDest, name: e.target.value })} className="w-full px-5 py-3 rounded-xl border-2 border-slate-50 bg-slate-50 focus:bg-white focus:border-orange-500 focus:outline-none transition-all font-bold text-sm" />
+                                    </div>
+                                    <div className="space-y-1.5">
+                                        <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Location</label>
+                                        <input required type="text" value={editDest.location} onChange={e => setEditDest({ ...editDest, location: e.target.value })} className="w-full px-5 py-3 rounded-xl border-2 border-slate-50 bg-slate-50 focus:bg-white focus:border-orange-500 focus:outline-none transition-all font-bold text-sm" />
+                                    </div>
+                                </div>
+                                <div className="space-y-1.5">
+                                    <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Description</label>
+                                    <textarea required rows="2" value={editDest.description} onChange={e => setEditDest({ ...editDest, description: e.target.value })} className="w-full px-5 py-3 rounded-xl border-2 border-slate-50 bg-slate-50 focus:bg-white focus:border-orange-500 focus:outline-none transition-all font-bold text-sm resize-none" />
+                                </div>
+                                <div className="grid grid-cols-2 gap-5">
+                                    <div className="space-y-1.5">
+                                        <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Price ($)</label>
+                                        <input required type="number" value={editDest.price} onChange={e => setEditDest({ ...editDest, price: e.target.value })} className="w-full px-5 py-3 rounded-xl border-2 border-slate-50 bg-slate-50 focus:bg-white focus:border-orange-500 focus:outline-none transition-all font-black text-sm" />
+                                    </div>
+                                    <div className="space-y-1.5">
+                                        <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Rating (0-5)</label>
+                                        <input required type="number" step="0.1" min="0" max="5" value={editDest.rating} onChange={e => setEditDest({ ...editDest, rating: e.target.value })} className="w-full px-5 py-3 rounded-xl border-2 border-slate-50 bg-slate-50 focus:bg-white focus:border-orange-500 focus:outline-none transition-all font-black text-sm" />
+                                    </div>
+                                </div>
+                                <div className="space-y-1.5">
+                                    <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Destination Image</label>
+                                    <div className="flex items-center gap-4 bg-slate-50 p-4 rounded-xl border-2 border-dashed border-slate-200 hover:border-orange-400 transition-all group relative overflow-hidden">
+                                        {editDest.image_url ? (
+                                            <div className="relative w-20 h-20 rounded-lg overflow-hidden shadow-md">
+                                                <img src={editDest.image_url} alt="Preview" className="w-full h-full object-cover" />
+                                                <button
+                                                    type="button"
+                                                    onClick={() => setEditDest({ ...editDest, image_url: '' })}
+                                                    className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center text-white text-[10px] font-bold"
+                                                >
+                                                    Change
+                                                </button>
+                                            </div>
+                                        ) : (
+                                            <div className="w-20 h-20 rounded-lg bg-slate-200 flex items-center justify-center text-slate-400">
+                                                <ImageIcon size={24} />
+                                            </div>
+                                        )}
+                                        <div className="flex-1">
+                                            <p className="text-xs font-bold text-slate-600">
+                                                {editDest.image_url ? "Image selected" : "Upload photo"}
+                                            </p>
+                                            <p className="text-[10px] text-slate-400 mt-0.5">PNG, JPG up to 5MB</p>
+                                        </div>
+                                        <input
+                                            type="file"
+                                            accept="image/*"
+                                            onChange={(e) => handleImageUpload(e, true)}
+                                            className="absolute inset-0 opacity-0 cursor-pointer"
+                                        />
+                                    </div>
+                                </div>
+                                <div className="pt-4 flex justify-end">
+                                    <button type="submit" disabled={isSubmitting} className="w-full bg-orange-500 text-white py-4 rounded-2xl font-black uppercase tracking-[0.2em] hover:bg-orange-600 transition-all shadow-xl shadow-orange-500/30 disabled:opacity-50 text-xs">
+                                        {isSubmitting ? 'Updating...' : 'Save Changes'}
+                                    </button>
+                                </div>
+                            </form>
+                        </motion.div>
+                    </div>
+                )}
+            </AnimatePresence>
+
+            {/* Edit User Modal */}
+            <AnimatePresence>
+                {editUser && (
+                    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm overflow-y-auto">
+                        <motion.div
+                            initial={{ opacity: 0, scale: 0.95, y: 20 }}
+                            animate={{ opacity: 1, scale: 1, y: 0 }}
+                            exit={{ opacity: 0, scale: 0.95, y: 20 }}
+                            className="bg-white rounded-[3rem] shadow-2xl w-full max-w-md my-8 relative overflow-hidden"
+                        >
+                            <div className="px-8 py-5 border-b border-slate-100 flex items-center justify-between sticky top-0 bg-white z-10">
+                                <h3 className="text-xl font-black text-[#0B1120] tracking-tight">Edit User</h3>
+                                <button onClick={() => setEditUser(null)} className="p-2 text-slate-400 hover:text-orange-500 transition-colors">
+                                    <X size={20} strokeWidth={3} />
+                                </button>
+                            </div>
+
+                            <form onSubmit={handleUpdateUser} className="p-8 space-y-5">
+                                <div className="space-y-1.5">
+                                    <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Full Name</label>
+                                    <input required type="text" value={editUser.name} onChange={e => setEditUser({ ...editUser, name: e.target.value })} className="w-full px-5 py-3 rounded-xl border-2 border-slate-50 bg-slate-50 focus:bg-white focus:border-orange-500 focus:outline-none transition-all font-bold text-sm" />
+                                </div>
+                                <div className="space-y-1.5">
+                                    <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Email Address</label>
+                                    <input required type="email" value={editUser.email} onChange={e => setEditUser({ ...editUser, email: e.target.value })} className="w-full px-5 py-3 rounded-xl border-2 border-slate-50 bg-slate-50 focus:bg-white focus:border-orange-500 focus:outline-none transition-all font-bold text-sm" />
+                                </div>
+                                <div className="space-y-1.5">
+                                    <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Role</label>
+                                    <select 
+                                        value={editUser.is_superuser ? "true" : "false"} 
+                                        onChange={e => setEditUser({ ...editUser, is_superuser: e.target.value === "true" })}
+                                        className="w-full px-5 py-3 rounded-xl border-2 border-slate-50 bg-slate-50 focus:bg-white focus:border-orange-500 focus:outline-none transition-all font-bold text-sm"
+                                    >
+                                        <option value="false">Standard User</option>
+                                        <option value="true">Administrator</option>
+                                    </select>
+                                </div>
+                                <div className="pt-4 flex justify-end">
+                                    <button type="submit" disabled={isSubmitting} className="w-full bg-[#0B1120] text-white py-4 rounded-2xl font-black uppercase tracking-[0.2em] hover:bg-slate-800 transition-all shadow-xl shadow-slate-900/30 disabled:opacity-50 text-xs">
+                                        {isSubmitting ? 'Updating...' : 'Update User'}
                                     </button>
                                 </div>
                             </form>
