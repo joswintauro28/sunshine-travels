@@ -507,15 +507,15 @@ const AdminDashboard = () => {
                             <div className="bg-white rounded-[2.5rem] shadow-sm border border-slate-100 overflow-hidden">
                                 <div className="overflow-x-auto">
                                     <table className="w-full text-left">
-                                        <thead className="bg-slate-50/50 text-slate-500 text-[10px] uppercase tracking-[0.2em] font-black">
+                                        <thead className="bg-slate-50 text-slate-500 text-[10px] uppercase tracking-[0.2em] font-black border-b border-slate-200">
                                             <tr>
-                                                <th className="px-8 py-5">Author</th>
-                                                <th className="px-8 py-5">Content</th>
-                                                <th className="px-8 py-5">Status</th>
-                                                <th className="px-8 py-5 text-right">Actions</th>
+                                                <th className="px-8 py-6">Author</th>
+                                                <th className="px-8 py-6">Content</th>
+                                                <th className="px-8 py-6">Status</th>
+                                                <th className="px-8 py-6 text-right">Actions</th>
                                             </tr>
                                         </thead>
-                                        <tbody className="divide-y divide-slate-50">
+                                        <tbody className="divide-y divide-slate-200">
                                             {testimonialsList.map((t) => (
                                                 <tr key={t.id} className="hover:bg-slate-50/50 transition-colors">
                                                     <td className="px-8 py-5">
@@ -572,16 +572,16 @@ const AdminDashboard = () => {
                                 </div>
                                 <div className="overflow-x-auto">
                                     <table className="w-full text-left">
-                                        <thead className="bg-slate-50/50 text-slate-500 text-[10px] uppercase tracking-[0.2em] font-black">
+                                        <thead className="bg-slate-50 text-slate-500 text-[10px] uppercase tracking-[0.2em] font-black border-b border-slate-200">
                                             <tr>
-                                                <th className="px-8 py-5">Destination</th>
-                                                <th className="px-8 py-5">Location</th>
-                                                <th className="px-8 py-5">Price</th>
-                                                <th className="px-8 py-5">Rating</th>
-                                                <th className="px-8 py-5 text-right">Actions</th>
+                                                <th className="px-8 py-6">Destination</th>
+                                                <th className="px-8 py-6">Location</th>
+                                                <th className="px-8 py-6">Price</th>
+                                                <th className="px-8 py-6">Rating</th>
+                                                <th className="px-8 py-6 text-right">Actions</th>
                                             </tr>
                                         </thead>
-                                        <tbody className="divide-y divide-slate-50">
+                                        <tbody className="divide-y divide-slate-200">
                                             {destinationsList.map((dest) => (
                                                 <tr key={dest.id} className="hover:bg-slate-50/50 transition-colors">
                                                     <td className="px-8 py-5">
@@ -616,16 +616,16 @@ const AdminDashboard = () => {
                             <div className="bg-white rounded-[2.5rem] shadow-sm border border-slate-100 overflow-hidden">
                                 <div className="overflow-x-auto">
                                     <table className="w-full text-left">
-                                        <thead className="bg-slate-50/50 text-slate-500 text-[10px] uppercase tracking-[0.2em] font-black">
+                                        <thead className="bg-slate-50 text-slate-500 text-[10px] uppercase tracking-[0.2em] font-black border-b border-slate-200">
                                             <tr>
-                                                <th className="px-8 py-5">Sender</th>
-                                                <th className="px-8 py-5">Contact Details</th>
-                                                <th className="px-8 py-5">Message</th>
-                                                <th className="px-8 py-5">Date</th>
-                                                <th className="px-8 py-5 text-right">Actions</th>
+                                                <th className="px-8 py-6">Sender</th>
+                                                <th className="px-8 py-6">Contact Details</th>
+                                                <th className="px-8 py-6">Message</th>
+                                                <th className="px-8 py-6">Date</th>
+                                                <th className="px-8 py-6 text-right">Actions</th>
                                             </tr>
                                         </thead>
-                                        <tbody className="divide-y divide-slate-50">
+                                        <tbody className="divide-y divide-slate-200">
                                             {inquiriesList.map((inquiry) => (
                                                 <tr key={inquiry.id} className="hover:bg-slate-50/50 transition-colors">
                                                     <td className="px-8 py-5">
