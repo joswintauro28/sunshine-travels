@@ -1,122 +1,157 @@
 import React from 'react';
 import { motion } from 'framer-motion';
+import { Sparkles, Globe, Heart, Shield } from 'lucide-react';
 
 const About = () => {
   return (
-    <div className="bg-[#FAF9F6] min-h-screen pb-12">
-      {/* Compact Hero */}
-      <section className="relative h-[40vh] flex items-center overflow-hidden pt-24">
+    <div className="bg-[#FAF9F6] min-h-screen pb-12 font-sans">
+      {/* Ultra-Clear Vibrant Forest Hero */}
+      <section className="relative h-[65vh] flex items-center overflow-hidden pt-24">
         <div className="absolute inset-0 z-0">
           <img 
-            src="https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?auto=format&fit=crop&q=80&w=2000" 
-            alt="Adventure" 
-            className="w-full h-full object-cover opacity-10 grayscale"
+            src="https://images.unsplash.com/photo-1542273917363-3b1817f69a2d?auto=format&fit=crop&q=80&w=2400" 
+            alt="Ultra Vibrant Forest" 
+            className="w-full h-full object-cover"
           />
-          <div className="absolute inset-0 bg-gradient-to-b from-[#FAF9F6] via-transparent to-[#FAF9F6]"></div>
         </div>
 
-        <div className="container mx-auto px-6 relative z-10 text-center space-y-4">
-          <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} className="space-y-3">
-            <span className="inline-block px-3 py-1 rounded-full bg-slate-900 text-white text-[9px] font-bold uppercase tracking-widest">
-              Our Journey
+        <div className="container mx-auto px-6 relative z-10">
+          <motion.div 
+            initial={{ opacity: 0, y: 30 }} 
+            animate={{ opacity: 1, y: 0 }} 
+            className="max-w-3xl space-y-6"
+          >
+            <span className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-orange-500 text-white text-[10px] font-bold uppercase tracking-[0.2em] shadow-xl shadow-orange-500/20">
+              <Sparkles size={12} /> Established 2001
             </span>
-            <h1 className="text-4xl md:text-6xl font-bold text-slate-900 uppercase leading-none tracking-tighter">
-              The Sunshine <br />
-              <span className="text-orange-500">Legacy.</span>
+            <h1 className="text-5xl md:text-6xl font-black text-white uppercase leading-tight tracking-tighter">
+              A Legacy of <br />
+              <span className="text-orange-400">Excellence.</span>
             </h1>
           </motion.div>
         </div>
       </section>
 
-      {/* Primary About Section - Compact */}
-      <section className="py-12 container mx-auto px-6">
-        <div className="flex flex-col lg:flex-row gap-12 items-center">
-          <div className="lg:w-1/2 space-y-6">
-            <div className="space-y-3">
-              <h2 className="text-2xl md:text-4xl font-bold text-slate-900 uppercase leading-tight">
-                Two Decades of <br />
-                <span className="text-orange-500">Trusted Excellence</span>
+      {/* Narrative Section */}
+      <section className="py-24 container mx-auto px-6">
+        <div className="flex flex-col lg:flex-row gap-20 items-center">
+          <div className="lg:w-1/2 space-y-10">
+            <div className="space-y-6">
+              <div className="w-12 h-[2px] bg-orange-500"></div>
+              <h2 className="text-3xl md:text-5xl font-black text-slate-900 uppercase leading-none tracking-tighter">
+                Crafting <span className="text-orange-500">Unique</span> <br />Experiences.
               </h2>
-              <p className="text-slate-500 text-sm leading-relaxed max-w-lg">
-                Since 2001, we've been crafting journeys that go beyond destinations. It's about the stories, the people, and the memories that last a lifetime.
+              <p className="text-slate-600 text-sm leading-relaxed font-medium">
+                For over two decades, Sunshine Travels has been the silent architect behind some of the world's most beautiful journeys. We don't just book trips; we curate moments that stay with you forever.
               </p>
             </div>
 
-            <div className="grid grid-cols-3 gap-6 pt-4 border-t border-slate-100">
-              <div className="space-y-0.5">
-                <p className="text-2xl font-bold text-slate-900">23+</p>
-                <p className="text-[9px] font-bold uppercase tracking-widest text-slate-400">Years</p>
-              </div>
-              <div className="space-y-0.5">
-                <p className="text-2xl font-bold text-slate-900">50K+</p>
-                <p className="text-[9px] font-bold uppercase tracking-widest text-slate-400">Travelers</p>
-              </div>
-              <div className="space-y-0.5">
-                <p className="text-2xl font-bold text-slate-900">100%</p>
-                <p className="text-[9px] font-bold uppercase tracking-widest text-slate-400">Safe</p>
-              </div>
+            <div className="grid grid-cols-3 gap-10">
+              {[
+                { label: 'Years', value: '23+' },
+                { label: 'Travelers', value: '50K+' },
+                { label: 'Rating', value: '5.0' },
+              ].map((stat) => (
+                <div key={stat.label} className="space-y-1">
+                  <p className="text-4xl font-black text-slate-900 tracking-tighter">{stat.value}</p>
+                  <p className="text-[10px] font-bold uppercase tracking-widest text-slate-400">{stat.label}</p>
+                </div>
+              ))}
             </div>
           </div>
 
-          <div className="lg:w-1/2 grid grid-cols-2 gap-3">
-            <img src="https://images.unsplash.com/photo-1544735716-392fe2489ffa?auto=format&fit=crop&q=80&w=600" alt="Resort" className="rounded-[2rem] shadow-lg w-full h-48 object-cover" />
-            <img src="https://images.unsplash.com/photo-1510414842594-a61c69b5ae57?auto=format&fit=crop&q=80&w=600" alt="Path" className="rounded-[2rem] shadow-lg w-full h-56 object-cover mt-8" />
+          <div className="lg:w-1/2 relative">
+            <div className="grid grid-cols-2 gap-4">
+              <motion.img 
+                initial={{ opacity: 0, scale: 0.9 }}
+                whileInView={{ opacity: 1, scale: 1 }}
+                viewport={{ once: true }}
+                src="https://images.unsplash.com/photo-1544735716-392fe2489ffa?auto=format&fit=crop&q=80&w=800" 
+                alt="Clear Resort" 
+                className="rounded-[3rem] shadow-2xl w-full h-[400px] object-cover" 
+              />
+              <motion.img 
+                initial={{ opacity: 0, scale: 0.9 }}
+                whileInView={{ opacity: 1, scale: 1 }}
+                viewport={{ once: true }}
+                transition={{ delay: 0.2 }}
+                src="https://images.unsplash.com/photo-1510414842594-a61c69b5ae57?auto=format&fit=crop&q=80&w=800" 
+                alt="Coastal View" 
+                className="rounded-[3rem] shadow-2xl w-full h-[400px] object-cover mt-12" 
+              />
+            </div>
           </div>
         </div>
       </section>
 
-      {/* STORY BEHIND THE SMILE SECTION - Tightened */}
-      <section className="py-12 px-6">
-        <div className="max-w-5xl mx-auto bg-[#FDE68A] rounded-[3rem] overflow-hidden shadow-xl">
-          <div className="flex flex-col lg:flex-row items-center">
-            {/* Image Section */}
-            <div className="lg:w-1/2 p-8 lg:p-12 flex justify-center">
+      {/* The Smile Section - Reimagined */}
+      <section className="py-20 px-6">
+        <div className="max-w-6xl mx-auto bg-slate-900 rounded-[4rem] overflow-hidden shadow-2xl relative">
+          <div className="absolute top-0 right-0 w-96 h-96 bg-orange-500/10 rounded-full blur-[100px] -mr-48 -mt-48"></div>
+          
+          <div className="flex flex-col lg:flex-row items-center relative z-10">
+            <div className="lg:w-1/2 p-12 lg:p-20">
               <motion.div 
                 initial={{ opacity: 0, x: -30 }}
                 whileInView={{ opacity: 1, x: 0 }}
                 viewport={{ once: true }}
-                className="relative group"
+                className="relative"
               >
                 <img 
-                  src="C:\Users\user\.gemini\antigravity\brain\9cd56183-35e7-430b-af8d-cbfa6d5c988a\media__1776873916644.png" 
-                  alt="The Story Behind The Smile" 
-                  className="w-full max-w-[320px] h-auto rounded-[2rem] shadow-xl" 
+                  src="https://images.unsplash.com/photo-1573497019940-1c28c88b4f3e?auto=format&fit=crop&q=80&w=1200" 
+                  alt="Team Leadership" 
+                  className="w-full aspect-[4/5] object-cover rounded-[3rem] shadow-2xl border border-white/10" 
                 />
-                <div className="absolute -bottom-4 -right-4 bg-white px-4 py-2 rounded-xl shadow-lg hidden md:block">
-                  <p className="text-slate-900 font-bold uppercase tracking-widest text-[8px]">Sunshine Travels Office</p>
+                <div className="absolute -bottom-6 -right-6 bg-orange-500 text-white p-6 rounded-[2rem] shadow-2xl">
+                  <p className="text-[10px] font-black uppercase tracking-widest">Our Spirit</p>
                 </div>
               </motion.div>
             </div>
 
-            {/* Text Content */}
-            <div className="lg:w-1/2 p-8 lg:p-12 space-y-6">
-              <h2 className="text-4xl md:text-5xl font-bold text-slate-900 leading-none">
-                THE STORY <br />
-                <span className="italic font-serif text-slate-800 text-3xl">Behind</span> THE <span className="text-orange-600">SMILE</span>
-              </h2>
+            <div className="lg:w-1/2 p-12 lg:p-20 space-y-10">
+              <div className="space-y-4">
+                <h2 className="text-5xl md:text-6xl font-black text-white leading-tight tracking-tighter uppercase">
+                  THE STORY <br />
+                  <span className="text-orange-400">BEHIND THE</span> <br />SMILE.
+                </h2>
+              </div>
 
-              <p className="text-slate-800 text-lg md:text-xl font-medium leading-snug italic">
-                "Founded in 2001, we've spent 23 years helping thousands travel hassle-free. 
-                We're a woman-led, multilingual, and empathy driven team, ..always just one call away!"
+              <p className="text-gray-400 text-xl md:text-2xl font-medium leading-relaxed italic border-l-4 border-orange-500 pl-8">
+                "Founded in 2001, we've spent 23 years helping thousands travel hassle-free. We're a woman-led, multilingual, and empathy-driven team, always just one call away."
               </p>
 
-              <div className="pt-2">
-                <div className="inline-block px-6 py-3 bg-slate-900 text-white rounded-full font-bold uppercase tracking-widest text-[9px]">
-                  Our Mission
+              <div className="pt-4 flex items-center gap-6">
+                <div className="flex -space-x-4">
+                  {[1, 2, 3].map(i => (
+                    <div key={i} className="w-12 h-12 rounded-full border-2 border-slate-900 bg-slate-800 flex items-center justify-center overflow-hidden">
+                       <img src={`https://i.pravatar.cc/100?img=${i+15}`} alt="Team member" className="w-full h-full object-cover" />
+                    </div>
+                  ))}
                 </div>
+                <p className="text-[10px] font-bold uppercase tracking-widest text-gray-500">23 Years of Trust</p>
               </div>
             </div>
           </div>
         </div>
       </section>
 
-      {/* Core Values - Compact Strip */}
-      <section className="py-12 container mx-auto px-6">
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-8 text-center">
-          {['Integrity', 'Empathy', 'Passion', 'Safety'].map((value) => (
-            <div key={value} className="space-y-1">
-              <h4 className="text-slate-900 font-bold uppercase tracking-[0.2em] text-[10px]">{value}</h4>
-              <div className="w-6 h-[1.5px] bg-orange-500 mx-auto"></div>
+      {/* Sophisticated Values Strip */}
+      <section className="py-24 container mx-auto px-6">
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-16">
+          {[
+            { icon: Shield, label: 'Integrity', desc: 'Trust is our foundation.' },
+            { icon: Heart, label: 'Empathy', desc: 'We care for your journey.' },
+            { icon: Sparkles, label: 'Passion', desc: 'Love for every detail.' },
+            { icon: Globe, label: 'Safety', desc: 'Security in every step.' },
+          ].map((item) => (
+            <div key={item.label} className="space-y-4 group text-center lg:text-left">
+              <div className="w-12 h-12 bg-white rounded-2xl flex items-center justify-center text-slate-900 shadow-xl group-hover:bg-orange-500 group-hover:text-white transition-all duration-500 mx-auto lg:mx-0">
+                <item.icon size={20} />
+              </div>
+              <div className="space-y-1">
+                <h4 className="text-slate-900 font-bold uppercase tracking-[0.2em] text-[11px]">{item.label}</h4>
+                <p className="text-slate-400 text-[10px] font-medium">{item.desc}</p>
+              </div>
             </div>
           ))}
         </div>
