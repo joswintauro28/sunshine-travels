@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Menu, X, Sun, User } from 'lucide-react';
 import { motion } from 'framer-motion';
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import logo from '../assets/logo.png';
 
 const Navbar = () => {
@@ -9,6 +9,7 @@ const Navbar = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [user, setUser] = useState(null);
   const location = useLocation();
+  const navigate = useNavigate();
   const isAuthPage = location.pathname === '/login';
   const isContactPage = location.pathname === '/contact';
   const hideBookNow = isAuthPage || isContactPage;
@@ -42,6 +43,7 @@ const Navbar = () => {
     localStorage.removeItem('user');
     setUser(null);
     window.dispatchEvent(new Event('authChange'));
+    navigate('/login');
   };
 
   return (
