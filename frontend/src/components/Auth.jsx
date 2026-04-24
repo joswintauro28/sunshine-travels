@@ -144,11 +144,11 @@ const Auth = () => {
                 {/* High-End Background */}
                 <div className="absolute inset-0 z-0">
                     <img 
-                        src="https://images.unsplash.com/photo-1571896349842-33c89424de2d?auto=format&fit=crop&q=80&w=2400" 
-                        alt="Luxury Resort" 
-                        className="w-full h-full object-cover opacity-30 grayscale-[0.3]"
+                        src="https://images.unsplash.com/photo-1540962351504-03099e0a754b?auto=format&fit=crop&q=80&w=2400" 
+                        alt="Private Jet at Dusk" 
+                        className="w-full h-full object-cover opacity-40"
                     />
-                    <div className="absolute inset-0 bg-gradient-to-tr from-slate-900 via-slate-900/60 to-transparent"></div>
+                    <div className="absolute inset-0 bg-gradient-to-tr from-slate-900 via-slate-900/40 to-transparent"></div>
                 </div>
 
                 <motion.div
