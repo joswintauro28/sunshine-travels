@@ -252,13 +252,13 @@ const Testimonials = () => {
       <AnimatePresence>
         {submitStatus && (
           <motion.div
-            initial={{ opacity: 0, y: 50 }}
+            initial={{ opacity: 0, y: -50 }}
             animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: 50 }}
-            className={`fixed bottom-8 right-8 px-8 py-4 rounded-2xl shadow-2xl z-50 font-bold ${submitStatus === 'success' ? 'bg-green-500 text-white' : 'bg-red-500 text-white'
+            exit={{ opacity: 0, y: -50 }}
+            className={`fixed top-24 right-8 px-8 py-4 rounded-2xl shadow-2xl z-50 font-bold ${submitStatus === 'success' ? 'bg-orange-500 text-white' : 'bg-red-500 text-white'
               }`}
           >
-            {submitStatus === 'success' ? 'Story shared successfully!' : 'Failed to submit. Please try again.'}
+            {submitStatus === 'success' ? 'Feedback pending, until admin approves' : 'Failed to submit. Please try again.'}
           </motion.div>
         )}
       </AnimatePresence>

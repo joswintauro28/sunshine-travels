@@ -58,7 +58,7 @@ const Navbar = () => {
           <Link to="/" className={`${location.pathname === '/' ? 'text-orange-500' : ''} hover:text-orange-500 transition-colors uppercase tracking-widest`}>Home</Link>
           <Link to="/destinations" className={`${location.pathname === '/destinations' ? 'text-orange-500' : ''} hover:text-orange-500 transition-colors uppercase tracking-widest`}>Destinations</Link>
           <Link to="/services" className={`${location.pathname === '/services' ? 'text-orange-500' : ''} hover:text-orange-500 transition-colors uppercase tracking-widest`}>Services</Link>
-          <Link to="/our-difference" className={`${location.pathname === '/our-difference' ? 'text-orange-500' : ''} hover:text-orange-500 transition-colors uppercase tracking-widest whitespace-nowrap`}>Our Difference</Link>
+          <Link to="/our-difference" className={`${location.pathname === '/our-difference' ? 'text-orange-500' : ''} hover:text-orange-500 transition-colors uppercase tracking-widest whitespace-nowrap`}>Our Edge</Link>
           <Link to="/testimonials" className={`${location.pathname === '/testimonials' ? 'text-orange-500' : ''} hover:text-orange-500 transition-colors uppercase tracking-widest`}>Testimonials</Link>
           <Link to="/about" className={`${location.pathname === '/about' ? 'text-orange-500' : ''} hover:text-orange-500 transition-colors uppercase tracking-widest`}>About us</Link>
           <Link to="/contact" className={`${location.pathname === '/contact' ? 'text-orange-500' : ''} hover:text-orange-500 transition-colors uppercase tracking-widest`}>Contact</Link>
@@ -99,7 +99,7 @@ const Navbar = () => {
           <Link to="/" onClick={() => setIsMobileMenuOpen(false)} className={`${location.pathname === '/' ? 'text-orange-500' : ''}`}>Home</Link>
           <Link to="/destinations" onClick={() => setIsMobileMenuOpen(false)} className={`${location.pathname === '/destinations' ? 'text-orange-500' : ''}`}>Destinations</Link>
           <Link to="/services" onClick={() => setIsMobileMenuOpen(false)} className={`${location.pathname === '/services' ? 'text-orange-500' : ''}`}>Services</Link>
-          <Link to="/our-difference" onClick={() => setIsMobileMenuOpen(false)} className={`${location.pathname === '/our-difference' ? 'text-orange-500' : ''}`}>Our Difference</Link>
+          <Link to="/our-difference" onClick={() => setIsMobileMenuOpen(false)} className={`${location.pathname === '/our-difference' ? 'text-orange-500' : ''}`}>Our Edge</Link>
           <Link to="/testimonials" onClick={() => setIsMobileMenuOpen(false)} className={`${location.pathname === '/testimonials' ? 'text-orange-500' : ''}`}>Testimonials</Link>
           <Link to="/about" onClick={() => setIsMobileMenuOpen(false)} className={`${location.pathname === '/about' ? 'text-orange-500' : ''}`}>About us</Link>
           <Link to="/contact" onClick={() => setIsMobileMenuOpen(false)} className={`${location.pathname === '/contact' ? 'text-orange-500' : ''}`}>Contact</Link>

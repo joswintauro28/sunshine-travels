@@ -23,7 +23,7 @@ const FeatureItem = ({ icon: Icon, title, description, index }) => (
 
 const OurDifference = () => {
   const differences = [
-    { icon: Lightbulb, title: "23 Years Experience", description: "Two decades of planning perfect trips." },
+    { icon: Lightbulb, title: "20+ Years of Experience", description: "Two decades of planning perfect trips." },
     { icon: Target, title: "Custom Planning", description: "Every trip is unique and made for you." },
     { icon: Globe, title: "Private Access", description: "Unlock places others cannot go." },
     { icon: UserCheck, title: "Expert Team", description: "Led by people who love travel." }
@@ -40,9 +40,9 @@ const OurDifference = () => {
         {/* Compact Hero Section */}
         <section className="relative h-[55vh] flex items-center pt-24 overflow-hidden">
           <div className="absolute inset-0 z-0">
-            <img 
-              src="https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&q=80&w=2400" 
-              alt="Tropical Beach" 
+            <img
+              src="https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&q=80&w=2400"
+              alt="Tropical Beach"
               className="w-full h-full object-cover"
             />
             <div className="absolute inset-0 bg-black/50"></div>
