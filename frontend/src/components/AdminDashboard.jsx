@@ -456,16 +456,16 @@ const AdminDashboard = () => {
                             <div className="bg-white rounded-[2.5rem] shadow-sm border border-slate-100 overflow-hidden">
                                 <div className="overflow-x-auto">
                                     <table className="w-full text-left">
-                                        <thead className="bg-slate-50/50 text-slate-500 text-[10px] uppercase tracking-[0.2em] font-black">
+                                        <thead className="bg-slate-50 text-slate-500 text-[10px] uppercase tracking-[0.2em] font-black border-b border-slate-200">
                                             <tr>
-                                                <th className="px-8 py-5">User Details</th>
-                                                <th className="px-8 py-5">Role</th>
-                                                <th className="px-8 py-5">Joined</th>
-                                                <th className="px-8 py-5 text-right">Actions</th>
+                                                <th className="px-8 py-6">User Details</th>
+                                                <th className="px-8 py-6">Role</th>
+                                                <th className="px-8 py-6">Joined</th>
+                                                <th className="px-8 py-6 text-right">Actions</th>
                                             </tr>
                                         </thead>
-                                        <tbody className="divide-y divide-slate-50">
-                                            {usersList.map((user) => (
+                                        <tbody className="divide-y divide-slate-200">
+                                            {[...usersList].sort((a, b) => (b.is_superuser ? 1 : 0) - (a.is_superuser ? 1 : 0)).map((user) => (
                                                 <tr key={user.id} className="hover:bg-slate-50/50 transition-colors">
                                                     <td className="px-8 py-5">
                                                         <div className="flex items-center space-x-4">
