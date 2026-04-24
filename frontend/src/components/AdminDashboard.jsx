@@ -16,6 +16,8 @@ import {
     Plus,
     X,
     Trash2,
+    Upload,
+    Image as ImageIcon,
     Quote
 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
@@ -138,6 +140,17 @@ const AdminDashboard = () => {
             alert("Error adding destination.");
         } finally {
             setIsSubmitting(false);
+        }
+    };
+
+    const handleImageUpload = (e) => {
+        const file = e.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onloadend = () => {
+                setNewDest({ ...newDest, image_url: reader.result });
+            };
+            reader.readAsDataURL(file);
         }
     };
 
@@ -680,45 +693,74 @@ const AdminDashboard = () => {
                             exit={{ opacity: 0, scale: 0.95, y: 20 }}
                             className="bg-white rounded-[3rem] shadow-2xl w-full max-w-2xl my-8 relative overflow-hidden"
                         >
-                            <div className="px-10 py-8 border-b border-slate-100 flex items-center justify-between sticky top-0 bg-white z-10">
-                                <h3 className="text-2xl font-black text-[#0B1120] tracking-tight">New Destination</h3>
-                                <button onClick={() => setShowAddDestModal(false)} className="p-3 text-slate-400 hover:text-orange-500 transition-colors">
-                                    <X size={24} strokeWidth={3} />
+                            <div className="px-8 py-5 border-b border-slate-100 flex items-center justify-between sticky top-0 bg-white z-10">
+                                <h3 className="text-xl font-black text-[#0B1120] tracking-tight">New Destination</h3>
+                                <button onClick={() => setShowAddDestModal(false)} className="p-2 text-slate-400 hover:text-orange-500 transition-colors">
+                                    <X size={20} strokeWidth={3} />
                                 </button>
                             </div>
 
-                            <form onSubmit={handleAddDestination} className="p-10 space-y-8">
-                                <div className="grid grid-cols-2 gap-8">
-                                    <div className="space-y-2">
-                                        <label className="text-xs font-black text-slate-400 uppercase tracking-widest ml-1">Name</label>
-                                        <input required type="text" value={newDest.name} onChange={e => setNewDest({ ...newDest, name: e.target.value })} className="w-full px-6 py-4 rounded-2xl border-2 border-slate-50 bg-slate-50 focus:bg-white focus:border-orange-500 focus:outline-none transition-all font-bold" placeholder="e.g. Maldives" />
+                            <form onSubmit={handleAddDestination} className="p-8 space-y-5">
+                                <div className="grid grid-cols-2 gap-5">
+                                    <div className="space-y-1.5">
+                                        <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Name</label>
+                                        <input required type="text" value={newDest.name} onChange={e => setNewDest({ ...newDest, name: e.target.value })} className="w-full px-5 py-3 rounded-xl border-2 border-slate-50 bg-slate-50 focus:bg-white focus:border-orange-500 focus:outline-none transition-all font-bold text-sm" placeholder="e.g. Maldives" />
                                     </div>
-                                    <div className="space-y-2">
-                                        <label className="text-xs font-black text-slate-400 uppercase tracking-widest ml-1">Location</label>
-                                        <input required type="text" value={newDest.location} onChange={e => setNewDest({ ...newDest, location: e.target.value })} className="w-full px-6 py-4 rounded-2xl border-2 border-slate-50 bg-slate-50 focus:bg-white focus:border-orange-500 focus:outline-none transition-all font-bold" placeholder="e.g. Indian Ocean" />
-                                    </div>
-                                </div>
-                                <div className="space-y-2">
-                                    <label className="text-xs font-black text-slate-400 uppercase tracking-widest ml-1">Description</label>
-                                    <textarea required rows="3" value={newDest.description} onChange={e => setNewDest({ ...newDest, description: e.target.value })} className="w-full px-6 py-4 rounded-2xl border-2 border-slate-50 bg-slate-50 focus:bg-white focus:border-orange-500 focus:outline-none transition-all font-bold resize-none" placeholder="Describe this paradise..." />
-                                </div>
-                                <div className="grid grid-cols-2 gap-8">
-                                    <div className="space-y-2">
-                                        <label className="text-xs font-black text-slate-400 uppercase tracking-widest ml-1">Price ($)</label>
-                                        <input required type="number" value={newDest.price} onChange={e => setNewDest({ ...newDest, price: e.target.value })} className="w-full px-6 py-4 rounded-2xl border-2 border-slate-50 bg-slate-50 focus:bg-white focus:border-orange-500 focus:outline-none transition-all font-black" placeholder="e.g. 1200" />
-                                    </div>
-                                    <div className="space-y-2">
-                                        <label className="text-xs font-black text-slate-400 uppercase tracking-widest ml-1">Rating (0-5)</label>
-                                        <input required type="number" step="0.1" min="0" max="5" value={newDest.rating} onChange={e => setNewDest({ ...newDest, rating: e.target.value })} className="w-full px-6 py-4 rounded-2xl border-2 border-slate-50 bg-slate-50 focus:bg-white focus:border-orange-500 focus:outline-none transition-all font-black" placeholder="e.g. 4.9" />
+                                    <div className="space-y-1.5">
+                                        <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Location</label>
+                                        <input required type="text" value={newDest.location} onChange={e => setNewDest({ ...newDest, location: e.target.value })} className="w-full px-5 py-3 rounded-xl border-2 border-slate-50 bg-slate-50 focus:bg-white focus:border-orange-500 focus:outline-none transition-all font-bold text-sm" placeholder="e.g. Indian Ocean" />
                                     </div>
                                 </div>
-                                <div className="space-y-2">
-                                    <label className="text-xs font-black text-slate-400 uppercase tracking-widest ml-1">Image URL</label>
-                                    <input required type="url" value={newDest.image_url} onChange={e => setNewDest({ ...newDest, image_url: e.target.value })} className="w-full px-6 py-4 rounded-2xl border-2 border-slate-50 bg-slate-50 focus:bg-white focus:border-orange-500 focus:outline-none transition-all font-medium" placeholder="https://images.unsplash.com/..." />
+                                <div className="space-y-1.5">
+                                    <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Description</label>
+                                    <textarea required rows="2" value={newDest.description} onChange={e => setNewDest({ ...newDest, description: e.target.value })} className="w-full px-5 py-3 rounded-xl border-2 border-slate-50 bg-slate-50 focus:bg-white focus:border-orange-500 focus:outline-none transition-all font-bold text-sm resize-none" placeholder="Describe this paradise..." />
                                 </div>
-                                <div className="pt-6 flex justify-end">
-                                    <button type="submit" disabled={isSubmitting} className="w-full bg-orange-500 text-white py-5 rounded-[2rem] font-black uppercase tracking-[0.2em] hover:bg-orange-600 transition-all shadow-xl shadow-orange-500/30 disabled:opacity-50">
-                                        {isSubmitting ? 'Adding Paradise...' : 'Confirm Addition'}
+                                <div className="grid grid-cols-2 gap-5">
+                                    <div className="space-y-1.5">
+                                        <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Price ($)</label>
+                                        <input required type="number" value={newDest.price} onChange={e => setNewDest({ ...newDest, price: e.target.value })} className="w-full px-5 py-3 rounded-xl border-2 border-slate-50 bg-slate-50 focus:bg-white focus:border-orange-500 focus:outline-none transition-all font-black text-sm" placeholder="e.g. 1200" />
+                                    </div>
+                                    <div className="space-y-1.5">
+                                        <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Rating (0-5)</label>
+                                        <input required type="number" step="0.1" min="0" max="5" value={newDest.rating} onChange={e => setNewDest({ ...newDest, rating: e.target.value })} className="w-full px-5 py-3 rounded-xl border-2 border-slate-50 bg-slate-50 focus:bg-white focus:border-orange-500 focus:outline-none transition-all font-black text-sm" placeholder="e.g. 4.9" />
+                                    </div>
+                                </div>
+                                <div className="space-y-1.5">
+                                    <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Destination Image</label>
+                                    <div className="flex items-center gap-4 bg-slate-50 p-4 rounded-xl border-2 border-dashed border-slate-200 hover:border-orange-400 transition-all group relative overflow-hidden">
+                                        {newDest.image_url ? (
+                                            <div className="relative w-20 h-20 rounded-lg overflow-hidden shadow-md">
+                                                <img src={newDest.image_url} alt="Preview" className="w-full h-full object-cover" />
+                                                <button
+                                                    type="button"
+                                                    onClick={() => setNewDest({ ...newDest, image_url: '' })}
+                                                    className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center text-white text-[10px] font-bold"
+                                                >
+                                                    Remove
+                                                </button>
+                                            </div>
+                                        ) : (
+                                            <div className="w-20 h-20 rounded-lg bg-slate-200 flex items-center justify-center text-slate-400">
+                                                <ImageIcon size={24} />
+                                            </div>
+                                        )}
+                                        <div className="flex-1">
+                                            <p className="text-xs font-bold text-slate-600">
+                                                {newDest.image_url ? "Image selected" : "Upload photo"}
+                                            </p>
+                                            <p className="text-[10px] text-slate-400 mt-0.5">PNG, JPG up to 5MB</p>
+                                        </div>
+                                        <input
+                                            type="file"
+                                            accept="image/*"
+                                            onChange={handleImageUpload}
+                                            className="absolute inset-0 opacity-0 cursor-pointer"
+                                        />
+                                    </div>
+                                </div>
+                                <div className="pt-4 flex justify-end">
+                                    <button type="submit" disabled={isSubmitting} className="w-full bg-orange-500 text-white py-4 rounded-2xl font-black uppercase tracking-[0.2em] hover:bg-orange-600 transition-all shadow-xl shadow-orange-500/30 disabled:opacity-50 text-xs">
+                                        {isSubmitting ? 'Adding...' : 'Confirm Addition'}
                                     </button>
                                 </div>
                             </form>
