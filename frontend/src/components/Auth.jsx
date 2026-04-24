@@ -227,6 +227,20 @@ const Auth = () => {
                                             </div>
                                             {errors.password && <p className="text-red-400 text-[10px] uppercase font-bold pl-1">{errors.password}</p>}
                                         </div>
+
+                                        {!isLogin && (
+                                            <div className="space-y-1">
+                                                <label className="text-[10px] font-bold uppercase tracking-widest text-gray-500 pl-1">Confirm Password</label>
+                                                <div className="relative group">
+                                                    <Lock className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500 group-focus-within:text-orange-400 transition-colors" size={18} />
+                                                    <input
+                                                        type="password" name="confirmPassword" value={formData.confirmPassword} onChange={handleChange}
+                                                        className="w-full bg-white/5 border border-white/10 rounded-2xl pl-12 pr-4 py-4 text-white focus:outline-none focus:border-orange-500/50 transition-all"
+                                                    />
+                                                </div>
+                                                {errors.confirmPassword && <p className="text-red-400 text-[10px] uppercase font-bold pl-1">{errors.confirmPassword}</p>}
+                                            </div>
+                                        )}
                                     </div>
 
                                     {status.error && (
