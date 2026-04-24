@@ -69,25 +69,6 @@ const Footer = () => {
           </div>
         </div>
         
-        {/* Connects Section */}
-        <div className="mb-16 p-8 bg-orange-500 rounded-[2rem] text-white">
-          <h4 className="text-xl font-bold mb-6 uppercase tracking-widest">Looking for connects with:</h4>
-          <ul className="grid grid-cols-1 md:grid-cols-3 gap-6 font-bold text-sm">
-            <li className="flex gap-3">
-              <span className="text-2xl">•</span>
-              <span>MR. ROHIT – REEM INDUSTRIES,<br/>INDUSTRIAL AREA, MANIPAL</span>
-            </li>
-            <li className="flex gap-3">
-              <span className="text-2xl">•</span>
-              <span>MR. ARNOLD MENEZES – FOUNDER & DIRECTOR,<br/>NATURYA FRESH FOODS</span>
-            </li>
-            <li className="flex gap-3">
-              <span className="text-2xl">•</span>
-              <span>MS. SHIPRA RAI – VICE PRESIDENT,<br/>PEOPLE OPERATIONS, NIVEUS SOLUTIONS</span>
-            </li>
-          </ul>
-        </div>
-
         <div className="pt-8 border-t border-gray-800 text-center text-gray-500 text-sm">
           <p>© 2026 Sunshine Travels. All rights reserved. Designed with passion.</p>
         </div>
