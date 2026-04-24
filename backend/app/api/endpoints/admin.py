@@ -85,10 +85,9 @@ def delete_user(id: int, db: Session = Depends(get_db), current_user: models.Use
     if user.id == current_user.id:
         raise HTTPException(status_code=400, detail="Cannot delete your own account")
         
-    db.delete(user)
-    
     new_log = models.ActivityLog(user_email=current_user.email, action=f"Deleted user: {user.email}")
     db.add(new_log)
+    db.delete(user)
     db.commit()
     
     return {"message": "User deleted successfully"}
@@ -99,10 +98,9 @@ def delete_testimonial(id: int, db: Session = Depends(get_db), current_user: mod
     if not testimonial:
         raise HTTPException(status_code=404, detail="Testimonial not found")
         
-    db.delete(testimonial)
-    
     new_log = models.ActivityLog(user_email=current_user.email, action=f"Deleted testimonial from: {testimonial.name}")
     db.add(new_log)
+    db.delete(testimonial)
     db.commit()
     
     return {"message": "Testimonial deleted successfully"}
@@ -129,11 +127,10 @@ def delete_destination(id: int, db: Session = Depends(get_db), current_user: mod
     if not dest:
         raise HTTPException(status_code=404, detail="Destination not found")
         
-    db.delete(dest)
-    
     # Log the action
     new_log = models.ActivityLog(user_email=current_user.email, action=f"Deleted destination: {dest.name}")
     db.add(new_log)
+    db.delete(dest)
     db.commit()
     
     return {"message": "Destination deleted successfully"}
@@ -144,11 +141,10 @@ def delete_inquiry(id: int, db: Session = Depends(get_db), current_user: models.
     if not inquiry:
         raise HTTPException(status_code=404, detail="Inquiry not found")
         
-    db.delete(inquiry)
-    
     # Log the action
     new_log = models.ActivityLog(user_email=current_user.email, action=f"Deleted inquiry from: {inquiry.email}")
     db.add(new_log)
+    db.delete(inquiry)
     db.commit()
     
     return {"message": "Inquiry deleted successfully"}
