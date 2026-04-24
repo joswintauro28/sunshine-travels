@@ -42,15 +42,22 @@ const Contact = () => {
         if (name === 'phone') {
             const cleanValue = value.replace(/\D/g, '');
             setFormData(prev => ({ ...prev, [name]: cleanValue }));
+        } else if (name === 'message') {
+            const words = value.trim().split(/\s+/);
+            if (words.length <= 200 || value.length < formData.message.length) {
+                setFormData(prev => ({ ...prev, [name]: value }));
+            }
         } else {
             setFormData(prev => ({ ...prev, [name]: value }));
         }
     };
 
+    const wordCount = formData.message.trim() ? formData.message.trim().split(/\s+/).length : 0;
+
     const handleSubmit = async (e) => {
         e.preventDefault();
         setStatus({ loading: true, success: false, error: null });
-        const submissionData = { ...formData, phone: `${selectedCode}${formData.phone}` };
+        const submissionData = { ...formData };
 
         try {
             const response = await axios.post('http://localhost:8000/contact', submissionData);
@@ -173,58 +180,55 @@ const Contact = () => {
                                     </div>
                                 ) : (
                                     <form onSubmit={handleSubmit} className="space-y-8">
-                                        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                                            <div className="space-y-1">
-                                                <div className="flex items-center gap-2 text-slate-400">
+                                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                            <div className="space-y-2">
+                                                <div className="flex items-center gap-2 text-slate-500">
                                                     <User size={14} />
                                                     <label className="text-[10px] font-bold uppercase tracking-widest">Your Name</label>
                                                 </div>
                                                 <input
                                                     type="text" name="name" required value={formData.name} onChange={handleChange}
                                                     placeholder="Enter your name"
-                                                    className="w-full border-b border-slate-100 py-2 focus:border-orange-500 outline-none transition-all font-bold text-slate-900 bg-transparent"
+                                                    className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 focus:border-orange-500 focus:bg-white outline-none transition-all font-bold text-slate-900"
                                                 />
                                             </div>
-                                            <div className="space-y-1">
-                                                <div className="flex items-center gap-2 text-slate-400">
+                                            <div className="space-y-2">
+                                                <div className="flex items-center gap-2 text-slate-500">
                                                     <Mail size={14} />
                                                     <label className="text-[10px] font-bold uppercase tracking-widest">Email Address</label>
                                                 </div>
                                                 <input
                                                     type="email" name="email" required readOnly value={formData.email}
-                                                    className="w-full border-b border-slate-100 py-2 opacity-50 outline-none font-bold text-slate-900 bg-transparent cursor-not-allowed"
+                                                    className="w-full bg-slate-100 border border-slate-200 rounded-xl px-4 py-3 opacity-70 outline-none font-bold text-slate-900 cursor-not-allowed"
                                                 />
                                             </div>
                                         </div>
 
-                                        <div className="space-y-1">
-                                            <div className="flex items-center gap-2 text-slate-400">
+                                        <div className="space-y-2">
+                                            <div className="flex items-center gap-2 text-slate-500">
                                                 <Phone size={14} />
                                                 <label className="text-[10px] font-bold uppercase tracking-widest">Phone Number</label>
                                             </div>
-                                            <div className="flex gap-4">
-                                                <select
-                                                    value={selectedCode} onChange={(e) => setSelectedCode(e.target.value)}
-                                                    className="border-b border-slate-100 py-2 outline-none bg-transparent font-bold text-slate-900"
-                                                >
-                                                    {countryCodes.map(c => <option key={c.code} value={c.code}>{c.flag} {c.code}</option>)}
-                                                </select>
-                                                <input
-                                                    type="tel" name="phone" required placeholder="Phone number" value={formData.phone} onChange={handleChange}
-                                                    className="grow border-b border-slate-100 py-2 focus:border-orange-500 outline-none transition-all font-bold text-slate-900 bg-transparent"
-                                                />
-                                            </div>
+                                            <input
+                                                type="tel" name="phone" required placeholder="Phone number" value={formData.phone} onChange={handleChange}
+                                                className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 focus:border-orange-500 focus:bg-white outline-none transition-all font-bold text-slate-900"
+                                            />
                                         </div>
 
-                                        <div className="space-y-1">
-                                            <div className="flex items-center gap-2 text-slate-400">
-                                                <Send size={14} />
-                                                <label className="text-[10px] font-bold uppercase tracking-widest">Your Message</label>
+                                        <div className="space-y-2">
+                                            <div className="flex items-center justify-between text-slate-500">
+                                                <div className="flex items-center gap-2">
+                                                    <Send size={14} />
+                                                    <label className="text-[10px] font-bold uppercase tracking-widest">Your Message</label>
+                                                </div>
+                                                <span className={`text-[10px] font-bold uppercase tracking-widest ${wordCount >= 200 ? 'text-red-500' : 'text-slate-400'}`}>
+                                                    {wordCount}/200 words
+                                                </span>
                                             </div>
                                             <textarea
-                                                name="message" required rows="2" value={formData.message} onChange={handleChange}
+                                                name="message" required rows="3" value={formData.message} onChange={handleChange}
                                                 placeholder="Tell us where you want to go..."
-                                                className="w-full border-b border-slate-100 py-2 focus:border-orange-500 outline-none transition-all font-bold text-slate-900 bg-transparent resize-none"
+                                                className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 focus:border-orange-500 focus:bg-white outline-none transition-all font-bold text-slate-900 resize-none"
                                             ></textarea>
                                         </div>
 

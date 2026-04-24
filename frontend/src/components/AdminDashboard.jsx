@@ -640,8 +640,8 @@ const AdminDashboard = () => {
                                                         <p className="text-xs font-bold text-slate-900">{inquiry.email}</p>
                                                         <p className="text-[10px] text-slate-400 font-medium">{inquiry.phone || 'No phone'}</p>
                                                     </td>
-                                                    <td className="px-8 py-5 text-slate-600 font-medium max-w-md">
-                                                        <p className="line-clamp-2" title={inquiry.message}>{inquiry.message}</p>
+                                                    <td className="px-8 py-5 text-slate-600 font-medium whitespace-pre-wrap leading-relaxed">
+                                                        {inquiry.message}
                                                     </td>
                                                     <td className="px-8 py-5 text-slate-400 text-xs font-bold uppercase tracking-wider">
                                                         {new Date(inquiry.created_at).toLocaleDateString()}

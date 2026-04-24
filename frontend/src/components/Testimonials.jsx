@@ -64,8 +64,17 @@ const Testimonials = () => {
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    setFormData(prev => ({ ...prev, [name]: value }));
+    if (name === 'content') {
+      const words = value.trim().split(/\s+/);
+      if (words.length <= 200 || value.length < formData.content.length) {
+        setFormData(prev => ({ ...prev, [name]: value }));
+      }
+    } else {
+      setFormData(prev => ({ ...prev, [name]: value }));
+    }
   };
+
+  const wordCount = formData.content.trim() ? formData.content.trim().split(/\s+/).length : 0;
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -168,7 +177,12 @@ const Testimonials = () => {
                 </div>
 
                 <div className="space-y-2">
-                  <label className="text-[10px] font-bold uppercase tracking-widest text-slate-400 ml-4">Your Story</label>
+                  <div className="flex justify-between items-center ml-4">
+                    <label className="text-[10px] font-bold uppercase tracking-widest text-slate-400">Your Story</label>
+                    <span className={`text-[10px] font-bold uppercase tracking-widest ${wordCount >= 200 ? 'text-red-500' : 'text-slate-400'}`}>
+                      {wordCount}/200 words
+                    </span>
+                  </div>
                   <textarea
                     required
                     name="content"
