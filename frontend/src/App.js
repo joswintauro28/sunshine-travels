@@ -1,5 +1,5 @@
 import React from 'react';
-import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, useLocation, Navigate } from 'react-router-dom';
 import './App.css';
 import Navbar from './components/Navbar';
 import Hero from './components/Hero';
@@ -113,6 +113,16 @@ const Home = () => (
 const AppLayout = () => {
   const location = useLocation();
   const isAdminRoute = location.pathname.startsWith('/admin');
+  
+  // Check if current user is an admin
+  const userStr = localStorage.getItem('user');
+  const user = userStr ? JSON.parse(userStr) : null;
+  const isSuperAdmin = user?.is_superuser;
+
+  // If user is admin and trying to access a non-admin route, redirect to admin panel
+  if (isSuperAdmin && !isAdminRoute) {
+    return <Navigate to="/admin" replace />;
+  }
 
   return (
     <div className="app-container">
