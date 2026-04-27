@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Mail, Lock, User, ArrowRight, CheckCircle, AlertCircle, Eye, EyeOff, Sparkles } from 'lucide-react';
 import axios from 'axios';
@@ -140,15 +140,15 @@ const Auth = () => {
                 onLater={handleLater}
             />
             
-            <section className="relative min-h-screen flex items-center justify-center overflow-hidden bg-slate-900 px-6 py-20">
+            <section className="relative min-h-screen flex items-center justify-center overflow-hidden bg-slate-900 px-6 py-32 md:py-40">
                 {/* High-End Background */}
                 <div className="absolute inset-0 z-0">
                     <img 
-                        src="https://images.unsplash.com/photo-1571896349842-33c89424de2d?auto=format&fit=crop&q=80&w=2400" 
-                        alt="Luxury Resort" 
-                        className="w-full h-full object-cover opacity-30 grayscale-[0.3]"
+                        src="https://images.unsplash.com/photo-1540962351504-03099e0a754b?auto=format&fit=crop&q=80&w=2400" 
+                        alt="Private Jet at Dusk" 
+                        className="w-full h-full object-cover opacity-40"
                     />
-                    <div className="absolute inset-0 bg-gradient-to-tr from-slate-900 via-slate-900/60 to-transparent"></div>
+                    <div className="absolute inset-0 bg-gradient-to-tr from-slate-900 via-slate-900/40 to-transparent"></div>
                 </div>
 
                 <motion.div
@@ -227,6 +227,20 @@ const Auth = () => {
                                             </div>
                                             {errors.password && <p className="text-red-400 text-[10px] uppercase font-bold pl-1">{errors.password}</p>}
                                         </div>
+
+                                        {!isLogin && (
+                                            <div className="space-y-1">
+                                                <label className="text-[10px] font-bold uppercase tracking-widest text-gray-500 pl-1">Confirm Password</label>
+                                                <div className="relative group">
+                                                    <Lock className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500 group-focus-within:text-orange-400 transition-colors" size={18} />
+                                                    <input
+                                                        type="password" name="confirmPassword" value={formData.confirmPassword} onChange={handleChange}
+                                                        className="w-full bg-white/5 border border-white/10 rounded-2xl pl-12 pr-4 py-4 text-white focus:outline-none focus:border-orange-500/50 transition-all"
+                                                    />
+                                                </div>
+                                                {errors.confirmPassword && <p className="text-red-400 text-[10px] uppercase font-bold pl-1">{errors.confirmPassword}</p>}
+                                            </div>
+                                        )}
                                     </div>
 
                                     {status.error && (

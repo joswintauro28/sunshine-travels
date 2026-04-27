@@ -1,36 +1,49 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { Quote, Star, ArrowRight } from 'lucide-react';
+import { Quote, Star, ArrowRight, X, Image as ImageIcon } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
-const TestimonialCard = ({ testimonial, index }) => (
+const TestimonialCard = ({ testimonial, index, onClick }) => (
   <motion.div
     initial={{ opacity: 0, y: 20 }}
     whileInView={{ opacity: 1, y: 0 }}
     transition={{ duration: 0.5, delay: index * 0.1 }}
     viewport={{ once: true }}
-    className="bg-white p-8 rounded-3xl border border-slate-100 shadow-sm hover:shadow-md transition-all flex flex-col justify-between"
+    onClick={() => onClick(testimonial)}
+    className="bg-white p-8 rounded-[3rem] border border-slate-100 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all cursor-pointer group flex flex-col justify-between h-full"
   >
-    <div className="space-y-4">
-      <div className="flex gap-1">
-        {[...Array(5)].map((_, i) => (
-          <Star key={i} size={14} className="fill-orange-400 text-orange-400" />
-        ))}
+    <div className="space-y-6">
+      <div className="flex justify-between items-start">
+        <div className="flex gap-1">
+          {[...Array(5)].map((_, i) => (
+            <Star 
+              key={i} 
+              size={14} 
+              className={i < (testimonial.rating || 5) ? "fill-orange-400 text-orange-400" : "text-slate-200"} 
+            />
+          ))}
+        </div>
+        <Quote className="text-slate-100 group-hover:text-orange-100 transition-colors" size={40} />
       </div>
-      <p className="text-lg text-slate-800 leading-relaxed">
+      <p className="text-lg text-slate-800 leading-relaxed line-clamp-4 italic">
         "{testimonial.content}"
       </p>
+      <div className="pt-2">
+        <span className="text-[10px] font-black text-orange-500 uppercase tracking-widest group-hover:underline flex items-center gap-2">
+          Read Full Story <ArrowRight size={12} />
+        </span>
+      </div>
     </div>
 
-    <div className="flex items-center gap-4 pt-6 mt-6 border-t border-slate-50">
+    <div className="flex items-center gap-4 pt-6 mt-8 border-t border-slate-50">
       <img
         src={testimonial.avatar_url || `https://i.pravatar.cc/150?u=${testimonial.id}`}
         alt={testimonial.name}
-        className="w-12 h-12 rounded-xl object-cover shadow-sm"
+        className="w-14 h-14 rounded-2xl object-cover shadow-sm ring-4 ring-slate-50"
       />
       <div>
-        <h4 className="text-sm font-bold text-slate-900 uppercase tracking-tight leading-none">{testimonial.name}</h4>
-        <p className="text-orange-500 text-[10px] font-bold uppercase tracking-widest mt-1">{testimonial.role || "Verified Traveler"}</p>
+        <h4 className="text-md font-black text-slate-900 uppercase tracking-tight leading-none">{testimonial.name}</h4>
+        <p className="text-orange-500 text-[10px] font-bold uppercase tracking-widest mt-1.5">{testimonial.role || "Verified Traveler"}</p>
       </div>
     </div>
   </motion.div>
@@ -39,11 +52,13 @@ const TestimonialCard = ({ testimonial, index }) => (
 const Testimonials = () => {
   const [testimonials, setTestimonials] = useState([]);
   const [showForm, setShowForm] = useState(false);
+  const [selectedTestimonial, setSelectedTestimonial] = useState(null);
   const [formData, setFormData] = useState({
     name: '',
     role: '',
     content: '',
-    avatar_url: ''
+    avatar_url: '',
+    rating: 5
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitStatus, setSubmitStatus] = useState(null);
@@ -64,8 +79,17 @@ const Testimonials = () => {
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    setFormData(prev => ({ ...prev, [name]: value }));
+    if (name === 'content') {
+      const words = value.trim().split(/\s+/);
+      if (words.length <= 200 || value.length < formData.content.length) {
+        setFormData(prev => ({ ...prev, [name]: value }));
+      }
+    } else {
+      setFormData(prev => ({ ...prev, [name]: value }));
+    }
   };
+
+  const wordCount = formData.content.trim() ? formData.content.trim().split(/\s+/).length : 0;
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -73,7 +97,7 @@ const Testimonials = () => {
     try {
       await axios.post('http://localhost:8000/testimonials', formData);
       setSubmitStatus('success');
-      setFormData({ name: '', role: '', content: '', avatar_url: '' });
+      setFormData({ name: '', role: '', content: '', avatar_url: '', rating: 5 });
       setShowForm(false);
       fetchTestimonials();
       setTimeout(() => setSubmitStatus(null), 3000);
@@ -86,7 +110,89 @@ const Testimonials = () => {
   };
 
   return (
-    <div className="bg-[#FAF9F6] min-h-screen">
+    <div className="bg-[#FAF9F6] min-h-screen relative">
+      {/* Refined Large Testimonial Modal */}
+      <AnimatePresence>
+        {selectedTestimonial && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-[100] flex items-center justify-center p-4 md:p-10 bg-slate-900/90 backdrop-blur-md"
+            onClick={() => setSelectedTestimonial(null)}
+          >
+            <motion.div
+              initial={{ scale: 0.95, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.95, opacity: 0 }}
+              onClick={(e) => e.stopPropagation()}
+              className="bg-white w-full max-w-6xl h-full max-h-[85vh] rounded-[3rem] overflow-hidden shadow-2xl flex flex-col md:flex-row relative"
+            >
+              {/* Close Button */}
+              <button 
+                onClick={() => setSelectedTestimonial(null)}
+                className="absolute top-6 right-6 z-50 w-10 h-10 bg-slate-900 text-white rounded-full flex items-center justify-center hover:bg-orange-500 transition-all shadow-lg"
+              >
+                <X size={20} />
+              </button>
+
+              {/* Left Side: Immersive Image */}
+              <div className="md:w-5/12 h-64 md:h-full relative bg-slate-900 flex items-center justify-center">
+                <img 
+                  src={selectedTestimonial.avatar_url || `https://i.pravatar.cc/800?u=${selectedTestimonial.id}`} 
+                  alt={selectedTestimonial.name}
+                  className="w-full h-full object-contain"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-slate-900/40 to-transparent md:hidden"></div>
+              </div>
+
+              {/* Right Side: Scrollable Content */}
+              <div className="md:w-7/12 h-full flex flex-col">
+                <div className="p-8 md:p-16 overflow-y-auto custom-scrollbar flex-1">
+                  <div className="space-y-8">
+                    <div className="space-y-2">
+                      <div className="flex gap-1 mb-4">
+                        {[...Array(5)].map((_, i) => (
+                          <Star 
+                            key={i} 
+                            size={18} 
+                            className={i < (selectedTestimonial.rating || 5) ? "fill-orange-400 text-orange-400" : "text-slate-200"} 
+                          />
+                        ))}
+                      </div>
+                      <h3 className="text-4xl md:text-6xl font-black text-slate-900 uppercase tracking-tighter leading-none">
+                        {selectedTestimonial.name}
+                      </h3>
+                      <p className="text-orange-500 font-bold uppercase tracking-[0.3em] text-[10px]">
+                        {selectedTestimonial.role || "Verified Traveler"}
+                      </p>
+                    </div>
+
+                    <div className="relative pt-4">
+                      <Quote className="absolute -top-4 -left-4 text-slate-50" size={80} />
+                      <p className="relative z-10 text-lg md:text-2xl text-slate-700 font-medium leading-relaxed italic">
+                        "{selectedTestimonial.content}"
+                      </p>
+                    </div>
+
+                    <div className="pt-10 flex items-center gap-6">
+                      <div className="w-12 h-[2px] bg-orange-500"></div>
+                      <p className="text-[10px] font-black uppercase tracking-[0.4em] text-slate-300">End of story</p>
+                    </div>
+                  </div>
+                </div>
+                
+                {/* Fixed Footer inside Modal */}
+                <div className="px-8 md:px-16 py-6 bg-slate-50 border-t border-slate-100 flex items-center justify-between">
+                  <p className="text-[9px] font-bold text-slate-400 uppercase tracking-widest">Published on Sunshine Travels</p>
+                  <button onClick={() => setSelectedTestimonial(null)} className="text-slate-900 font-black uppercase tracking-widest text-[9px] hover:text-orange-500 transition-colors">Close</button>
+                </div>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
       {/* Compact Sophisticated Hero */}
       <section className="relative min-h-[50vh] flex items-center pt-32 pb-16">
         <div className="absolute inset-0 z-0">
@@ -110,9 +216,9 @@ const Testimonials = () => {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.2 }}
-            className="text-5xl md:text-7xl font-bold text-slate-900"
+            className="text-5xl md:text-7xl font-bold text-slate-900 uppercase tracking-tighter"
           >
-            Customer <span className="text-orange-500">Stories.</span>
+            Customer <span className="text-orange-500 italic">Stories.</span>
           </motion.h1>
           <div className="w-16 h-1 bg-orange-500 mx-auto"></div>
 
@@ -135,10 +241,10 @@ const Testimonials = () => {
             initial={{ opacity: 0, height: 0 }}
             animate={{ opacity: 1, height: 'auto' }}
             exit={{ opacity: 0, height: 0 }}
-            className="container mx-auto px-6 overflow-hidden"
+            className="container mx-auto px-6 overflow-hidden pb-12"
           >
             <div className="max-w-2xl mx-auto bg-white p-8 md:p-12 rounded-[2rem] shadow-xl border border-slate-100">
-              <h2 className="text-3xl font-bold text-slate-900 mb-8 text-center">We value your <span className="text-orange-500">feedback.</span></h2>
+              <h2 className="text-3xl font-bold text-slate-900 mb-8 text-center uppercase tracking-tighter">We value your <span className="text-orange-500">feedback.</span></h2>
 
               <form onSubmit={handleSubmit} className="space-y-6">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -167,8 +273,32 @@ const Testimonials = () => {
                   </div>
                 </div>
 
+                <div className="space-y-3">
+                  <label className="text-[10px] font-bold uppercase tracking-widest text-slate-400 ml-4">Your Rating</label>
+                  <div className="flex gap-3 ml-4">
+                    {[1, 2, 3, 4, 5].map((star) => (
+                      <button
+                        key={star}
+                        type="button"
+                        onClick={() => setFormData(prev => ({ ...prev, rating: star }))}
+                        className="transition-all hover:scale-110 active:scale-95"
+                      >
+                        <Star 
+                          size={28} 
+                          className={star <= formData.rating ? "fill-orange-500 text-orange-500" : "text-slate-200"} 
+                        />
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
                 <div className="space-y-2">
-                  <label className="text-[10px] font-bold uppercase tracking-widest text-slate-400 ml-4">Your Story</label>
+                  <div className="flex justify-between items-center ml-4">
+                    <label className="text-[10px] font-bold uppercase tracking-widest text-slate-400">Your Story</label>
+                    <span className={`text-[10px] font-bold uppercase tracking-widest ${wordCount >= 200 ? 'text-red-500' : 'text-slate-400'}`}>
+                      {wordCount}/200 words
+                    </span>
+                  </div>
                   <textarea
                     required
                     name="content"
@@ -196,7 +326,7 @@ const Testimonials = () => {
                       </div>
                     ) : (
                       <div className="w-16 h-16 rounded-xl bg-slate-200 flex items-center justify-center text-slate-400">
-                        <Quote size={24} />
+                        <ImageIcon size={24} />
                       </div>
                     )}
                     <div className="flex-1">
@@ -242,7 +372,7 @@ const Testimonials = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           <AnimatePresence>
             {testimonials.map((t, index) => (
-              <TestimonialCard key={t.id} testimonial={t} index={index} />
+              <TestimonialCard key={t.id} testimonial={t} index={index} onClick={setSelectedTestimonial} />
             ))}
           </AnimatePresence>
         </div>
@@ -252,13 +382,13 @@ const Testimonials = () => {
       <AnimatePresence>
         {submitStatus && (
           <motion.div
-            initial={{ opacity: 0, y: 50 }}
+            initial={{ opacity: 0, y: -50 }}
             animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: 50 }}
-            className={`fixed bottom-8 right-8 px-8 py-4 rounded-2xl shadow-2xl z-50 font-bold ${submitStatus === 'success' ? 'bg-green-500 text-white' : 'bg-red-500 text-white'
+            exit={{ opacity: 0, y: -50 }}
+            className={`fixed top-24 right-8 px-8 py-4 rounded-2xl shadow-2xl z-50 font-bold ${submitStatus === 'success' ? 'bg-orange-500 text-white' : 'bg-red-500 text-white'
               }`}
           >
-            {submitStatus === 'success' ? 'Story shared successfully!' : 'Failed to submit. Please try again.'}
+            {submitStatus === 'success' ? 'Feedback pending, until admin approves' : 'Failed to submit. Please try again.'}
           </motion.div>
         )}
       </AnimatePresence>
@@ -269,7 +399,7 @@ const Testimonials = () => {
           <div className="absolute top-0 left-0 w-full h-full opacity-5 pointer-events-none" style={{ backgroundImage: 'radial-gradient(circle, white 1px, transparent 1px)', backgroundSize: '30px 30px' }}></div>
 
           <div className="space-y-4 max-w-xl text-center md:text-left relative z-10">
-            <h2 className="text-3xl md:text-4xl font-bold text-orange-400">Ready for your trip?</h2>
+            <h2 className="text-3xl md:text-4xl font-bold text-orange-400 uppercase tracking-tight">Ready for your trip?</h2>
             <p className="text-gray-400 font-light leading-relaxed">
               Join thousands of happy travelers who have seen the world with Sunshine Travels.
             </p>
@@ -278,7 +408,7 @@ const Testimonials = () => {
           <motion.button
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
-            className="bg-white text-slate-900 px-8 py-4 rounded-full font-bold shadow-xl flex items-center gap-3 relative z-10 hover:bg-orange-500 hover:text-white transition-all"
+            className="bg-white text-slate-900 px-8 py-4 rounded-full font-bold shadow-xl flex items-center gap-3 relative z-10 hover:bg-orange-500 hover:text-white transition-all uppercase tracking-widest text-xs"
           >
             Contact Us <ArrowRight size={20} />
           </motion.button>

@@ -9,9 +9,16 @@ oauth2_scheme = OAuth2PasswordBearer(tokenUrl="api/v1/login/access-token")
 def get_current_user(
     db: Session = Depends(get_db), token: str = Depends(oauth2_scheme)
 ) -> models.User:
+    # Debug: log to file
+    with open("debug_logs.txt", "a") as f:
+        f.write(f"Received token: '{token}'\n")
     # In our simplified auth, the token is the user's email
     user = db.query(models.User).filter(models.User.email == token).first()
     if not user:
+        # Debug: list all users to see what's in the DB
+        all_users = db.query(models.User).all()
+        with open("debug_logs.txt", "a") as f:
+            f.write(f"User NOT found: '{token}'. Existing users: {[u.email for u in all_users]}\n")
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
             detail="User not found",
