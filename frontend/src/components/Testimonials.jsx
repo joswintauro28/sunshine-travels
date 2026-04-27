@@ -132,11 +132,11 @@ const Testimonials = () => {
               </button>
 
               {/* Left Side: Immersive Image */}
-              <div className="md:w-5/12 h-64 md:h-full relative bg-slate-100">
+              <div className="md:w-5/12 h-64 md:h-full relative bg-slate-900 flex items-center justify-center">
                 <img 
                   src={selectedTestimonial.avatar_url || `https://i.pravatar.cc/800?u=${selectedTestimonial.id}`} 
                   alt={selectedTestimonial.name}
-                  className="w-full h-full object-cover"
+                  className="w-full h-full object-contain"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-slate-900/40 to-transparent md:hidden"></div>
               </div>
