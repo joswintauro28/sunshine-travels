@@ -111,46 +111,63 @@ const About = () => {
         </div>
       </section>
 
-      {/* Why Choose Us Section - Directly from Image 2 */}
-      <section className="py-24 bg-slate-50 relative overflow-hidden">
-        {/* Background Decorative Dotted Path */}
-        <div className="absolute inset-0 opacity-[0.03] pointer-events-none">
-          <svg width="100%" height="100%" viewBox="0 0 1000 1000" fill="none">
-            <path d="M100,200 C300,100 500,400 700,200 S900,500 1000,400" stroke="#f97316" strokeWidth="4" strokeDasharray="12 12" />
-          </svg>
-        </div>
+      {/* Why Choose Us Section - Modern & Elegant Redesign */}
+      <section className="py-32 bg-[#F8F9FA] relative overflow-hidden">
+        {/* Abstract Background Elements */}
+        <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-orange-100/30 rounded-full blur-[120px] -mr-64 -mt-64"></div>
+        <div className="absolute bottom-0 left-0 w-[500px] h-[500px] bg-blue-50/50 rounded-full blur-[120px] -ml-64 -mb-64"></div>
 
         <div className="container mx-auto px-6 relative z-10">
-          <div className="text-center max-w-2xl mx-auto mb-20 space-y-4">
-            <h2 className="text-4xl md:text-6xl font-black text-slate-900 uppercase tracking-tighter">
-              WHY <span className="text-orange-500">CHOOSE US?</span>
-            </h2>
-            <div className="w-20 h-1 bg-orange-500 mx-auto"></div>
-            <p className="text-slate-500 font-bold uppercase tracking-widest text-[10px]">Our Commitment to Excellence</p>
+          <div className="flex flex-col md:flex-row md:items-end justify-between mb-20 gap-8">
+            <div className="max-w-2xl space-y-4">
+              <span className="text-orange-500 font-black uppercase tracking-[0.4em] text-[10px] block">Excellence in Motion</span>
+              <h2 className="text-5xl md:text-7xl font-black text-slate-900 uppercase tracking-tighter leading-none">
+                WHY CHOOSE <br />
+                <span className="text-transparent bg-clip-text bg-gradient-to-r from-orange-500 to-orange-400">SUNSHINE.</span>
+              </h2>
+            </div>
+            <p className="text-slate-400 text-sm font-medium max-w-xs md:text-right border-l-2 md:border-l-0 md:border-r-2 border-orange-500 pl-6 md:pl-0 md:pr-6 py-2">
+              We combine two decades of heritage with a forward-thinking approach to modern travel.
+            </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
             {[
-              { title: 'Expertise and Experience', icon: Shield, desc: 'Decades of industry knowledge ensuring your travel is in expert hands.' },
-              { title: 'Personalized Service', icon: Heart, desc: 'Tailor-made itineraries designed specifically for your unique preferences.' },
-              { title: 'Wide Range of Destinations', icon: Globe, desc: 'From hidden gems to global landmarks, we cover the entire world.' },
-              { title: '24/7 Support Service', icon: Sparkles, desc: 'We are always just one call away, ensuring a hassle-free journey.' },
-              { title: 'Strong Partnerships', icon: Sparkles, desc: 'Our extensive network allows us to offer exclusive deals and perks.' },
-              { title: 'End-to-End Services', icon: Sparkles, desc: 'Comprehensive arrangements from tickets to tours and everything in between.' },
+              { title: 'Elite Expertise', icon: Shield, desc: 'Decades of industry mastery ensuring your travel is handled by true professionals.' },
+              { title: 'Bespoke Journeys', icon: Heart, desc: 'Tailor-made itineraries crafted with surgical precision to match your desires.' },
+              { title: 'Global Reach', icon: Globe, desc: 'Access to an exclusive network of destinations spanning all seven continents.' },
+              { title: 'Concierge Care', icon: Sparkles, desc: 'Round-the-clock support that feels like having a personal assistant in your pocket.' },
+              { title: 'Strategic Alliances', icon: Sparkles, desc: 'Our deep-rooted partnerships unlock doors that remain closed to others.' },
+              { title: 'Infinite Solutions', icon: Sparkles, desc: 'Seamless, end-to-end management of every single detail, from A to Z.' },
             ].map((feature, i) => (
               <motion.div 
                 key={feature.title}
-                initial={{ opacity: 0, y: 20 }}
+                initial={{ opacity: 0, y: 30 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
-                transition={{ delay: i * 0.1 }}
-                className="bg-white p-10 rounded-[3rem] shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-500 group border border-slate-100"
+                transition={{ delay: i * 0.1, duration: 0.6 }}
+                className="group relative"
               >
-                <div className="w-16 h-16 bg-orange-50 rounded-2xl flex items-center justify-center text-orange-500 mb-6 group-hover:bg-orange-500 group-hover:text-white transition-all duration-500">
-                  <feature.icon size={28} />
+                <div className="absolute inset-0 bg-gradient-to-br from-orange-500 to-orange-400 rounded-[3rem] opacity-0 group-hover:opacity-100 blur-2xl transition-opacity duration-500"></div>
+                <div className="relative bg-white/80 backdrop-blur-xl p-10 md:p-12 rounded-[3rem] border border-white shadow-[0_20px_50px_-20px_rgba(0,0,0,0.05)] hover:shadow-[0_40px_80px_-30px_rgba(249,115,22,0.15)] transition-all duration-500 h-full flex flex-col justify-between">
+                  <div>
+                    <div className="w-14 h-14 bg-slate-900 text-white rounded-2xl flex items-center justify-center mb-8 group-hover:bg-orange-500 group-hover:scale-110 transition-all duration-500 shadow-lg shadow-slate-900/10">
+                      <feature.icon size={24} />
+                    </div>
+                    <h3 className="text-2xl font-black text-slate-900 uppercase tracking-tight mb-4 group-hover:text-orange-500 transition-colors leading-tight">
+                      {feature.title}
+                    </h3>
+                    <p className="text-slate-500 text-sm leading-relaxed font-medium group-hover:text-slate-600 transition-colors">
+                      {feature.desc}
+                    </p>
+                  </div>
+                  <div className="mt-8 pt-6 border-t border-slate-50 flex items-center justify-between opacity-0 group-hover:opacity-100 transition-opacity duration-500">
+                    <span className="text-[10px] font-black text-orange-500 uppercase tracking-widest">Learn More</span>
+                    <div className="w-8 h-8 rounded-full bg-orange-50 text-orange-500 flex items-center justify-center">
+                      <Sparkles size={14} />
+                    </div>
+                  </div>
                 </div>
-                <h3 className="text-xl font-black text-slate-900 uppercase tracking-tight mb-3 leading-tight">{feature.title}</h3>
-                <p className="text-slate-500 text-sm leading-relaxed font-medium">{feature.desc}</p>
               </motion.div>
             ))}
           </div>

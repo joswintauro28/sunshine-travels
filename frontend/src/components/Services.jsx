@@ -18,9 +18,9 @@ const Services = () => {
       {/* Compact Hero */}
       <section className="relative h-[55vh] flex items-center pt-24 overflow-hidden">
         <div className="absolute inset-0 z-0">
-          <img 
-            src="https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?auto=format&fit=crop&q=80&w=2000" 
-            alt="Service" 
+          <img
+            src="https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?auto=format&fit=crop&q=80&w=2000"
+            alt="Service"
             className="w-full h-full object-cover"
           />
           <div className="absolute inset-0 bg-black/60"></div>
