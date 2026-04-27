@@ -32,25 +32,31 @@ const About = () => {
         </div>
       </section>
 
-      {/* Narrative Section */}
+      {/* Narrative Section - Integrated with Image Content */}
       <section className="py-24 container mx-auto px-6">
         <div className="flex flex-col lg:flex-row gap-20 items-center">
-          <div className="lg:w-1/2 space-y-10">
+          <div className="lg:w-1/2 space-y-10 order-2 lg:order-1">
             <div className="space-y-6">
-              <div className="w-12 h-[2px] bg-orange-500"></div>
-              <h2 className="text-3xl md:text-5xl font-black text-slate-900 uppercase leading-none tracking-tighter">
-                Crafting <span className="text-orange-500">Unique</span> <br />Experiences.
+              <div className="flex items-center gap-4">
+                <div className="w-12 h-[2px] bg-orange-500"></div>
+                <span className="text-orange-500 font-black uppercase tracking-[0.3em] text-[10px]">Our Story</span>
+              </div>
+              <h2 className="text-4xl md:text-6xl font-black text-slate-900 uppercase leading-none tracking-tighter">
+                ABOUT <span className="text-orange-500">US.</span>
               </h2>
-              <p className="text-slate-600 text-sm leading-relaxed font-medium">
-                For over two decades, Sunshine Travels has been the silent architect behind some of the world's most beautiful journeys. We don't just book trips; we curate moments that stay with you forever.
+              <p className="text-slate-600 text-lg leading-relaxed font-medium">
+                Sunshine Travels has been dedicated to creating unforgettable travel experiences for 23 years. As a premier travel agency, we pride ourselves on delivering personalized service, expert advice, and seamless travel arrangements to a diverse clientele.
+              </p>
+              <p className="text-slate-500 text-sm leading-relaxed font-medium italic">
+                Our extensive network and industry knowledge enable us to offer exclusive deals and unique experiences, ensuring every journey is as memorable as it is effortless.
               </p>
             </div>
 
-            <div className="grid grid-cols-3 gap-10">
+            <div className="grid grid-cols-3 gap-10 pt-4">
               {[
-                { label: 'Years', value: '23+' },
-                { label: 'Travelers', value: '50K+' },
-                { label: 'Rating', value: '5.0' },
+                { label: 'Years of Joy', value: '23' },
+                { label: 'Happy Souls', value: '50K+' },
+                { label: 'Destinations', value: '100+' },
               ].map((stat) => (
                 <div key={stat.label} className="space-y-1">
                   <p className="text-4xl font-black text-slate-900 tracking-tighter">{stat.value}</p>
@@ -60,32 +66,99 @@ const About = () => {
             </div>
           </div>
 
-          <div className="lg:w-1/2 relative">
-            <div className="grid grid-cols-2 gap-4">
-              <motion.img 
-                initial={{ opacity: 0, scale: 0.9 }}
-                whileInView={{ opacity: 1, scale: 1 }}
+          <div className="lg:w-1/2 relative order-1 lg:order-2">
+            <div className="relative">
+              {/* Polaroid Style Images from the provided image */}
+              <motion.div 
+                initial={{ opacity: 0, rotate: -5, x: -20 }}
+                whileInView={{ opacity: 1, rotate: -8, x: 0 }}
                 viewport={{ once: true }}
-                src="https://images.unsplash.com/photo-1544735716-392fe2489ffa?auto=format&fit=crop&q=80&w=800" 
-                alt="Clear Resort" 
-                className="rounded-[3rem] shadow-2xl w-full h-[400px] object-cover" 
-              />
-              <motion.img 
-                initial={{ opacity: 0, scale: 0.9 }}
-                whileInView={{ opacity: 1, scale: 1 }}
+                className="bg-white p-4 pb-16 shadow-2xl rounded-sm w-full max-w-[400px] relative z-20 border border-slate-100"
+              >
+                <img 
+                  src="https://images.unsplash.com/photo-1506953823976-52e1bdc0149a?auto=format&fit=crop&q=80&w=1200" 
+                  alt="Tropical Escape" 
+                  className="w-full h-[300px] object-cover" 
+                />
+                <div className="absolute bottom-6 left-8">
+                  <p className="font-handwriting text-slate-400 text-xl tracking-tight">Dreamy Escapes</p>
+                </div>
+              </motion.div>
+
+              <motion.div 
+                initial={{ opacity: 0, rotate: 5, x: 20 }}
+                whileInView={{ opacity: 1, rotate: 6, x: 0 }}
                 viewport={{ once: true }}
                 transition={{ delay: 0.2 }}
-                src="https://images.unsplash.com/photo-1510414842594-a61c69b5ae57?auto=format&fit=crop&q=80&w=800" 
-                alt="Coastal View" 
-                className="rounded-[3rem] shadow-2xl w-full h-[400px] object-cover mt-12" 
-              />
+                className="bg-white p-4 pb-16 shadow-2xl rounded-sm w-full max-w-[350px] absolute -bottom-24 -right-4 lg:-right-12 z-30 border border-slate-100 hidden md:block"
+              >
+                <img 
+                  src="https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?auto=format&fit=crop&q=80&w=800" 
+                  alt="Scenic View" 
+                  className="w-full h-[250px] object-cover" 
+                />
+                <div className="absolute bottom-6 left-8">
+                  <p className="font-handwriting text-slate-400 text-xl tracking-tight">A Reason to Smile</p>
+                </div>
+              </motion.div>
+
+              {/* Decorative Travel Doodles */}
+              <div className="absolute -top-10 -left-10 w-32 h-32 opacity-10 pointer-events-none rotate-12">
+                <Globe size={120} className="text-orange-500" />
+              </div>
             </div>
           </div>
         </div>
       </section>
 
-      {/* The Smile Section - Reimagined */}
-      <section className="py-20 px-6">
+      {/* Why Choose Us Section - Directly from Image 2 */}
+      <section className="py-24 bg-slate-50 relative overflow-hidden">
+        {/* Background Decorative Dotted Path */}
+        <div className="absolute inset-0 opacity-[0.03] pointer-events-none">
+          <svg width="100%" height="100%" viewBox="0 0 1000 1000" fill="none">
+            <path d="M100,200 C300,100 500,400 700,200 S900,500 1000,400" stroke="#f97316" strokeWidth="4" strokeDasharray="12 12" />
+          </svg>
+        </div>
+
+        <div className="container mx-auto px-6 relative z-10">
+          <div className="text-center max-w-2xl mx-auto mb-20 space-y-4">
+            <h2 className="text-4xl md:text-6xl font-black text-slate-900 uppercase tracking-tighter">
+              WHY <span className="text-orange-500">CHOOSE US?</span>
+            </h2>
+            <div className="w-20 h-1 bg-orange-500 mx-auto"></div>
+            <p className="text-slate-500 font-bold uppercase tracking-widest text-[10px]">Our Commitment to Excellence</p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {[
+              { title: 'Expertise and Experience', icon: Shield, desc: 'Decades of industry knowledge ensuring your travel is in expert hands.' },
+              { title: 'Personalized Service', icon: Heart, desc: 'Tailor-made itineraries designed specifically for your unique preferences.' },
+              { title: 'Wide Range of Destinations', icon: Globe, desc: 'From hidden gems to global landmarks, we cover the entire world.' },
+              { title: '24/7 Support Service', icon: Sparkles, desc: 'We are always just one call away, ensuring a hassle-free journey.' },
+              { title: 'Strong Partnerships', icon: Sparkles, desc: 'Our extensive network allows us to offer exclusive deals and perks.' },
+              { title: 'End-to-End Services', icon: Sparkles, desc: 'Comprehensive arrangements from tickets to tours and everything in between.' },
+            ].map((feature, i) => (
+              <motion.div 
+                key={feature.title}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: i * 0.1 }}
+                className="bg-white p-10 rounded-[3rem] shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-500 group border border-slate-100"
+              >
+                <div className="w-16 h-16 bg-orange-50 rounded-2xl flex items-center justify-center text-orange-500 mb-6 group-hover:bg-orange-500 group-hover:text-white transition-all duration-500">
+                  <feature.icon size={28} />
+                </div>
+                <h3 className="text-xl font-black text-slate-900 uppercase tracking-tight mb-3 leading-tight">{feature.title}</h3>
+                <p className="text-slate-500 text-sm leading-relaxed font-medium">{feature.desc}</p>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* The Smile Section - Restored/Preserved */}
+      <section className="py-24 px-6">
         <div className="max-w-6xl mx-auto bg-slate-900 rounded-[4rem] overflow-hidden shadow-2xl relative">
           <div className="absolute top-0 right-0 w-96 h-96 bg-orange-500/10 rounded-full blur-[100px] -mr-48 -mt-48"></div>
           
@@ -98,7 +171,6 @@ const About = () => {
                 className="relative bg-slate-900 rounded-[4rem] p-4 shadow-[0_50px_100px_-20px_rgba(0,0,0,0.5)]"
               >
                 <div className="relative aspect-[3/5] overflow-hidden rounded-[3rem] bg-[#E8F5A2]">
-                  {/* IMPORTANT: Replace the URL below with your actual image path (e.g., /assets/founder.png) */}
                   <img 
                     src="https://images.unsplash.com/photo-1589156206699-bc21e38c8a7d?auto=format&fit=crop&q=80&w=1200" 
                     alt="Founder" 
@@ -138,7 +210,41 @@ const About = () => {
         </div>
       </section>
 
-      {/* Sophisticated Values Strip */}
+      {/* Immersive Tourist Spot Feature */}
+      <section className="py-24 px-6 overflow-hidden">
+        <div className="container mx-auto">
+          <div className="relative rounded-[4rem] overflow-hidden group shadow-2xl h-[500px]">
+            <img 
+              src="https://images.unsplash.com/photo-1476514525535-07fb3b4ae5f1?auto=format&fit=crop&q=80&w=2400" 
+              alt="Breathtaking Destination" 
+              className="w-full h-full object-cover transition-all duration-700 group-hover:scale-105" 
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-slate-900/80 via-transparent to-transparent"></div>
+            
+            <div className="absolute bottom-12 left-12 md:bottom-20 md:left-20 max-w-2xl space-y-4">
+              <span className="text-orange-500 font-black uppercase tracking-[0.4em] text-[10px]">Your Next Adventure</span>
+              <h2 className="text-4xl md:text-6xl font-black text-white uppercase tracking-tighter leading-none">
+                BEYOND <br />
+                <span className="text-orange-400">BOUNDARIES.</span>
+              </h2>
+              <p className="text-white/70 text-lg font-medium leading-relaxed max-w-xl">
+                From the peaks of the Alps to the crystal waters of the Maldives, we bring the world's most breathtaking spots closer to you.
+              </p>
+            </div>
+
+            {/* Floating Badge */}
+            <div className="absolute top-12 right-12 md:top-20 md:right-20">
+              <div className="w-24 h-24 md:w-32 md:h-32 rounded-full bg-white/10 backdrop-blur-md border border-white/20 flex flex-col items-center justify-center text-white p-4 text-center">
+                <p className="text-[8px] md:text-[10px] font-black uppercase tracking-widest leading-tight">World Class Guiding</p>
+                <div className="w-8 md:w-12 h-[1px] bg-orange-500 my-2"></div>
+                <p className="text-[7px] md:text-[8px] font-bold uppercase text-white/60">Verified Destinations</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Sophisticated Values Strip - Preserved */}
       <section className="py-24 container mx-auto px-6">
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-16">
           {[
@@ -159,6 +265,7 @@ const About = () => {
           ))}
         </div>
       </section>
+
     </div>
   );
 };
