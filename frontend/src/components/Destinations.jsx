@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 import { Star, MapPin, X, Compass, Sparkles, ChevronRight } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
@@ -42,6 +43,7 @@ const DestinationCard = ({ dest, index, onClick }) => (
 const Destinations = () => {
   const [destinations, setDestinations] = useState([]);
   const [selectedDest, setSelectedDest] = useState(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -74,7 +76,7 @@ const Destinations = () => {
             <motion.p 
               initial={{ opacity: 0, x: -15 }}
               animate={{ opacity: 1, x: 0 }}
-              className="text-orange-500 text-[9px] font-black uppercase tracking-[0.6em]"
+              className="text-orange-500 text-[8px] font-black uppercase tracking-[0.5em]"
             >
               Curated Experiences
             </motion.p>
@@ -82,13 +84,13 @@ const Destinations = () => {
               <motion.h1 
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
-                className="text-5xl md:text-8xl font-black uppercase leading-none tracking-tighter"
+                className="text-4xl md:text-6xl font-black uppercase leading-none tracking-tighter"
               >
                 Our <span className="text-orange-500">Destinations</span>
               </motion.h1>
               <motion.div 
                 initial={{ width: 0 }}
-                animate={{ width: 80 }}
+                animate={{ width: 60 }}
                 transition={{ duration: 1, delay: 0.5 }}
                 className="h-[2px] bg-orange-500 rounded-full"
               ></motion.div>
@@ -97,7 +99,7 @@ const Destinations = () => {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ delay: 0.3 }}
-              className="text-sm md:text-xl text-white/90 font-medium max-w-xl leading-relaxed italic"
+              className="text-xs md:text-base text-white/90 font-medium max-w-lg leading-relaxed"
             >
               Discover the world's most extraordinary destinations, <br className="hidden md:block" /> 
               handpicked and curated for the discerning traveler.
@@ -193,7 +195,10 @@ const Destinations = () => {
                   </div>
                 </div>
 
-                <button className="mt-10 w-full bg-slate-900 text-white py-5 rounded-2xl font-black uppercase tracking-widest hover:bg-orange-500 transition-all active:scale-95 shadow-xl shadow-slate-900/10 flex items-center justify-center gap-3">
+                <button 
+                  onClick={() => navigate('/contact')}
+                  className="mt-10 w-full bg-slate-900 text-white py-5 rounded-2xl font-black uppercase tracking-widest hover:bg-orange-500 transition-all active:scale-95 shadow-xl shadow-slate-900/10 flex items-center justify-center gap-3"
+                >
                   Inquire Now <ChevronRight size={20} />
                 </button>
               </div>
