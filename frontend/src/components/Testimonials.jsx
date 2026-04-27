@@ -16,7 +16,11 @@ const TestimonialCard = ({ testimonial, index, onClick }) => (
       <div className="flex justify-between items-start">
         <div className="flex gap-1">
           {[...Array(5)].map((_, i) => (
-            <Star key={i} size={14} className="fill-orange-400 text-orange-400" />
+            <Star 
+              key={i} 
+              size={14} 
+              className={i < (testimonial.rating || 5) ? "fill-orange-400 text-orange-400" : "text-slate-200"} 
+            />
           ))}
         </div>
         <Quote className="text-slate-100 group-hover:text-orange-100 transition-colors" size={40} />
@@ -53,7 +57,8 @@ const Testimonials = () => {
     name: '',
     role: '',
     content: '',
-    avatar_url: ''
+    avatar_url: '',
+    rating: 5
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitStatus, setSubmitStatus] = useState(null);
@@ -92,7 +97,7 @@ const Testimonials = () => {
     try {
       await axios.post('http://localhost:8000/testimonials', formData);
       setSubmitStatus('success');
-      setFormData({ name: '', role: '', content: '', avatar_url: '' });
+      setFormData({ name: '', role: '', content: '', avatar_url: '', rating: 5 });
       setShowForm(false);
       fetchTestimonials();
       setTimeout(() => setSubmitStatus(null), 3000);
@@ -148,7 +153,11 @@ const Testimonials = () => {
                     <div className="space-y-2">
                       <div className="flex gap-1 mb-4">
                         {[...Array(5)].map((_, i) => (
-                          <Star key={i} size={18} className="fill-orange-400 text-orange-400" />
+                          <Star 
+                            key={i} 
+                            size={18} 
+                            className={i < (selectedTestimonial.rating || 5) ? "fill-orange-400 text-orange-400" : "text-slate-200"} 
+                          />
                         ))}
                       </div>
                       <h3 className="text-4xl md:text-6xl font-black text-slate-900 uppercase tracking-tighter leading-none">
@@ -261,6 +270,25 @@ const Testimonials = () => {
                       placeholder="e.g. Solo Traveler"
                       className="w-full px-6 py-4 rounded-2xl bg-slate-50 border-none focus:ring-2 focus:ring-orange-500 transition-all outline-none text-slate-900"
                     />
+                  </div>
+                </div>
+
+                <div className="space-y-3">
+                  <label className="text-[10px] font-bold uppercase tracking-widest text-slate-400 ml-4">Your Rating</label>
+                  <div className="flex gap-3 ml-4">
+                    {[1, 2, 3, 4, 5].map((star) => (
+                      <button
+                        key={star}
+                        type="button"
+                        onClick={() => setFormData(prev => ({ ...prev, rating: star }))}
+                        className="transition-all hover:scale-110 active:scale-95"
+                      >
+                        <Star 
+                          size={28} 
+                          className={star <= formData.rating ? "fill-orange-500 text-orange-500" : "text-slate-200"} 
+                        />
+                      </button>
+                    ))}
                   </div>
                 </div>
 

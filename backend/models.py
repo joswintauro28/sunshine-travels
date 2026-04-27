@@ -26,6 +26,7 @@ class Testimonial(Base):
     role = Column(String)
     content = Column(Text)
     avatar_url = Column(String)
+    rating = Column(Integer, default=5)
     is_approved = Column(Boolean, default=False)
 
 class Booking(Base):
