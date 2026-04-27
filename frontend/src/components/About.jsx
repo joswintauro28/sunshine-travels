@@ -76,8 +76,8 @@ const About = () => {
                 className="bg-white p-4 pb-16 shadow-2xl rounded-sm w-full max-w-[400px] relative z-20 border border-slate-100"
               >
                 <img 
-                  src="https://images.unsplash.com/photo-1506953823976-52e1bdc0149a?auto=format&fit=crop&q=80&w=1200" 
-                  alt="Tropical Escape" 
+                  src="https://images.unsplash.com/photo-1437719417032-8595fd9e9dc6?auto=format&fit=crop&q=80&w=1200" 
+                  alt="Dreamy Beach" 
                   className="w-full h-[300px] object-cover" 
                 />
                 <div className="absolute bottom-6 left-8">
