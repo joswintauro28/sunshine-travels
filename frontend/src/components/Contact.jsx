@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Phone, Mail, MapPin, Send, CheckCircle, LogIn, Sparkles, Globe, User } from 'lucide-react';
-import axios from 'axios';
+import api from '../api';
 import { useNavigate } from 'react-router-dom';
 
 const countryCodes = [
@@ -60,7 +60,7 @@ const Contact = () => {
         const submissionData = { ...formData };
 
         try {
-            const response = await axios.post('http://localhost:8000/contact', submissionData);
+            const response = await api.post('/contact', submissionData);
             if (response.data.status === 'success') {
                 setStatus({ loading: false, success: true, error: null });
                 setFormData({ name: '', email: '', phone: '', message: '' });

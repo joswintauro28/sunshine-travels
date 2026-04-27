@@ -15,7 +15,7 @@ import {
     Quote
 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
+import api from '../api';
 import logo from '../assets/logo.png';
 
 const AdminDashboard = () => {
@@ -54,12 +54,12 @@ const AdminDashboard = () => {
 
         try {
             const [statsRes, usersRes, logsRes, inquiriesRes, testimonialsRes, destinationsRes] = await Promise.all([
-                axios.get('http://localhost:8000/api/v1/admin/stats', { headers: { Authorization: `Bearer ${token}` } }),
-                axios.get('http://localhost:8000/api/v1/admin/users', { headers: { Authorization: `Bearer ${token}` } }),
-                axios.get('http://localhost:8000/api/v1/admin/activity_logs', { headers: { Authorization: `Bearer ${token}` } }),
-                axios.get('http://localhost:8000/api/v1/admin/inquiries', { headers: { Authorization: `Bearer ${token}` } }),
-                axios.get('http://localhost:8000/api/v1/admin/testimonials', { headers: { Authorization: `Bearer ${token}` } }),
-                axios.get('http://localhost:8000/api/v1/admin/destinations', { headers: { Authorization: `Bearer ${token}` } })
+                api.get('/api/v1/admin/stats'),
+                api.get('/api/v1/admin/users'),
+                api.get('/api/v1/admin/activity_logs'),
+                api.get('/api/v1/admin/inquiries'),
+                api.get('/api/v1/admin/testimonials'),
+                api.get('/api/v1/admin/destinations')
             ]);
 
             setStats(statsRes.data);
@@ -120,12 +120,10 @@ const AdminDashboard = () => {
         setIsSubmitting(true);
         try {
             const token = localStorage.getItem('token');
-            const res = await axios.post('http://localhost:8000/api/v1/admin/destinations', {
+            const res = await api.post('/api/v1/admin/destinations', {
                 ...newDest,
                 price: parseFloat(newDest.price) || 0,
                 rating: parseFloat(newDest.rating) || 0
-            }, {
-                headers: { Authorization: `Bearer ${token}` }
             });
             setDestinationsList([res.data, ...destinationsList]);
             setShowAddDestModal(false);
@@ -144,12 +142,10 @@ const AdminDashboard = () => {
         setIsSubmitting(true);
         try {
             const token = localStorage.getItem('token');
-            const res = await axios.put(`http://localhost:8000/api/v1/admin/destinations/${editDest.id}`, {
+            const res = await api.put(`/api/v1/admin/destinations/${editDest.id}`, {
                 ...editDest,
                 price: parseFloat(editDest.price) || 0,
                 rating: parseFloat(editDest.rating) || 0
-            }, {
-                headers: { Authorization: `Bearer ${token}` }
             });
             setDestinationsList(destinationsList.map(d => d.id === editDest.id ? res.data : d));
             setEditDest(null);
@@ -166,9 +162,7 @@ const AdminDashboard = () => {
         setIsSubmitting(true);
         try {
             const token = localStorage.getItem('token');
-            const res = await axios.put(`http://localhost:8000/api/v1/admin/users/${editUser.id}`, editUser, {
-                headers: { Authorization: `Bearer ${token}` }
-            });
+            const res = await api.put(`/api/v1/admin/users/${editUser.id}`, editUser);
             setUsersList(usersList.map(u => u.id === editUser.id ? res.data : u));
             setEditUser(null);
         } catch (err) {
@@ -198,9 +192,7 @@ const AdminDashboard = () => {
         if (!window.confirm("Are you sure you want to delete this destination?")) return;
         try {
             const token = localStorage.getItem('token');
-            await axios.delete(`http://localhost:8000/api/v1/admin/destinations/${id}`, {
-                headers: { Authorization: `Bearer ${token}` }
-            });
+            await api.delete(`/api/v1/admin/destinations/${id}`);
             setDestinationsList(destinationsList.filter(dest => dest.id !== id));
             setStats(prev => ({ ...prev, destinations: prev.destinations - 1 }));
         } catch (err) {
@@ -214,9 +206,7 @@ const AdminDashboard = () => {
         if (!window.confirm("Are you sure you want to delete this user?")) return;
         try {
             const token = localStorage.getItem('token');
-            await axios.delete(`http://localhost:8000/api/v1/admin/users/${id}`, {
-                headers: { Authorization: `Bearer ${token}` }
-            });
+            await api.delete(`/api/v1/admin/users/${id}`);
             setUsersList(usersList.filter(user => user.id !== id));
             setStats(prev => ({ ...prev, users: prev.users - 1 }));
         } catch (err) {
@@ -230,9 +220,7 @@ const AdminDashboard = () => {
         if (!window.confirm("Are you sure you want to delete this testimonial?")) return;
         try {
             const token = localStorage.getItem('token');
-            await axios.delete(`http://localhost:8000/api/v1/admin/testimonials/${id}`, {
-                headers: { Authorization: `Bearer ${token}` }
-            });
+            await api.delete(`/api/v1/admin/testimonials/${id}`);
             setTestimonialsList(testimonialsList.filter(t => t.id !== id));
         } catch (err) {
             console.error("Failed to delete testimonial", err);
@@ -249,9 +237,7 @@ const AdminDashboard = () => {
         }
         try {
             const token = localStorage.getItem('token');
-            const res = await axios.put(`http://localhost:8000/api/v1/admin/testimonials/${id}/approve`, {}, {
-                headers: { Authorization: `Bearer ${token}` }
-            });
+            const res = await api.put(`/api/v1/admin/testimonials/${id}/approve`, {});
             // Ensure we use the updated testimonial from the response, or fallback to the current one with is_approved=true
             const updatedTestimonial = res.data.id ? res.data : { ...testimonialsList.find(t => t.id === id), is_approved: true };
             setTestimonialsList(prev => prev.map(t => t.id === id ? updatedTestimonial : t));
@@ -269,9 +255,7 @@ const AdminDashboard = () => {
         if (!window.confirm("Are you sure you want to delete this inquiry?")) return;
         try {
             const token = localStorage.getItem('token');
-            await axios.delete(`http://localhost:8000/api/v1/admin/inquiries/${id}`, {
-                headers: { Authorization: `Bearer ${token}` }
-            });
+            await api.delete(`/api/v1/admin/inquiries/${id}`);
             setInquiriesList(inquiriesList.filter(i => i.id !== id));
             setStats(prev => ({ ...prev, inquiries: prev.inquiries - 1 }));
         } catch (err) {

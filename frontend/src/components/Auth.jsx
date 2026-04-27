@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Mail, Lock, User, ArrowRight, CheckCircle, AlertCircle, Eye, EyeOff, Sparkles } from 'lucide-react';
-import axios from 'axios';
+import api from '../api';
 import { useNavigate } from 'react-router-dom';
 
 const RedirectModal = ({ isOpen, onClose, onLater }) => {
@@ -91,14 +91,12 @@ const Auth = () => {
                 const params = new URLSearchParams();
                 params.append('username', formData.email);
                 params.append('password', formData.password);
-                const response = await axios.post('http://localhost:8000/api/v1/login/access-token', params, {
+                const response = await api.post('/api/v1/login/access-token', params, {
                     headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
                 });
                 const { access_token } = response.data;
                 localStorage.setItem('token', access_token);
-                const userResponse = await axios.get('http://localhost:8000/api/v1/test-token', {
-                    headers: { Authorization: `Bearer ${access_token}` }
-                });
+                const userResponse = await api.get('/api/v1/test-token');
                 const user = userResponse.data;
                 localStorage.setItem('user', JSON.stringify(user));
                 setLoggedInUser(user);
@@ -113,7 +111,7 @@ const Auth = () => {
                 }
             } else {
                 const signupData = { email: formData.email, password: formData.password, full_name: formData.name };
-                await axios.post('http://localhost:8000/api/v1/users/open', signupData);
+                await api.post('/api/v1/users/open', signupData);
                 setStatus({ loading: false, success: true, error: null });
                 setTimeout(() => { setIsLogin(true); setStatus({ loading: false, success: false, error: null }); }, 2000);
             }

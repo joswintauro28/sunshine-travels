@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Search, MapPin, Calendar, Users } from 'lucide-react';
-import axios from 'axios';
+import api from '../api';
 
 const SearchBar = () => {
   const [booking, setBooking] = useState({
@@ -13,7 +13,7 @@ const SearchBar = () => {
   const handleBooking = async (e) => {
     e.preventDefault();
     try {
-      await axios.post('http://localhost:8000/bookings', booking);
+      await api.post('/bookings', booking);
       alert('Interest registered! Our premium consultant will contact you shortly.');
     } catch (error) {
       console.error('Error booking:', error);

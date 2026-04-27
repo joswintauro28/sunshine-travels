@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import api from '../api';
 import { useNavigate } from 'react-router-dom';
 import { Star, MapPin, X, Compass, Sparkles, ChevronRight } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -49,7 +49,7 @@ const Destinations = () => {
     window.scrollTo(0, 0);
     const fetchDestinations = async () => {
       try {
-        const response = await axios.get('http://localhost:8000/destinations');
+        const response = await api.get('/destinations');
         setDestinations(response.data);
       } catch (error) {
         console.error('Error fetching destinations:', error);

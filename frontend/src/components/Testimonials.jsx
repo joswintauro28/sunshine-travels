@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import api from '../api';
 import { Quote, Star, ArrowRight, X, Image as ImageIcon } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
@@ -70,7 +70,7 @@ const Testimonials = () => {
 
   const fetchTestimonials = async () => {
     try {
-      const response = await axios.get('http://localhost:8000/testimonials');
+      const response = await api.get('/testimonials');
       setTestimonials(response.data);
     } catch (error) {
       console.error('Error fetching testimonials:', error);
@@ -95,7 +95,7 @@ const Testimonials = () => {
     e.preventDefault();
     setIsSubmitting(true);
     try {
-      await axios.post('http://localhost:8000/testimonials', formData);
+      await api.post('/testimonials', formData);
       setSubmitStatus('success');
       setFormData({ name: '', role: '', content: '', avatar_url: '', rating: 5 });
       setShowForm(false);
