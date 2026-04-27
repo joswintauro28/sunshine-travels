@@ -3,6 +3,8 @@ import { Link } from 'react-router-dom';
 import { Camera, MessageCircle, Share2, Mail, Phone, MapPin } from 'lucide-react';
 import logo from '../assets/logo.png';
 
+import mapImage from '../assets/map.png';
+
 const Footer = () => {
   return (
     <footer className="bg-primary-navy text-white pt-20 pb-10">
@@ -10,7 +12,7 @@ const Footer = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 mb-16">
           <div className="space-y-6">
             <div className="flex items-center gap-3">
-              <img src={logo} alt="Sunshine Travels Logo" className="h-32 w-auto object-contain" />
+              <img src={logo} alt="Sunshine Travels Logo" className="h-20 w-auto object-contain" />
             </div>
             <p className="text-gray-400">Making your luxury travel dreams come true with exclusive packages and premium service since 2010.</p>
             <div className="flex gap-4">
@@ -49,11 +51,11 @@ const Footer = () => {
             <h4 className="text-xl font-bold mb-8 uppercase tracking-widest text-[13px]">Find Us</h4>
             <div className="group relative w-full h-40 rounded-3xl overflow-hidden shadow-2xl border border-white/10">
               <img 
-                src="https://images.unsplash.com/photo-1526778548025-fa2f459cd5c1?auto=format&fit=crop&q=80&w=600" 
+                src={mapImage} 
                 alt="Map Preview" 
                 className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-125"
               />
-              <div className="absolute inset-0 bg-slate-900/60 group-hover:bg-slate-900/40 transition-colors flex flex-col items-center justify-center p-4 text-center">
+              <div className="absolute inset-0 bg-slate-900/20 group-hover:bg-slate-900/10 transition-colors flex flex-col items-center justify-center p-4 text-center">
                 <MapPin size={32} className="text-orange-500 mb-2 transform group-hover:scale-125 transition-transform" />
                 <p className="text-white font-bold uppercase tracking-widest text-[10px]">Open in Google Maps</p>
                 <a 
