@@ -22,7 +22,7 @@ const RedirectModal = ({ isOpen, onClose, onLater }) => {
                         className="relative bg-white rounded-[3rem] p-10 md:p-14 w-full max-w-sm shadow-2xl overflow-hidden text-center"
                     >
                         <div className="absolute top-0 right-0 w-32 h-32 bg-orange-500/10 rounded-bl-full -mr-16 -mt-16" />
-                        
+
                         <div className="relative z-10 space-y-6">
                             <div className="w-20 h-20 bg-orange-500/10 text-orange-500 rounded-full flex items-center justify-center mx-auto">
                                 <Sparkles size={32} />
@@ -85,7 +85,7 @@ const Auth = () => {
         e.preventDefault();
         if (!validate()) return;
         setStatus({ loading: true, success: false, error: null });
-        
+
         try {
             if (isLogin) {
                 const params = new URLSearchParams();
@@ -104,7 +104,7 @@ const Auth = () => {
                 setLoggedInUser(user);
                 window.dispatchEvent(new Event('authChange'));
                 setStatus({ loading: false, success: true, error: null });
-                
+
                 if (user.is_superuser) {
                     setTimeout(() => navigate('/admin'), 1500);
                 } else {
@@ -134,18 +134,18 @@ const Auth = () => {
 
     return (
         <>
-            <RedirectModal 
-                isOpen={showQueryModal} 
-                onClose={handleModalClose} 
+            <RedirectModal
+                isOpen={showQueryModal}
+                onClose={handleModalClose}
                 onLater={handleLater}
             />
-            
+
             <section className="relative min-h-screen flex items-center justify-center overflow-hidden bg-slate-900 px-6 py-32 md:py-40">
                 {/* High-End Background */}
                 <div className="absolute inset-0 z-0">
-                    <img 
-                        src="https://images.unsplash.com/photo-1540962351504-03099e0a754b?auto=format&fit=crop&q=80&w=2400" 
-                        alt="Private Jet at Dusk" 
+                    <img
+                        src="https://images.unsplash.com/photo-1540962351504-03099e0a754b?auto=format&fit=crop&q=80&w=2400"
+                        alt="Private Jet at Dusk"
                         className="w-full h-full object-cover opacity-40"
                     />
                     <div className="absolute inset-0 bg-gradient-to-tr from-slate-900 via-slate-900/40 to-transparent"></div>

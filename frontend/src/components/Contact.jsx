@@ -85,7 +85,7 @@ const Contact = () => {
 
             <div className="container mx-auto px-6 relative z-10">
                 <div className="max-w-4xl mx-auto">
-                    <motion.div 
+                    <motion.div
                         initial={{ opacity: 0, y: 30 }}
                         animate={{ opacity: 1, y: 0 }}
                         className="bg-white/10 backdrop-blur-3xl rounded-[3rem] border border-white/30 overflow-hidden shadow-2xl flex flex-col md:flex-row"
@@ -109,7 +109,7 @@ const Contact = () => {
                                     </div>
                                     <p className="text-sm font-bold">+91 98802 32901</p>
                                 </div>
-                                
+
                                 <div>
                                     <div className="flex items-center gap-3 text-orange-400 mb-1">
                                         <Mail size={16} />
