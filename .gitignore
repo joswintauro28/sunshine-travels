@@ -8,6 +8,8 @@ backend/app/__pycache__
 backend/app/api/__pycache__
 backend/app/schemas/__pycache__
 backend/debug_logs.txt
+backend/app/api/endpoints/__pycache__
+
 # C extensions
 *.so
 
