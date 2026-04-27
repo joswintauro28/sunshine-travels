@@ -47,42 +47,47 @@ const Navbar = () => {
   };
 
   return (
-    <nav className={`fixed w-full z-50 transition-all duration-500 border-b border-slate-100 ${isScrolled ? 'bg-[#F8F8F8]/95 backdrop-blur-md shadow-lg py-1' : 'bg-[#F8F8F8] py-1 shadow-sm'}`}>
+    <nav className={`fixed w-full z-50 transition-all duration-500 border-b border-slate-100 ${isScrolled ? 'bg-white/95 backdrop-blur-md shadow-lg py-1' : 'bg-white py-1 shadow-sm'}`}>
       <div className="container mx-auto px-6 flex justify-between items-center h-16 md:h-24">
-        <div className="flex items-center gap-3">
+        {/* Logo and Tagline */}
+        <div className="flex flex-col items-start min-w-[220px]">
           <Link to="/">
-            <img src={logo} alt="Sunshine Travels Logo" className="h-16 md:h-24 w-auto object-contain transition-all duration-300 scale-100 md:scale-[1.1] origin-left" />
+            <img src={logo} alt="Sunshine Travels Logo" className="h-14 md:h-[82px] w-auto object-contain transition-all duration-300" />
           </Link>
+          <p className="text-[7px] md:text-[9px] text-orange-500 font-black uppercase tracking-[0.3em] mt-0.5 leading-none">
+            A REASON TO SMILE
+          </p>
         </div>
 
-        {/* Desktop Menu */}
-        <div className="hidden lg:flex items-center gap-6 text-slate-900 font-bold text-[12px]">
-          <Link to="/" className={`${location.pathname === '/' ? 'text-orange-500' : ''} hover:text-orange-500 transition-colors uppercase tracking-widest`}>Home</Link>
-          <Link to="/destinations" className={`${location.pathname === '/destinations' ? 'text-orange-500' : ''} hover:text-orange-500 transition-colors uppercase tracking-widest`}>Destinations</Link>
-          <Link to="/services" className={`${location.pathname === '/services' ? 'text-orange-500' : ''} hover:text-orange-500 transition-colors uppercase tracking-widest`}>Services</Link>
-          <Link to="/our-difference" className={`${location.pathname === '/our-difference' ? 'text-orange-500' : ''} hover:text-orange-500 transition-colors uppercase tracking-widest whitespace-nowrap`}>Our Edge</Link>
-          <Link to="/testimonials" className={`${location.pathname === '/testimonials' ? 'text-orange-500' : ''} hover:text-orange-500 transition-colors uppercase tracking-widest`}>Testimonials</Link>
-          <Link to="/about" className={`${location.pathname === '/about' ? 'text-orange-500' : ''} hover:text-orange-500 transition-colors uppercase tracking-widest`}>About us</Link>
-          <Link to="/contact" className={`${location.pathname === '/contact' ? 'text-orange-500' : ''} hover:text-orange-500 transition-colors uppercase tracking-widest`}>Contact</Link>
+        {/* Desktop Menu - Centered */}
+        <div className="hidden lg:flex flex-1 justify-center items-center gap-6 text-slate-900 font-bold text-[11px] uppercase tracking-widest">
+          <Link to="/" className={`${location.pathname === '/' ? 'text-orange-500' : ''} hover:text-orange-500 transition-colors`}>Home</Link>
+          <Link to="/destinations" className={`${location.pathname === '/destinations' ? 'text-orange-500' : ''} hover:text-orange-500 transition-colors`}>Destinations</Link>
+          <Link to="/services" className={`${location.pathname === '/services' ? 'text-orange-500' : ''} hover:text-orange-500 transition-colors`}>Services</Link>
+          <Link to="/our-difference" className={`${location.pathname === '/our-difference' ? 'text-orange-500' : ''} hover:text-orange-500 transition-colors whitespace-nowrap`}>Our Edge</Link>
+          <Link to="/testimonials" className={`${location.pathname === '/testimonials' ? 'text-orange-500' : ''} hover:text-orange-500 transition-colors`}>Testimonials</Link>
+          <Link to="/about" className={`${location.pathname === '/about' ? 'text-orange-500' : ''} hover:text-orange-500 transition-colors`}>About us</Link>
+          <Link to="/contact" className={`${location.pathname === '/contact' ? 'text-orange-500' : ''} hover:text-orange-500 transition-colors`}>Contact</Link>
+        </div>
 
-          <div className="flex items-center gap-3 ml-6">
-            {!user && !isAuthPage && (
-              <Link to="/login" className="px-6 py-2.5 rounded-full bg-slate-900 text-white font-bold uppercase tracking-widest text-[10px] hover:bg-orange-500 transition-all flex items-center gap-2 shadow-lg">
-                <User size={14} />
-                Login
-              </Link>
-            )}
-            {user && (
-              <div className="flex items-center gap-4 bg-slate-50 px-4 py-2 rounded-full border border-slate-200 shadow-sm">
-                <div className="w-8 h-8 rounded-full bg-orange-500 flex items-center justify-center text-white font-bold text-xs">
-                  {user.full_name?.charAt(0) || user.name?.charAt(0) || 'U'}
-                </div>
-                <span className="text-slate-900 text-[10px] font-bold uppercase tracking-tighter">{user.full_name || user.name}</span>
-                <button onClick={handleLogout} className="text-slate-400 hover:text-red-500 transition-all text-[10px] uppercase font-bold border-l border-slate-200 pl-3">Logout</button>
+        {/* Auth and Buttons */}
+        <div className="hidden lg:flex items-center gap-4 min-w-[200px] justify-end">
+          {!user && !isAuthPage && (
+            <Link to="/login" className="px-5 py-2.5 rounded-full bg-slate-900 text-white font-bold uppercase tracking-widest text-[9px] hover:bg-orange-500 transition-all flex items-center gap-2 shadow-lg">
+              <User size={13} />
+              Login
+            </Link>
+          )}
+          {user && (
+            <div className="flex items-center gap-3 bg-slate-50 px-3 py-1.5 rounded-full border border-slate-200 shadow-sm">
+              <div className="w-7 h-7 rounded-full bg-orange-500 flex items-center justify-center text-white font-bold text-[10px]">
+                {user.full_name?.charAt(0) || user.name?.charAt(0) || 'U'}
               </div>
-            )}
-            {!hideBookNow && <Link to="/contact" className="px-8 py-3 rounded-full bg-orange-500 text-white font-bold uppercase tracking-widest text-[10px] hover:bg-slate-900 transition-all shadow-xl shadow-orange-500/20">Book Now</Link>}
-          </div>
+              <span className="text-slate-900 text-[9px] font-bold uppercase tracking-tighter">{user.full_name || user.name}</span>
+              <button onClick={handleLogout} className="text-slate-400 hover:text-red-500 transition-all text-[9px] uppercase font-bold border-l border-slate-200 pl-2">Logout</button>
+            </div>
+          )}
+          {!hideBookNow && <Link to="/contact" className="px-6 py-2.5 rounded-full bg-orange-500 text-white font-bold uppercase tracking-widest text-[9px] hover:bg-slate-900 transition-all shadow-xl shadow-orange-500/20">Book Now</Link>}
         </div>
 
         {/* Mobile Toggle */}

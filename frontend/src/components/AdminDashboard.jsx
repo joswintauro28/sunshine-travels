@@ -6,7 +6,6 @@ import {
     FileText,
     CheckSquare,
     LayoutDashboard,
-    Settings,
     LogOut,
     Search,
     Bell,
@@ -294,7 +293,6 @@ const AdminDashboard = () => {
         { id: 'destinations', label: 'Destinations', icon: BookOpen },
         { id: 'testimonials', label: 'Testimonials', icon: Quote },
         { id: 'inquiries', label: 'Inquiries', icon: FileText },
-        { id: 'settings', label: 'Settings', icon: Settings },
     ];
 
     const handleLogout = () => {
