@@ -19,7 +19,7 @@ const DestinationCard = ({ dest, index, onClick }) => (
       className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110"
     />
     <div className="absolute inset-0 bg-gradient-to-t from-slate-900/80 via-slate-900/10 to-transparent"></div>
-    
+
     <div className="absolute inset-0 p-4 flex flex-col justify-end text-white">
       <div className="flex items-center gap-1.5 mb-1">
         <div className="bg-orange-500 px-1.5 py-0.5 rounded-full flex items-center gap-0.5">
@@ -66,9 +66,9 @@ const Destinations = () => {
       {/* Immersive High-End Hero Section */}
       <section className="relative h-[55vh] flex items-center overflow-hidden pt-20">
         <div className="absolute inset-0 z-0">
-          <img 
-            src="https://images.unsplash.com/photo-1501785888041-af3ef285b470?auto=format&fit=crop&q=80&w=2000" 
-            alt="Serene Lake Landscape" 
+          <img
+            src="https://images.unsplash.com/photo-1501785888041-af3ef285b470?auto=format&fit=crop&q=80&w=2000"
+            alt="Serene Lake Landscape"
             className="w-full h-full object-cover"
           />
           <div className="absolute inset-0 bg-gradient-to-t from-slate-900/60 via-slate-900/10 to-transparent"></div>
@@ -76,7 +76,7 @@ const Destinations = () => {
 
         <div className="container mx-auto px-6 relative z-10">
           <div className="max-w-4xl text-left text-white space-y-4 drop-shadow-2xl">
-            <motion.p 
+            <motion.p
               initial={{ opacity: 0, x: -15 }}
               animate={{ opacity: 1, x: 0 }}
               className="text-orange-500 text-[8px] font-black uppercase tracking-[0.5em]"
@@ -84,27 +84,27 @@ const Destinations = () => {
               Curated Experiences
             </motion.p>
             <div className="space-y-4">
-              <motion.h1 
+              <motion.h1
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 className="text-4xl md:text-6xl font-black uppercase leading-none tracking-tighter"
               >
                 Our <span className="text-orange-500">Destinations</span>
               </motion.h1>
-              <motion.div 
+              <motion.div
                 initial={{ width: 0 }}
                 animate={{ width: 60 }}
                 transition={{ duration: 1, delay: 0.5 }}
                 className="h-[2px] bg-orange-500 rounded-full"
               ></motion.div>
             </div>
-            <motion.p 
+            <motion.p
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ delay: 0.3 }}
               className="text-xs md:text-base text-white/90 font-medium max-w-lg leading-relaxed"
             >
-              Discover the world's most extraordinary destinations, <br className="hidden md:block" /> 
+              Discover the world's most extraordinary destinations, <br className="hidden md:block" />
               handpicked and curated for the discerning traveler.
             </motion.p>
           </div>
@@ -115,8 +115,8 @@ const Destinations = () => {
       <section className="py-16 container mx-auto px-6 max-w-[1600px]">
         <div className="flex items-center justify-between mb-8 border-b border-slate-100 pb-6">
           <div className="flex items-center gap-3">
-             <div className="w-1.5 h-6 bg-orange-500 rounded-full"></div>
-             <h2 className="text-lg font-black text-slate-900 uppercase tracking-widest">Global Collection</h2>
+            <div className="w-1.5 h-6 bg-orange-500 rounded-full"></div>
+            <h2 className="text-lg font-black text-slate-900 uppercase tracking-widest">Global Collection</h2>
           </div>
         </div>
 
@@ -140,76 +140,92 @@ const Destinations = () => {
               onClick={() => setSelectedDest(null)}
               className="absolute inset-0 bg-slate-900/95 backdrop-blur-md"
             ></motion.div>
-            
-            <motion.div
-              initial={{ opacity: 0, scale: 0.9, y: 20 }}
-              animate={{ opacity: 1, scale: 1, y: 0 }}
-              exit={{ opacity: 0, scale: 0.9, y: 20 }}
-              className="relative bg-white w-full max-w-6xl rounded-[2.5rem] overflow-hidden shadow-2xl flex flex-col md:flex-row h-[85vh] md:h-auto"
-            >
-              <button 
-                onClick={() => setSelectedDest(null)}
-                className="absolute top-6 right-6 z-50 p-3 bg-white/10 hover:bg-white/20 backdrop-blur-md rounded-full text-white md:text-slate-900 transition-colors"
-              >
-                <X size={24} />
-              </button>
 
-              {/* Image Side */}
-              <div className="w-full md:w-1/2 h-64 md:h-[600px] relative">
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95, y: 30 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.95, y: 30 }}
+              className="relative bg-white w-full max-w-7xl rounded-[4rem] overflow-hidden shadow-2xl flex flex-col md:flex-row h-[90vh] md:h-[80vh]"
+            >
+              {/* Image Side - Fixed */}
+              <div className="w-full md:w-5/12 h-[350px] md:h-full relative overflow-hidden group shrink-0">
                 <img 
                   src={selectedDest.image_url} 
                   alt={selectedDest.name}
-                  className="w-full h-full object-cover"
+                  className="w-full h-full object-cover transition-transform duration-[3s] group-hover:scale-110"
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-slate-900/60 to-transparent"></div>
-                <div className="absolute bottom-8 left-8 text-white">
-                   <div className="flex items-center gap-2 mb-2">
-                     <div className="bg-orange-500 px-3 py-1 rounded-full flex items-center gap-1.5">
-                       <Star size={12} className="fill-white" />
-                       <span className="text-xs font-black">{selectedDest.rating || 5.0}</span>
-                     </div>
+                <div className="absolute inset-0 bg-gradient-to-t from-slate-900 via-slate-900/20 to-transparent"></div>
+                
+                <div className="absolute bottom-28 left-12">
+                   <div className="bg-orange-500 px-4 py-1.5 rounded-full flex items-center gap-2 w-fit shadow-2xl">
+                     <Star size={14} className="fill-white" />
+                     <span className="text-xs font-black text-white">{selectedDest.rating || 4.9}</span>
                    </div>
-                   <h2 className="text-3xl md:text-5xl font-black uppercase tracking-tight">{selectedDest.name}</h2>
+                </div>
+
+                <div className="absolute bottom-12 left-12 right-12 text-white">
+                   <h2 className="text-5xl md:text-7xl font-serif font-black uppercase tracking-tighter leading-[0.8] drop-shadow-2xl">
+                     {selectedDest.name},<br />
+                     <span className="text-white/90">{selectedDest.location.split(',').pop().trim()}</span>
+                   </h2>
                 </div>
               </div>
 
-              {/* Content Side */}
-              <div className="w-full md:w-1/2 p-8 md:p-16 flex flex-col bg-white overflow-y-auto">
-                <div className="flex items-center gap-2 text-orange-500 font-black text-xs uppercase tracking-[0.3em] mb-6">
-                  <MapPin size={16} />
-                  <span>{selectedDest.location}</span>
-                </div>
-                
-                <div className="prose prose-slate max-w-none">
-                   <h3 className="text-slate-900 text-xl font-black uppercase mb-4 tracking-wider">The Experience</h3>
-                   <p className="text-slate-600 text-lg leading-relaxed mb-8 font-medium">
-                     {selectedDest.description || "Immerse yourself in the unique beauty of this handpicked destination. Experience unparalleled luxury and authentic local charm curated specifically for our elite travelers."}
-                   </p>
-                </div>
-
-                 <div className="mt-auto pt-8 border-t border-slate-100 flex flex-wrap items-center justify-between gap-4">
-                   <div className="flex flex-wrap gap-4">
-                     <div className="flex items-center gap-3 text-slate-400 text-[10px] font-black uppercase tracking-widest">
-                       <Compass size={16} className="text-orange-500" />
-                       <span>Exclusive Itinerary</span>
-                     </div>
-                     <div className="flex items-center gap-3 text-slate-400 text-[10px] font-black uppercase tracking-widest">
-                       <Sparkles size={16} className="text-orange-500" />
-                       <span>Private Access</span>
-                     </div>
-                   </div>
-                   <div className="text-2xl font-black text-slate-900">
-                     <span className="text-sm text-slate-400 font-bold mr-1">Starting from</span>
-                     ₹{selectedDest.price}
-                   </div>
-                 </div>
-
+              {/* Content Side - Scrollable */}
+              <div className="w-full md:w-7/12 p-12 md:p-24 flex flex-col bg-white relative overflow-y-auto custom-scrollbar">
                 <button 
-                  onClick={() => navigate('/contact')}
-                  className="mt-10 w-full bg-slate-900 text-white py-5 rounded-2xl font-black uppercase tracking-widest hover:bg-orange-500 transition-all active:scale-95 shadow-xl shadow-slate-900/10 flex items-center justify-center gap-3"
+                  onClick={() => setSelectedDest(null)}
+                  className="absolute top-10 right-10 z-50 text-slate-300 hover:text-slate-900 transition-colors hover:rotate-90 duration-300"
                 >
-                  Inquire Now <ChevronRight size={20} />
+                  <X size={32} />
                 </button>
+
+                <div className="space-y-12 max-w-2xl my-auto">
+                  <div className="flex items-center gap-3 text-orange-600 font-black text-xs uppercase tracking-[0.4em]">
+                    <MapPin size={16} />
+                    <span>{selectedDest.location.split(',').pop().trim()}</span>
+                  </div>
+                  
+                  <div className="space-y-6">
+                    <h3 className="text-slate-900 text-3xl font-serif font-black uppercase tracking-wide">The Experience</h3>
+                    <p className="text-slate-600 text-lg md:text-xl leading-relaxed font-medium">
+                      {selectedDest.description || "Iconic blue domes and sunset views."}
+                    </p>
+                  </div>
+
+                  <div className="w-full h-[1px] bg-slate-100"></div>
+
+                  <div className="space-y-8">
+                    <div className="flex flex-wrap gap-10">
+                      <div className="flex items-center gap-3 text-slate-400 text-xs font-black uppercase tracking-widest">
+                        <Compass size={18} className="text-orange-500" />
+                        <span>Exclusive Itinerary</span>
+                      </div>
+                      <div className="flex items-center gap-3 text-slate-400 text-xs font-black uppercase tracking-widest">
+                        <Sparkles size={18} className="text-orange-500" />
+                        <span>Private Access</span>
+                      </div>
+                    </div>
+
+                    <div className="pt-4">
+                      <p className="text-slate-900 font-black text-3xl tracking-tight">
+                        <span className="text-sm text-slate-400 font-bold uppercase tracking-widest mr-4">Starting from</span>
+                        ₹{selectedDest.price}
+                      </p>
+                    </div>
+                  </div>
+
+                  <button 
+                    onClick={() => {
+                      setSelectedDest(null);
+                      navigate('/contact');
+                    }}
+                    className="w-full bg-[#0F172A] text-white py-7 rounded-[2rem] font-black uppercase tracking-[0.3em] text-xs hover:bg-orange-600 transition-all flex items-center justify-center gap-4 shadow-2xl group active:scale-95"
+                  >
+                    INQUIRE NOW 
+                    <ChevronRight size={20} className="group-hover:translate-x-2 transition-transform" />
+                  </button>
+                </div>
               </div>
             </motion.div>
           </div>
