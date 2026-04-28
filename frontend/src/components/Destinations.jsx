@@ -156,12 +156,6 @@ const Destinations = () => {
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-slate-900 via-slate-900/20 to-transparent"></div>
                 
-                <div className="absolute bottom-28 left-12">
-                   <div className="bg-orange-500 px-4 py-1.5 rounded-full flex items-center gap-2 w-fit shadow-2xl">
-                     <Star size={14} className="fill-white" />
-                     <span className="text-xs font-black text-white">{selectedDest.rating || 4.9}</span>
-                   </div>
-                </div>
 
                 <div className="absolute bottom-12 left-12 right-12 text-white">
                    <h2 className="text-5xl md:text-7xl font-serif font-black uppercase tracking-tighter leading-[0.8] drop-shadow-2xl">
