@@ -17,10 +17,10 @@ const TestimonialCard = ({ testimonial, index, onClick }) => (
       <div className="flex justify-between items-start">
         <div className="flex gap-1">
           {[...Array(5)].map((_, i) => (
-            <Star 
-              key={i} 
-              size={14} 
-              className={i < (testimonial.rating || 5) ? "fill-orange-400 text-orange-400" : "text-slate-200"} 
+            <Star
+              key={i}
+              size={14}
+              className={i < (testimonial.rating || 5) ? "fill-orange-400 text-orange-400" : "text-slate-200"}
             />
           ))}
         </div>
@@ -40,7 +40,7 @@ const TestimonialCard = ({ testimonial, index, onClick }) => (
       <img
         src={testimonial.avatar_url || `https://i.pravatar.cc/150?u=${testimonial.id}`}
         alt={testimonial.name}
-        className="w-14 h-14 rounded-2xl object-cover shadow-sm ring-4 ring-slate-50"
+        className="w-11 h-11 rounded-xl object-cover shadow-sm ring-4 ring-slate-50"
       />
       <div>
         <h4 className="text-md font-black text-slate-900 uppercase tracking-tight leading-none">{testimonial.name}</h4>
@@ -130,7 +130,7 @@ const Testimonials = () => {
               className="bg-white w-full max-w-6xl h-full max-h-[85vh] rounded-[3rem] overflow-hidden shadow-2xl flex flex-col md:flex-row relative"
             >
               {/* Close Button */}
-              <button 
+              <button
                 onClick={() => setSelectedTestimonial(null)}
                 className="absolute top-6 right-6 z-50 w-10 h-10 bg-slate-900 text-white rounded-full flex items-center justify-center hover:bg-orange-500 transition-all shadow-lg"
               >
@@ -138,9 +138,9 @@ const Testimonials = () => {
               </button>
 
               {/* Left Side: Immersive Image */}
-              <div className="md:w-5/12 h-64 md:h-full relative bg-slate-900 flex items-center justify-center">
-                <img 
-                  src={selectedTestimonial.avatar_url || `https://i.pravatar.cc/800?u=${selectedTestimonial.id}`} 
+              <div className="md:w-5/12 h-56 md:h-full relative bg-slate-900 flex items-center justify-center">
+                <img
+                  src={selectedTestimonial.avatar_url || `https://i.pravatar.cc/800?u=${selectedTestimonial.id}`}
                   alt={selectedTestimonial.name}
                   className="w-full h-full object-contain"
                 />
@@ -154,10 +154,10 @@ const Testimonials = () => {
                     <div className="space-y-2">
                       <div className="flex gap-1 mb-4">
                         {[...Array(5)].map((_, i) => (
-                          <Star 
-                            key={i} 
-                            size={18} 
-                            className={i < (selectedTestimonial.rating || 5) ? "fill-orange-400 text-orange-400" : "text-slate-200"} 
+                          <Star
+                            key={i}
+                            size={18}
+                            className={i < (selectedTestimonial.rating || 5) ? "fill-orange-400 text-orange-400" : "text-slate-200"}
                           />
                         ))}
                       </div>
@@ -182,7 +182,7 @@ const Testimonials = () => {
                     </div>
                   </div>
                 </div>
-                
+
                 {/* Fixed Footer inside Modal */}
                 <div className="px-8 md:px-16 py-6 bg-slate-50 border-t border-slate-100 flex items-center justify-between">
                   <p className="text-[9px] font-bold text-slate-400 uppercase tracking-widest">Published on Sunshine Travels</p>
@@ -200,9 +200,10 @@ const Testimonials = () => {
           <img
             src="https://images.unsplash.com/photo-1520250497591-112f2f40a3f4?auto=format&fit=crop&q=80&w=2000"
             alt="Beach"
-            className="w-full h-full object-cover opacity-10 grayscale"
+            className="w-full h-full object-cover"
           />
-          <div className="absolute inset-0 bg-gradient-to-b from-[#FAF9F6] via-transparent to-[#FAF9F6]"></div>
+          <div className="absolute inset-0 bg-slate-900/10"></div>
+          <div className="absolute inset-0 bg-gradient-to-t from-white via-transparent to-transparent"></div>
         </div>
 
         <div className="container mx-auto px-6 relative z-10 text-center space-y-6">
@@ -217,7 +218,7 @@ const Testimonials = () => {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.2 }}
-            className="text-5xl md:text-7xl font-bold text-slate-900 uppercase tracking-tighter"
+            className="text-5xl md:text-7xl font-bold text-white uppercase tracking-tighter drop-shadow-2xl"
           >
             Customer <span className="text-orange-500 italic">Stories.</span>
           </motion.h1>
@@ -284,9 +285,9 @@ const Testimonials = () => {
                         onClick={() => setFormData(prev => ({ ...prev, rating: star }))}
                         className="transition-all hover:scale-110 active:scale-95"
                       >
-                        <Star 
-                          size={28} 
-                          className={star <= formData.rating ? "fill-orange-500 text-orange-500" : "text-slate-200"} 
+                        <Star
+                          size={28}
+                          className={star <= formData.rating ? "fill-orange-500 text-orange-500" : "text-slate-200"}
                         />
                       </button>
                     ))}
