@@ -28,22 +28,21 @@ const Hero = () => {
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8 }}
-          className="text-5xl md:text-8xl font-bold mb-6 leading-[1.1] tracking-tight"
+          className="text-5xl md:text-7xl font-black mb-8 leading-[0.95] tracking-tighter uppercase"
         >
-          Unravel the world's <br />
-          marvels with our <br />
-          <span className="text-orange-500">hassle-free</span> travel <br />
-          bundles
+          Unravel the <br className="hidden lg:block" />
+          world's marvels <br className="hidden lg:block" />
+          with <span className="text-orange-500">hassle-free</span> <br className="hidden lg:block" />
+          travel bundles
         </motion.h1>
 
         <motion.p
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.2 }}
-          className="text-lg md:text-xl mb-10 max-w-2xl font-normal opacity-90 leading-relaxed"
+          className="text-lg md:text-xl mb-12 max-w-3xl font-bold opacity-90 leading-relaxed border-l-4 border-orange-500 pl-8"
         >
-          Experience personalized journeys crafted with care, expertise, and a <br className="hidden md:block" />
-          passion for creating unforgettable memories
+          Experience personalized journeys crafted with care, expertise, and a&nbsp;passion for creating unforgettable memories
         </motion.p>
 
         <motion.div

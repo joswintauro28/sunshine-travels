@@ -102,7 +102,7 @@ const Destinations = () => {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ delay: 0.3 }}
-              className="text-xs md:text-base text-white/90 font-medium max-w-lg leading-relaxed"
+              className="text-xs md:text-base text-white/90 font-bold max-w-lg leading-relaxed"
             >
               Discover the world's most extraordinary destinations, <br className="hidden md:block" />
               handpicked and curated for the discerning traveler.

@@ -60,7 +60,7 @@ const Navbar = () => {
         </div>
 
         {/* Desktop Menu - Centered */}
-        <div className="hidden lg:flex flex-1 justify-center items-center gap-6 text-slate-900 font-bold text-[11px] uppercase tracking-widest">
+        <div className="hidden lg:flex flex-1 justify-center items-center gap-6 text-slate-900 font-black text-[11px] uppercase tracking-widest">
           <Link to="/" className={`${location.pathname === '/' ? 'text-orange-500' : ''} hover:text-orange-500 transition-colors`}>Home</Link>
           <Link to="/destinations" className={`${location.pathname === '/destinations' ? 'text-orange-500' : ''} hover:text-orange-500 transition-colors`}>Destinations</Link>
           <Link to="/services" className={`${location.pathname === '/services' ? 'text-orange-500' : ''} hover:text-orange-500 transition-colors`}>Services</Link>

@@ -7,14 +7,14 @@ import mapImage from '../assets/map.png';
 
 const Footer = () => {
   return (
-    <footer className="bg-primary-navy text-white pt-20 pb-10">
+    <footer className="bg-primary-navy text-white pt-12 pb-8">
       <div className="container mx-auto px-6">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 mb-16">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-10">
           <div className="space-y-6">
             <div className="flex items-center gap-3">
-              <img src={logo} alt="Sunshine Travels Logo" className="h-20 w-auto object-contain" />
+              <img src={logo} alt="Sunshine Travels Logo" className="h-16 w-auto object-contain" />
             </div>
-            <p className="text-gray-400">Making your luxury travel dreams come true with exclusive packages and premium service since 2010.</p>
+            <p className="text-gray-400 text-sm leading-relaxed">Making your luxury travel dreams come true with exclusive packages and premium service since 2010.</p>
             <div className="flex gap-4">
               <a href="#" className="w-10 h-10 rounded-full border border-gray-700 flex items-center justify-center hover:bg-orange-500 transition-colors"><Camera size={20} /></a>
               <a href="#" className="w-10 h-10 rounded-full border border-gray-700 flex items-center justify-center hover:bg-orange-500 transition-colors"><MessageCircle size={20} /></a>
@@ -23,18 +23,18 @@ const Footer = () => {
           </div>
 
           <div>
-            <h4 className="text-xl font-bold mb-8">Quick Links</h4>
-            <ul className="space-y-4 text-gray-400">
+            <h4 className="text-base font-bold mb-4 uppercase tracking-wider">Quick Links</h4>
+            <ul className="space-y-2 text-gray-400 text-sm">
               <li><Link to="/destinations" className="hover:text-orange-400 transition-colors">Destinations</Link></li>
               <li><Link to="/services" className="hover:text-orange-400 transition-colors">Our Services</Link></li>
               <li><Link to="/about" className="hover:text-orange-400 transition-colors">About Us</Link></li>
-              <li><Link to="#" className="hover:text-orange-400 transition-colors">Privacy Policy</Link></li>
+              <li><Link to="/privacy-policy" className="hover:text-orange-400 transition-colors">Privacy Policy</Link></li>
             </ul>
           </div>
 
           <div>
-            <h4 className="text-xl font-bold mb-8">Contact Info</h4>
-            <ul className="space-y-4 text-gray-400">
+            <h4 className="text-base font-bold mb-4 uppercase tracking-wider">Contact Info</h4>
+            <ul className="space-y-2 text-gray-400 text-sm">
               <li className="flex items-start gap-3">
                 <MapPin size={20} className="text-orange-500 mt-1 flex-shrink-0" /> 
                 <span>Ground Floor, Tiger Circle, Academy Tower, Manipal, Karnataka 576104<br/><span className="text-xs opacity-75">(Located in: Hotel Green Park Suites)</span></span>
@@ -48,8 +48,8 @@ const Footer = () => {
           </div>
 
           <div>
-            <h4 className="text-xl font-bold mb-8 uppercase tracking-widest text-[13px]">Find Us</h4>
-            <div className="group relative w-full h-40 rounded-3xl overflow-hidden shadow-2xl border border-white/10">
+            <h4 className="text-base font-bold mb-4 uppercase tracking-wider uppercase tracking-widest text-[13px]">Find Us</h4>
+            <div className="group relative w-full h-32 rounded-2xl overflow-hidden shadow-2xl border border-white/10">
               <img 
                 src={mapImage} 
                 alt="Map Preview" 
@@ -71,7 +71,7 @@ const Footer = () => {
           </div>
         </div>
         
-        <div className="pt-8 border-t border-gray-800 text-center text-gray-500 text-sm">
+        <div className="pt-6 border-t border-gray-800 text-center text-gray-500 text-[11px] uppercase tracking-widest font-bold">
           <p>© 2026 Sunshine Travels. All rights reserved. Designed with passion.</p>
         </div>
       </div>

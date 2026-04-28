@@ -29,7 +29,7 @@ const Services = () => {
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="max-w-2xl">
             <span className="text-orange-500 font-bold uppercase tracking-widest text-xs mb-4 block">What We Do</span>
             <h1 className="text-5xl md:text-6xl font-bold uppercase mb-4 leading-none">Our <span className="text-orange-400">Services</span></h1>
-            <p className="text-gray-300 text-sm md:text-base">We handle all your travel needs with care and expertise.</p>
+            <p className="text-gray-300 text-xs md:text-base font-bold">We handle all your travel needs with care and expertise.</p>
           </motion.div>
         </div>
       </section>
@@ -75,7 +75,7 @@ const Services = () => {
                     <span className="text-2xl font-bold text-orange-500">{p.step}</span>
                     <div>
                       <h4 className="font-bold text-sm uppercase">{p.title}</h4>
-                      <p className="text-xs text-gray-400">{p.desc}</p>
+                      <p className="text-sm text-gray-400">{p.desc}</p>
                     </div>
                   </div>
                 ))}

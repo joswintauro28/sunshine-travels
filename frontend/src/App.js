@@ -14,6 +14,7 @@ import Services from './components/Services';
 import ScrollToTop from './components/ScrollToTop';
 import Footer from './components/Footer';
 import WhatsAppWidget from './components/WhatsAppWidget';
+import PrivacyPolicy from './components/PrivacyPolicy';
 
 import AdminDashboard from './components/AdminDashboard';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -136,6 +137,7 @@ const AppLayout = () => {
           <Route path="/testimonials" element={<Testimonials />} />
           <Route path="/about" element={<About />} />
           <Route path="/contact" element={<Contact />} />
+          <Route path="/privacy-policy" element={<PrivacyPolicy />} />
           <Route path="/login" element={<Auth />} />
           <Route path="/admin" element={<AdminDashboard />} />
         </Routes>

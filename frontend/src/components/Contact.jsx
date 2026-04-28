@@ -4,13 +4,6 @@ import { Phone, Mail, MapPin, Send, CheckCircle, LogIn, Sparkles, Globe, User } 
 import api from '../api';
 import { useNavigate } from 'react-router-dom';
 
-const countryCodes = [
-    { code: '+91', name: 'IN', flag: '🇮🇳' },
-    { code: '+1', name: 'US', flag: '🇺🇸' },
-    { code: '+44', name: 'UK', flag: '🇬🇧' },
-    { code: '+971', name: 'AE', flag: '🇦🇪' },
-];
-
 const Contact = () => {
     const navigate = useNavigate();
     const [formData, setFormData] = useState({
@@ -19,7 +12,6 @@ const Contact = () => {
         phone: '',
         message: ''
     });
-    const [selectedCode, setSelectedCode] = useState('+91');
     const [isLoggedIn, setIsLoggedIn] = useState(false);
     const [status, setStatus] = useState({ loading: false, success: false, error: null });
 
@@ -85,7 +77,7 @@ const Contact = () => {
 
             <div className="container mx-auto px-6 relative z-10">
                 <div className="max-w-4xl mx-auto">
-                    <motion.div 
+                    <motion.div
                         initial={{ opacity: 0, y: 30 }}
                         animate={{ opacity: 1, y: 0 }}
                         className="bg-white/10 backdrop-blur-3xl rounded-[3rem] border border-white/30 overflow-hidden shadow-2xl flex flex-col md:flex-row"
@@ -109,7 +101,7 @@ const Contact = () => {
                                     </div>
                                     <p className="text-sm font-bold">+91 98802 32901</p>
                                 </div>
-                                
+
                                 <div>
                                     <div className="flex items-center gap-3 text-orange-400 mb-1">
                                         <Mail size={16} />

@@ -16,14 +16,14 @@ const FeatureItem = ({ icon: Icon, title, description, index }) => (
     </div>
     <div className="space-y-1">
       <h3 className="text-base font-bold text-slate-900 uppercase">{title}</h3>
-      <p className="text-slate-700 text-xs font-bold leading-relaxed">{description}</p>
+      <p className="text-slate-700 text-sm font-bold leading-relaxed">{description}</p>
     </div>
   </motion.div>
 );
 
 const OurDifference = () => {
   const differences = [
-    { icon: Lightbulb, title: "25+ Years of Experience", description: "Quarter century of planning perfect trips." },
+    { icon: Lightbulb, title: "23+ Years of Experience", description: "Over two decades of planning perfect trips." },
     { icon: Target, title: "Custom Planning", description: "Every trip is unique and made for you." },
     { icon: Globe, title: "Private Access", description: "Unlock places others cannot go." },
     { icon: UserCheck, title: "Expert Team", description: "Led by people who love travel." }
@@ -51,7 +51,7 @@ const OurDifference = () => {
             <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="max-w-2xl text-white">
               <span className="inline-block px-4 py-1.5 rounded-full bg-orange-500 text-[10px] font-bold uppercase tracking-wider mb-4">Why Us</span>
               <h1 className="text-5xl md:text-6xl font-bold uppercase mb-4">The <span className="text-orange-400">Sunshine</span> <br />Difference.</h1>
-              <p className="text-gray-300 text-sm max-w-md">We believe travel is important. Every detail matters for your trip.</p>
+              <p className="text-gray-300 text-xs md:text-base max-w-md font-bold">We believe travel is important. Every detail matters for your trip.</p>
             </motion.div>
           </div>
         </section>
@@ -77,7 +77,7 @@ const OurDifference = () => {
                   { year: '2001', event: 'Founded in the heart of Karnataka with a vision for elite travel.' },
                   { year: '2012', event: 'Expanded our reach to 50+ international luxury partners.' },
                   { year: '2020', event: 'Pioneered bespoke "Safe-Solo" journeys for modern explorers.' },
-                  { year: '2026', event: 'Celebrating 25 years of creating unforgettable memories.' }
+                  { year: '2024', event: 'Celebrating 23 years of creating unforgettable memories.' }
                 ].map((item, idx) => (
                   <motion.div 
                     key={item.year}
@@ -109,7 +109,7 @@ const OurDifference = () => {
                       <Star className="text-orange-500 fill-orange-500" size={20} />
                       <span className="text-xs font-black uppercase tracking-widest">Travel with precision.</span>
                     </div>
-                    <p className="text-white/70 text-xs font-medium max-w-xs">Curated by our expert team of luxury travel designers.</p>
+                    <p className="text-white/70 text-sm font-medium max-w-xs">Curated by our expert team of luxury travel designers.</p>
                   </div>
                 </div>
               </div>
@@ -125,7 +125,7 @@ const OurDifference = () => {
               {[
                 { label: 'Destinations', value: '100+', sub: 'World Wide' },
                 { label: 'Happy Travelers', value: '25K+', sub: 'Returning Clients' },
-                { label: 'Years Experience', value: '25+', sub: 'Legacy of Trust' },
+                { label: 'Years Experience', value: '23+', sub: 'Legacy of Trust' },
                 { label: 'Success Rate', value: '99%', sub: 'Perfect Execution' }
               ].map((stat, i) => (
                 <motion.div 

@@ -159,7 +159,7 @@ const About = () => {
                       {feature.title}
                     </h3>
                   </div>
-                  <p className="text-slate-700 text-[11px] leading-relaxed font-bold group-hover:text-slate-900 transition-colors line-clamp-2">
+                  <p className="text-slate-700 text-sm leading-relaxed font-bold group-hover:text-slate-900 transition-colors line-clamp-2">
                     {feature.desc}
                   </p>
                   <div className="mt-6 pt-5 border-t border-slate-50 flex items-center justify-between opacity-0 group-hover:opacity-100 transition-opacity duration-500">
