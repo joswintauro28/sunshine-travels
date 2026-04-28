@@ -5,11 +5,11 @@
 @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
 
 :root {
-  --primary-navy: #0A1A2F;
-  --accent-orange: #FF8C00;
-  --warm-sand: #FAF9F6;
+  --primary-navy: #0B1120;
+  --accent-orange: #FF6B00;
+  --warm-sand: #F8FAFC; /* Switched to a cleaner slate-50 feel for better contrast with orange */
   --white: #FFFFFF;
-  --text-dark: #1A1A1A;
+  --text-dark: #0F172A;
   --text-light: #F8F9FA;
   --glass-bg: rgba(255, 255, 255, 0.4);
   --glass-border: rgba(255, 255, 255, 0.2);

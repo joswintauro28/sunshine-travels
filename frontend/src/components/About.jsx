@@ -5,7 +5,7 @@ import { Sparkles, Globe, Heart, Shield, ArrowRight } from 'lucide-react';
 
 const About = () => {
   return (
-    <div className="bg-[#FAF9F6] min-h-screen pb-12 font-sans">
+    <div className="bg-white min-h-screen pb-12 font-sans">
       {/* Ultra-Clear Vibrant Forest Hero */}
       <section className="relative h-[55vh] flex items-center overflow-hidden pt-24">
         <div className="absolute inset-0 z-0">
@@ -45,10 +45,10 @@ const About = () => {
               <h2 className="text-4xl md:text-6xl font-black text-slate-900 uppercase leading-none tracking-tighter">
                 ABOUT <span className="text-orange-500">US.</span>
               </h2>
-              <p className="text-slate-600 text-lg leading-relaxed font-medium">
+              <p className="text-slate-800 text-lg leading-relaxed font-bold">
                 Sunshine Travels has been dedicated to creating unforgettable travel experiences for 23 years. As a premier travel agency, we pride ourselves on delivering personalized service, expert advice, and seamless travel arrangements to a diverse clientele.
               </p>
-              <p className="text-slate-500 text-sm leading-relaxed font-medium italic">
+              <p className="text-slate-700 text-sm leading-relaxed font-semibold italic">
                 Our extensive network and industry knowledge enable us to offer exclusive deals and unique experiences, ensuring every journey is as memorable as it is effortless.
               </p>
             </div>
@@ -112,8 +112,8 @@ const About = () => {
         </div>
       </section>
 
-      {/* Why Choose Us Section - Modern & Elegant Redesign */}
-      <section className="py-32 bg-[#F8F9FA] relative overflow-hidden">
+      {/* Why Choose Us Section - Enhanced Contrast */}
+      <section className="py-32 bg-slate-50 border-y border-slate-100 relative overflow-hidden">
         {/* Abstract Background Elements */}
         <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-orange-100/30 rounded-full blur-[120px] -mr-64 -mt-64"></div>
         <div className="absolute bottom-0 left-0 w-[500px] h-[500px] bg-blue-50/50 rounded-full blur-[120px] -ml-64 -mb-64"></div>
@@ -159,7 +159,7 @@ const About = () => {
                       {feature.title}
                     </h3>
                   </div>
-                  <p className="text-slate-500 text-[11px] leading-relaxed font-medium group-hover:text-slate-600 transition-colors line-clamp-2">
+                  <p className="text-slate-700 text-[11px] leading-relaxed font-bold group-hover:text-slate-900 transition-colors line-clamp-2">
                     {feature.desc}
                   </p>
                   <div className="mt-6 pt-5 border-t border-slate-50 flex items-center justify-between opacity-0 group-hover:opacity-100 transition-opacity duration-500">
@@ -207,7 +207,7 @@ const About = () => {
                 </h2>
               </div>
 
-              <p className="text-gray-400 text-xl md:text-2xl font-medium leading-relaxed italic border-l-4 border-orange-500 pl-8">
+              <p className="text-slate-200 text-xl md:text-2xl font-bold leading-relaxed italic border-l-4 border-orange-500 pl-8">
                 "Founded in 2001, we've spent 23+ years helping thousands travel hassle-free. We're a woman-led, multilingual, and empathy-driven team, always just one call away."
               </p>
 
@@ -274,7 +274,7 @@ const About = () => {
                     {pillar.title}
                   </h3>
                   <div className="w-12 h-1 bg-orange-500 rounded-full group-hover:w-20 transition-all duration-500"></div>
-                  <p className="text-slate-600 font-medium leading-relaxed">
+                  <p className="text-slate-700 font-bold leading-relaxed">
                     {pillar.desc}
                   </p>
                 </div>
@@ -346,7 +346,7 @@ const About = () => {
 
           <div className="space-y-4 max-w-xl text-center md:text-left relative z-10">
             <h2 className="text-4xl md:text-5xl font-black text-white uppercase tracking-tight">Ready for your trip?</h2>
-            <p className="text-gray-400 text-lg font-medium leading-relaxed">
+            <p className="text-slate-200 text-lg font-bold leading-relaxed">
               Join thousands of happy travelers who have seen the world with Sunshine Travels.
             </p>
           </div>

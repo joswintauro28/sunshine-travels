@@ -16,7 +16,7 @@ const FeatureItem = ({ icon: Icon, title, description, index }) => (
     </div>
     <div className="space-y-1">
       <h3 className="text-base font-bold text-slate-900 uppercase">{title}</h3>
-      <p className="text-slate-500 text-xs leading-relaxed">{description}</p>
+      <p className="text-slate-700 text-xs font-bold leading-relaxed">{description}</p>
     </div>
   </motion.div>
 );
@@ -30,7 +30,7 @@ const OurDifference = () => {
   ];
 
   return (
-    <div className="relative min-h-screen bg-[#FAF9F6] overflow-hidden">
+    <div className="relative min-h-screen bg-white overflow-hidden">
       {/* Classy Background Pattern */}
       <div className="absolute inset-0 z-0 pointer-events-none opacity-[0.03]" style={{ backgroundImage: 'url("https://www.transparenttextures.com/patterns/cubes.png")' }}></div>
       <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-orange-100 rounded-full blur-[120px] opacity-20 -mr-64 -mt-64"></div>
@@ -66,7 +66,7 @@ const OurDifference = () => {
                   HISTORY <br />
                   <span className="text-transparent bg-clip-text bg-gradient-to-r from-orange-500 to-orange-400">OF EXCELLENCE.</span>
                 </h2>
-                <p className="text-slate-500 text-lg font-medium leading-relaxed max-w-lg">
+                <p className="text-slate-700 text-lg font-bold leading-relaxed max-w-lg">
                   Since our inception, we have been redefined the standards of luxury travel through unwavering commitment and visionary planning.
                 </p>
               </div>
@@ -150,8 +150,8 @@ const OurDifference = () => {
           <div className="max-w-4xl mx-auto bg-slate-900 rounded-[2.5rem] p-10 text-center text-white relative overflow-hidden">
             <div className="absolute inset-0 opacity-5 pointer-events-none" style={{ backgroundImage: 'radial-gradient(circle, white 1px, transparent 1px)', backgroundSize: '30px 30px' }}></div>
             <div className="relative z-10 space-y-6">
-              <h2 className="text-3xl md:text-4xl font-bold uppercase">Ready for a better trip?</h2>
-              <p className="text-gray-400 text-sm max-w-md mx-auto">Experience the world your way with Sunshine Travels.</p>
+              <h2 className="text-3xl md:text-4xl font-black uppercase">Ready for a better trip?</h2>
+              <p className="text-slate-200 text-sm font-bold max-w-md mx-auto">Experience the world your way with Sunshine Travels.</p>
               <div className="flex justify-center pt-2">
                 <Link to="/contact" className="bg-orange-500 text-white px-8 py-3.5 rounded-full font-bold hover:bg-orange-600 transition-all shadow-xl uppercase text-xs tracking-widest">Contact Us</Link>
               </div>
