@@ -7,7 +7,7 @@ const About = () => {
   return (
     <div className="bg-[#FAF9F6] min-h-screen pb-12 font-sans">
       {/* Ultra-Clear Vibrant Forest Hero */}
-      <section className="relative h-[65vh] flex items-center overflow-hidden pt-24">
+      <section className="relative h-[55vh] flex items-center overflow-hidden pt-24">
         <div className="absolute inset-0 z-0">
           <img
             src="https://images.unsplash.com/photo-1542273917363-3b1817f69a2d?auto=format&fit=crop&q=80&w=2400"
@@ -141,7 +141,7 @@ const About = () => {
               { title: 'Strategic Alliances', icon: Sparkles, desc: 'Our deep-rooted partnerships unlock doors that remain closed to others.' },
               { title: 'Infinite Solutions', icon: Sparkles, desc: 'Seamless, end-to-end management of every single detail, from A to Z.' },
             ].map((feature, i) => (
-              <motion.div 
+              <motion.div
                 key={feature.title}
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
@@ -242,23 +242,23 @@ const About = () => {
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-12 lg:gap-20">
             {[
-              { 
-                title: "Expert Curation", 
+              {
+                title: "Expert Curation",
                 desc: "We don't just book trips; we curate experiences. Every destination and hotel in our collection is personally vetted to meet our rigorous standards of excellence.",
                 icon: "01"
               },
-              { 
-                title: "Global Network", 
+              {
+                title: "Global Network",
                 desc: "Our deep-rooted partnerships with local experts across 100+ countries give our clients access to hidden gems and exclusive experiences that others simply cannot offer.",
                 icon: "02"
               },
-              { 
-                title: "Bespoke Support", 
+              {
+                title: "Bespoke Support",
                 desc: "From the moment you start dreaming to the moment you return home, our elite concierge team provides 24/7 dedicated support for a completely worry-free experience.",
                 icon: "03"
               }
             ].map((pillar, index) => (
-              <motion.div 
+              <motion.div
                 key={pillar.title}
                 initial={{ opacity: 0, y: 30 }}
                 whileInView={{ opacity: 1, y: 0 }}
@@ -287,7 +287,7 @@ const About = () => {
       {/* Immersive Tourist Spot Feature */}
       <section className="py-24 px-6 overflow-hidden">
         <div className="container mx-auto">
-          <div className="relative rounded-[4rem] overflow-hidden group shadow-2xl h-[500px]">
+          <div className="relative rounded-[4rem] overflow-hidden group shadow-2xl h-[424px]">
             <img
               src="https://images.unsplash.com/photo-1476514525535-07fb3b4ae5f1?auto=format&fit=crop&q=80&w=2400"
               alt="Breathtaking Destination"
@@ -343,7 +343,7 @@ const About = () => {
       <section className="pb-32 px-6">
         <div className="max-w-6xl mx-auto bg-slate-900 rounded-[3rem] p-12 md:p-20 flex flex-col md:flex-row items-center justify-between gap-12 text-white relative overflow-hidden shadow-2xl">
           <div className="absolute top-0 left-0 w-full h-full opacity-5 pointer-events-none" style={{ backgroundImage: 'radial-gradient(circle, white 1px, transparent 1px)', backgroundSize: '30px 30px' }}></div>
-          
+
           <div className="space-y-4 max-w-xl text-center md:text-left relative z-10">
             <h2 className="text-4xl md:text-5xl font-black text-white uppercase tracking-tight">Ready for your trip?</h2>
             <p className="text-gray-400 text-lg font-medium leading-relaxed">
