@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import api from '../api';
 import { Quote, Star, ArrowRight, X, Image as ImageIcon } from 'lucide-react';
+import { Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 
 const TestimonialCard = ({ testimonial, index, onClick }) => (
@@ -405,13 +406,15 @@ const Testimonials = () => {
             </p>
           </div>
 
-          <motion.button
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-            className="bg-white text-slate-900 px-8 py-4 rounded-full font-bold shadow-xl flex items-center gap-3 relative z-10 hover:bg-orange-500 hover:text-white transition-all uppercase tracking-widest text-xs"
-          >
-            Contact Us <ArrowRight size={20} />
-          </motion.button>
+          <Link to="/contact">
+            <motion.button
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              className="bg-white text-slate-900 px-8 py-4 rounded-full font-bold shadow-xl flex items-center gap-3 relative z-10 hover:bg-orange-500 hover:text-white transition-all uppercase tracking-widest text-xs"
+            >
+              Contact Us <ArrowRight size={20} />
+            </motion.button>
+          </Link>
         </div>
       </section>
 
