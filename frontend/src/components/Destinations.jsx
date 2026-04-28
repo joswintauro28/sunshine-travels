@@ -32,9 +32,12 @@ const DestinationCard = ({ dest, index, onClick }) => (
         {dest.name}
       </h3>
 
-      <div className="flex items-center gap-1 text-slate-300 text-[8px]">
-        <MapPin size={8} className="text-orange-400" />
-        <span className="truncate">{dest.location}</span>
+      <div className="flex items-center justify-between mt-1">
+        <div className="flex items-center gap-1 text-slate-300 text-[8px]">
+          <MapPin size={8} className="text-orange-400" />
+          <span className="truncate max-w-[80px]">{dest.location}</span>
+        </div>
+        <span className="text-[10px] font-black text-orange-400">₹{dest.price}</span>
       </div>
     </div>
   </motion.div>
@@ -184,16 +187,22 @@ const Destinations = () => {
                    </p>
                 </div>
 
-                <div className="mt-auto pt-8 border-t border-slate-100 flex flex-wrap gap-4">
-                  <div className="flex items-center gap-3 text-slate-400 text-[10px] font-black uppercase tracking-widest">
-                    <Compass size={16} className="text-orange-500" />
-                    <span>Exclusive Itinerary</span>
-                  </div>
-                  <div className="flex items-center gap-3 text-slate-400 text-[10px] font-black uppercase tracking-widest ml-auto">
-                    <Sparkles size={16} className="text-orange-500" />
-                    <span>Private Access</span>
-                  </div>
-                </div>
+                 <div className="mt-auto pt-8 border-t border-slate-100 flex flex-wrap items-center justify-between gap-4">
+                   <div className="flex flex-wrap gap-4">
+                     <div className="flex items-center gap-3 text-slate-400 text-[10px] font-black uppercase tracking-widest">
+                       <Compass size={16} className="text-orange-500" />
+                       <span>Exclusive Itinerary</span>
+                     </div>
+                     <div className="flex items-center gap-3 text-slate-400 text-[10px] font-black uppercase tracking-widest">
+                       <Sparkles size={16} className="text-orange-500" />
+                       <span>Private Access</span>
+                     </div>
+                   </div>
+                   <div className="text-2xl font-black text-slate-900">
+                     <span className="text-sm text-slate-400 font-bold mr-1">Starting from</span>
+                     ₹{selectedDest.price}
+                   </div>
+                 </div>
 
                 <button 
                   onClick={() => navigate('/contact')}

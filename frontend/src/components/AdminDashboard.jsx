@@ -642,7 +642,7 @@ const AdminDashboard = () => {
                                                         </div>
                                                     </td>
                                                     <td className="px-8 py-5 text-slate-600 font-bold text-sm uppercase tracking-wide">{dest.location}</td>
-                                                    <td className="px-8 py-5 font-black text-[#0B1120]">${dest.price}</td>
+                                                    <td className="px-8 py-5 font-black text-[#0B1120]">₹{dest.price}</td>
                                                     <td className="px-8 py-5 text-orange-500 font-black text-sm">⭐ {dest.rating}</td>
                                                     <td className="px-8 py-5 text-right">
                                                         <div className="flex items-center justify-end space-x-2">
@@ -760,7 +760,7 @@ const AdminDashboard = () => {
                                 </div>
                                 <div className="grid grid-cols-2 gap-5">
                                     <div className="space-y-1.5">
-                                        <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Price ($)</label>
+                                        <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Price (₹)</label>
                                         <input required type="number" value={newDest.price} onChange={e => setNewDest({ ...newDest, price: e.target.value })} className="w-full px-5 py-3 rounded-xl border-2 border-slate-50 bg-slate-50 focus:bg-white focus:border-orange-500 focus:outline-none transition-all font-black text-sm" placeholder="e.g. 1200" />
                                     </div>
                                     <div className="space-y-1.5">
@@ -846,7 +846,7 @@ const AdminDashboard = () => {
                                 </div>
                                 <div className="grid grid-cols-2 gap-5">
                                     <div className="space-y-1.5">
-                                        <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Price ($)</label>
+                                        <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Price (₹)</label>
                                         <input required type="number" value={editDest.price} onChange={e => setEditDest({ ...editDest, price: e.target.value })} className="w-full px-5 py-3 rounded-xl border-2 border-slate-50 bg-slate-50 focus:bg-white focus:border-orange-500 focus:outline-none transition-all font-black text-sm" />
                                     </div>
                                     <div className="space-y-1.5">

@@ -31,10 +31,10 @@ app.add_middleware(
 def seed_data(db: Session):
     if db.query(models.Destination).count() == 0:
         destinations = [
-            models.Destination(name="Maldives", description="Crystal clear waters and private villas.", image_url="https://images.unsplash.com/photo-1514282401047-d79a71a590e8?auto=format&fit=crop&q=80&w=800", price=1200, rating=4.9, location="Indian Ocean"),
-            models.Destination(name="Bali, Indonesia", description="Spiritual retreats and stunning beaches.", image_url="https://images.unsplash.com/photo-1537996194471-e657df975ab4?auto=format&fit=crop&q=80&w=800", price=850, rating=4.8, location="Southeast Asia"),
-            models.Destination(name="Paris, France", description="The city of lights and romance.", image_url="https://images.unsplash.com/photo-1502602898657-3e91760cbb34?auto=format&fit=crop&q=80&w=800", price=1500, rating=4.9, location="Europe"),
-            models.Destination(name="Santorini, Greece", description="Iconic blue domes and sunset views.", image_url="https://images.unsplash.com/photo-1613395877344-13d4a8e0d49e?auto=format&fit=crop&q=80&w=800", price=1100, rating=4.9, location="Europe")
+            models.Destination(name="Maldives", description="Crystal clear waters and private villas.", image_url="https://images.unsplash.com/photo-1514282401047-d79a71a590e8?auto=format&fit=crop&q=80&w=800", price=95000, rating=4.9, location="Indian Ocean"),
+            models.Destination(name="Bali, Indonesia", description="Spiritual retreats and stunning beaches.", image_url="https://images.unsplash.com/photo-1537996194471-e657df975ab4?auto=format&fit=crop&q=80&w=800", price=65000, rating=4.8, location="Southeast Asia"),
+            models.Destination(name="Paris, France", description="The city of lights and romance.", image_url="https://images.unsplash.com/photo-1502602898657-3e91760cbb34?auto=format&fit=crop&q=80&w=800", price=125000, rating=4.9, location="Europe"),
+            models.Destination(name="Santorini, Greece", description="Iconic blue domes and sunset views.", image_url="https://images.unsplash.com/photo-1613395877344-13d4a8e0d49e?auto=format&fit=crop&q=80&w=800", price=85000, rating=4.9, location="Europe")
         ]
         db.add_all(destinations)
         
