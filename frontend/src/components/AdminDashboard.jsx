@@ -699,25 +699,26 @@ const AdminDashboard = () => {
                                                 <th className="px-8 py-6">Message</th>
                                                 <th className="px-8 py-6">Date</th>
                                                 <th className="px-8 py-6">Time</th>
+                                                <th className="px-8 py-6">Status</th>
                                                 <th className="px-8 py-6 text-right">Actions</th>
                                             </tr>
                                         </thead>
                                         <tbody className="divide-y divide-slate-200">
                                             {inquiriesList.map((inquiry) => (
-                                                <tr key={inquiry.id} className={`hover:bg-slate-50/50 transition-colors ${inquiry.is_read ? 'opacity-40 grayscale' : ''}`}>
+                                                <tr key={inquiry.id} className={`hover:bg-slate-50/50 transition-all duration-300 ${inquiry.is_read ? 'bg-slate-50/30' : ''}`}>
                                                     <td className="px-8 py-5">
                                                         <div className="flex items-center space-x-3">
-                                                            <div className="w-10 h-10 rounded-xl bg-purple-50 text-purple-500 flex items-center justify-center font-black">
+                                                            <div className={`w-10 h-10 rounded-xl flex items-center justify-center font-black transition-colors ${inquiry.is_read ? 'bg-slate-100 text-slate-400' : 'bg-purple-50 text-purple-500'}`}>
                                                                 {inquiry.name[0].toUpperCase()}
                                                             </div>
-                                                            <span className="font-bold text-slate-900">{inquiry.name}</span>
+                                                            <span className={`font-bold transition-colors ${inquiry.is_read ? 'text-slate-400' : 'text-slate-900'}`}>{inquiry.name}</span>
                                                         </div>
                                                     </td>
                                                     <td className="px-8 py-5">
-                                                        <p className="text-xs font-bold text-slate-900">{inquiry.email}</p>
+                                                        <p className={`text-xs font-bold transition-colors ${inquiry.is_read ? 'text-slate-400' : 'text-slate-900'}`}>{inquiry.email}</p>
                                                         <p className="text-[10px] text-slate-400 font-medium">{inquiry.phone || 'No phone'}</p>
                                                     </td>
-                                                    <td className="px-8 py-5 text-slate-600 font-medium whitespace-pre-wrap leading-relaxed">
+                                                    <td className={`px-8 py-5 font-medium whitespace-pre-wrap leading-relaxed transition-colors ${inquiry.is_read ? 'text-slate-300' : 'text-slate-600'}`}>
                                                         {inquiry.message}
                                                     </td>
                                                     <td className="px-8 py-5 text-slate-400 text-xs font-bold uppercase tracking-wider">
@@ -725,6 +726,14 @@ const AdminDashboard = () => {
                                                     </td>
                                                     <td className="px-8 py-5 text-slate-400 text-xs font-bold uppercase tracking-wider">
                                                         {inquiry.time || new Date(inquiry.created_at + (inquiry.created_at.endsWith('Z') ? '' : 'Z')).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                                                    </td>
+                                                    <td className="px-8 py-5">
+                                                        <span className={`px-3 py-1.5 rounded-xl text-[10px] font-black uppercase tracking-widest border transition-all ${inquiry.is_read
+                                                                ? 'bg-slate-100 text-slate-400 border-slate-200'
+                                                                : 'bg-orange-100 text-orange-600 border-orange-200 animate-pulse'
+                                                            }`}>
+                                                            {inquiry.is_read ? 'Read' : 'New'}
+                                                        </span>
                                                     </td>
                                                     <td className="px-8 py-5 text-right flex items-center justify-end space-x-2">
                                                         {!inquiry.is_read && (
@@ -747,7 +756,7 @@ const AdminDashboard = () => {
                                             ))}
                                             {inquiriesList.length === 0 && (
                                                 <tr>
-                                                    <td colSpan="6" className="px-8 py-10 text-center text-slate-400 font-medium">No inquiries found.</td>
+                                                    <td colSpan="7" className="px-8 py-10 text-center text-slate-400 font-medium">No inquiries found.</td>
                                                 </tr>
                                             )}
                                         </tbody>
