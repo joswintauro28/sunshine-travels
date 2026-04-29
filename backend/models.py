@@ -1,5 +1,5 @@
 from sqlalchemy import Column, Integer, String, Text, Float, DateTime, Boolean
-from datetime import datetime
+from datetime import datetime, timezone
 from database import Base
 
 class Destination(Base):
@@ -36,7 +36,7 @@ class Booking(Base):
     check_in = Column(String)
     check_out = Column(String)
     guests = Column(Integer)
-    created_at = Column(DateTime, default=datetime.utcnow)
+    created_at = Column(DateTime, default=lambda: datetime.now(timezone.utc))
 
 class ContactMessage(Base):
     __tablename__ = "contact_messages"
@@ -45,7 +45,7 @@ class ContactMessage(Base):
     email = Column(String)
     phone = Column(String)
     message = Column(Text)
-    created_at = Column(DateTime, default=datetime.utcnow)
+    created_at = Column(DateTime, default=lambda: datetime.now(timezone.utc))
 
 from sqlalchemy import Column, Integer, String, Text, Float, DateTime, Boolean
 
@@ -56,11 +56,11 @@ class User(Base):
     email = Column(String, unique=True, index=True)
     password = Column(String)
     is_superuser = Column(Boolean, default=False)
-    created_at = Column(DateTime, default=datetime.utcnow)
+    created_at = Column(DateTime, default=lambda: datetime.now(timezone.utc))
 
 class ActivityLog(Base):
     __tablename__ = "activity_logs"
     id = Column(Integer, primary_key=True, index=True)
     user_email = Column(String)
     action = Column(String)
-    timestamp = Column(DateTime, default=datetime.utcnow)
+    timestamp = Column(DateTime, default=lambda: datetime.now(timezone.utc))

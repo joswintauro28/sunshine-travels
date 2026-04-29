@@ -372,7 +372,9 @@ const AdminDashboard = () => {
                                                         <div>
                                                             <p className="text-sm font-bold text-slate-900">{n.user_email}</p>
                                                             <p className="text-xs text-slate-500 mt-1">{n.action}</p>
-                                                            <p className="text-[9px] text-slate-400 mt-1 uppercase font-bold">{new Date(n.timestamp).toLocaleTimeString()}</p>
+                                                            <p className="text-[9px] text-slate-400 mt-1 uppercase font-bold">
+                                                                {new Date(n.timestamp + (n.timestamp.endsWith('Z') ? '' : 'Z')).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                                                            </p>
                                                         </div>
                                                     </div>
                                                 ))
@@ -401,7 +403,7 @@ const AdminDashboard = () => {
                         <div className="flex items-center space-x-4">
                             <div className="text-right">
                                 <p className="text-sm font-bold text-[#0B1120] tracking-wide">
-                                    {user?.name || (user?.email ? user.email.split('@')[0].charAt(0).toUpperCase() + user.email.split('@')[0].slice(1) : 'Admin User')}
+                                    {(!user?.name || user?.name === 'N/A') ? (user?.email ? user.email.split('@')[0].charAt(0).toUpperCase() + user.email.split('@')[0].slice(1) : 'Admin User') : user.name}
                                 </p>
                                 <p className="text-[10px] text-orange-500 uppercase tracking-widest font-black">
                                     {user?.is_superuser ? 'Super Admin' : 'Admin'}
@@ -409,7 +411,7 @@ const AdminDashboard = () => {
                             </div>
                             <div className="relative cursor-pointer group">
                                 <img
-                                    src={`https://ui-avatars.com/api/?name=${encodeURIComponent(user?.name || (user?.email ? user.email.split('@')[0] : 'Admin User'))}&background=f97316&color=fff&bold=true`}
+                                    src={`https://ui-avatars.com/api/?name=${encodeURIComponent((!user?.name || user?.name === 'N/A') ? (user?.email ? user.email.split('@')[0] : 'Admin User') : user.name)}&background=f97316&color=fff&bold=true`}
                                     alt="Admin Avatar"
                                     className="w-12 h-12 rounded-full border-[3px] border-white shadow-md group-hover:scale-105 transition-transform duration-300"
                                 />
@@ -484,7 +486,9 @@ const AdminDashboard = () => {
                                                             </div>
                                                         </td>
                                                         <td className="px-8 py-5 text-slate-600 font-medium">{log.action}</td>
-                                                        <td className="px-8 py-5 text-slate-400 text-xs text-right font-bold uppercase tracking-wider">{new Date(log.timestamp).toLocaleTimeString()}</td>
+                                                        <td className="px-8 py-5 text-slate-400 text-xs text-right font-bold uppercase tracking-wider">
+                                                            {new Date(log.timestamp + (log.timestamp.endsWith('Z') ? '' : 'Z')).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' })}
+                                                        </td>
                                                     </tr>
                                                 ))}
                                             </tbody>
@@ -513,10 +517,10 @@ const AdminDashboard = () => {
                                                     <td className="px-8 py-5">
                                                         <div className="flex items-center space-x-4">
                                                             <div className="w-12 h-12 rounded-2xl bg-orange-50 flex items-center justify-center font-black text-orange-500 text-xl">
-                                                                {user.name ? user.name[0] : (user.email ? user.email[0].toUpperCase() : '?')}
+                                                                {(!user.name || user.name === 'N/A') ? (user.email ? user.email[0].toUpperCase() : '?') : user.name[0]}
                                                             </div>
                                                             <div>
-                                                                <p className="font-bold text-slate-900">{user.name || 'N/A'}</p>
+                                                                <p className="font-bold text-slate-900">{(!user.name || user.name === 'N/A') ? (user.email ? user.email.split('@')[0].charAt(0).toUpperCase() + user.email.split('@')[0].slice(1) : 'User') : user.name}</p>
                                                                 <p className="text-xs text-slate-500 font-medium">{user.email}</p>
                                                             </div>
                                                         </div>
@@ -703,7 +707,7 @@ const AdminDashboard = () => {
                                                         {inquiry.message}
                                                     </td>
                                                     <td className="px-8 py-5 text-slate-400 text-xs font-bold uppercase tracking-wider">
-                                                        {new Date(inquiry.created_at).toLocaleDateString()}
+                                                        {new Date(inquiry.created_at + (inquiry.created_at.endsWith('Z') ? '' : 'Z')).toLocaleDateString()}
                                                     </td>
                                                     <td className="px-8 py-5 text-right">
                                                         <button
