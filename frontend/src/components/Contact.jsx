@@ -150,9 +150,6 @@ const Contact = () => {
                                             <h3 className="text-2xl font-black text-slate-900 uppercase">Message Sent</h3>
                                             <p className="text-slate-500 font-medium">We will contact you very soon.</p>
                                         </div>
-                                        <button onClick={() => setStatus({ ...status, success: false })} className="text-orange-500 font-bold uppercase text-xs tracking-widest hover:underline">
-                                            Send another message
-                                        </button>
                                     </motion.div>
                                 ) : !isLoggedIn ? (
                                     <div className="h-full flex flex-col items-center justify-center text-center space-y-8">
