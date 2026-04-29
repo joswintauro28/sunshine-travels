@@ -67,10 +67,15 @@ const AdminDashboard = () => {
 
             const logs = logsRes.data;
             const feedbackLogs = logs.filter(log => log.action.toLowerCase().includes("feedback submitted"));
+            const pendingTestimonials = testimonialsRes.data.filter(t => !t.is_approved);
 
             if (lastLogId.current === null) {
-                // First load: Show last 5 feedback submissions as "recent" but not "unread"
+                // First load: Show last 5 feedback submissions as "recent"
                 setNotifications(feedbackLogs.slice(0, 5));
+                // Show blue dot if there are any unapproved testimonials on load
+                if (pendingTestimonials.length > 0) {
+                    setUnreadCount(pendingTestimonials.length);
+                }
                 if (logs.length > 0) {
                     lastLogId.current = Math.max(...logs.map(l => l.id));
                 }
@@ -341,9 +346,7 @@ const AdminDashboard = () => {
                             >
                                 <Bell size={22} />
                                 {unreadCount > 0 && (
-                                    <span className="absolute top-2 right-2 w-5 h-5 bg-orange-500 text-white text-[10px] font-black flex items-center justify-center rounded-full border-2 border-white animate-bounce">
-                                        {unreadCount}
-                                    </span>
+                                    <span className="absolute top-2 right-2 w-3.5 h-3.5 bg-red-600 rounded-full border-2 border-white shadow-lg animate-pulse"></span>
                                 )}
                             </button>
 
