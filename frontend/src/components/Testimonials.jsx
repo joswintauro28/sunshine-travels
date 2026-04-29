@@ -63,10 +63,13 @@ const Testimonials = () => {
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitStatus, setSubmitStatus] = useState(null);
+  const [user, setUser] = useState(null);
 
   useEffect(() => {
     window.scrollTo(0, 0);
     fetchTestimonials();
+    const savedUser = localStorage.getItem('user');
+    if (savedUser) setUser(JSON.parse(savedUser));
   }, []);
 
   const fetchTestimonials = async () => {
@@ -228,10 +231,17 @@ const Testimonials = () => {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 0.4 }}
-            onClick={() => setShowForm(!showForm)}
+            onClick={() => {
+              if (!user) {
+                setSubmitStatus('login_required');
+                setTimeout(() => setSubmitStatus(null), 3000);
+                return;
+              }
+              setShowForm(!showForm);
+            }}
             className="mt-8 bg-slate-900 text-white px-8 py-3 rounded-full font-bold text-sm tracking-widest uppercase hover:bg-orange-500 transition-all shadow-lg"
           >
-            {showForm ? "Close Form" : "Share Your Story"}
+            {showForm ? "Close Form" : (user ? "Share Your Story" : "Login to Share Story")}
           </motion.button>
         </div>
       </section>
@@ -380,17 +390,19 @@ const Testimonials = () => {
         </div>
       </section>
 
-      {/* Status Notifications */}
       <AnimatePresence>
         {submitStatus && (
           <motion.div
             initial={{ opacity: 0, y: -50 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -50 }}
-            className={`fixed top-24 right-8 px-8 py-4 rounded-2xl shadow-2xl z-50 font-bold ${submitStatus === 'success' ? 'bg-orange-500 text-white' : 'bg-red-500 text-white'
-              }`}
+            className={`fixed top-24 right-8 px-8 py-4 rounded-2xl shadow-2xl z-50 font-bold ${
+              submitStatus === 'success' ? 'bg-orange-500 text-white' : 
+              submitStatus === 'login_required' ? 'bg-slate-900 text-white border border-orange-500' : 'bg-red-500 text-white'
+            }`}
           >
-            {submitStatus === 'success' ? 'Feedback pending, until admin approves' : 'Failed to submit. Please try again.'}
+            {submitStatus === 'success' ? 'Feedback pending, until admin approves' : 
+             submitStatus === 'login_required' ? 'Please login to share your story' : 'Failed to submit. Please try again.'}
           </motion.div>
         )}
       </AnimatePresence>
