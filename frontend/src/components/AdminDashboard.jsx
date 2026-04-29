@@ -12,7 +12,8 @@ import {
     Trash2,
     Edit2,
     Image as ImageIcon,
-    Quote
+    Quote,
+    Check
 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import api from '../api';
@@ -266,6 +267,18 @@ const AdminDashboard = () => {
         } catch (err) {
             console.error("Failed to delete inquiry", err);
             const errorMsg = err.response?.data?.detail || "Error deleting inquiry.";
+            alert(errorMsg);
+        }
+    };
+
+    const handleMarkInquiryRead = async (id) => {
+        try {
+            const token = localStorage.getItem('token');
+            const res = await api.put(`/api/v1/admin/inquiries/${id}/read`, {});
+            setInquiriesList(prev => prev.map(i => i.id === id ? { ...i, is_read: true } : i));
+        } catch (err) {
+            console.error("Failed to mark inquiry as read", err);
+            const errorMsg = err.response?.data?.detail || "Error marking inquiry as read.";
             alert(errorMsg);
         }
     };
@@ -685,12 +698,13 @@ const AdminDashboard = () => {
                                                 <th className="px-8 py-6">Contact Details</th>
                                                 <th className="px-8 py-6">Message</th>
                                                 <th className="px-8 py-6">Date</th>
+                                                <th className="px-8 py-6">Time</th>
                                                 <th className="px-8 py-6 text-right">Actions</th>
                                             </tr>
                                         </thead>
                                         <tbody className="divide-y divide-slate-200">
                                             {inquiriesList.map((inquiry) => (
-                                                <tr key={inquiry.id} className="hover:bg-slate-50/50 transition-colors">
+                                                <tr key={inquiry.id} className={`hover:bg-slate-50/50 transition-colors ${inquiry.is_read ? 'opacity-40 grayscale' : ''}`}>
                                                     <td className="px-8 py-5">
                                                         <div className="flex items-center space-x-3">
                                                             <div className="w-10 h-10 rounded-xl bg-purple-50 text-purple-500 flex items-center justify-center font-black">
@@ -709,7 +723,19 @@ const AdminDashboard = () => {
                                                     <td className="px-8 py-5 text-slate-400 text-xs font-bold uppercase tracking-wider">
                                                         {new Date(inquiry.created_at + (inquiry.created_at.endsWith('Z') ? '' : 'Z')).toLocaleDateString()}
                                                     </td>
-                                                    <td className="px-8 py-5 text-right">
+                                                    <td className="px-8 py-5 text-slate-400 text-xs font-bold uppercase tracking-wider">
+                                                        {inquiry.time || new Date(inquiry.created_at + (inquiry.created_at.endsWith('Z') ? '' : 'Z')).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                                                    </td>
+                                                    <td className="px-8 py-5 text-right flex items-center justify-end space-x-2">
+                                                        {!inquiry.is_read && (
+                                                            <button
+                                                                onClick={() => handleMarkInquiryRead(inquiry.id)}
+                                                                title="Mark as read"
+                                                                className="p-3 text-slate-400 hover:text-green-500 hover:bg-green-50 rounded-2xl transition-all"
+                                                            >
+                                                                <Check size={20} />
+                                                            </button>
+                                                        )}
                                                         <button
                                                             onClick={() => handleDeleteInquiry(inquiry.id)}
                                                             className="p-3 text-slate-400 hover:text-red-500 hover:bg-red-50 rounded-2xl transition-all"
@@ -721,7 +747,7 @@ const AdminDashboard = () => {
                                             ))}
                                             {inquiriesList.length === 0 && (
                                                 <tr>
-                                                    <td colSpan="5" className="px-8 py-10 text-center text-slate-400 font-medium">No inquiries found.</td>
+                                                    <td colSpan="6" className="px-8 py-10 text-center text-slate-400 font-medium">No inquiries found.</td>
                                                 </tr>
                                             )}
                                         </tbody>

@@ -45,6 +45,8 @@ class ContactMessage(Base):
     email = Column(String)
     phone = Column(String)
     message = Column(Text)
+    time = Column(String) # Stores the readable live time
+    is_read = Column(Boolean, default=False)
     created_at = Column(DateTime, default=lambda: datetime.now(timezone.utc))
 
 from sqlalchemy import Column, Integer, String, Text, Float, DateTime, Boolean

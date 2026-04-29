@@ -2,6 +2,7 @@ from fastapi import FastAPI, Depends, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.orm import Session
 from typing import List
+from datetime import datetime
 import uvicorn
 
 import models, database
@@ -119,7 +120,8 @@ def create_contact_message(message: dict, db: Session = Depends(get_db)):
         name=message.get("name"),
         email=message.get("email"),
         phone=message.get("phone"),
-        message=message.get("message")
+        message=message.get("message"),
+        time=datetime.now().strftime("%I:%M %p")
     )
     db.add(new_message)
     db.commit()

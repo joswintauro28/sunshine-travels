@@ -162,6 +162,18 @@ def delete_inquiry(id: int, db: Session = Depends(get_db), current_user: models.
         db.rollback()
         raise HTTPException(status_code=500, detail=f"Database error: {str(e)}")
 
+@router.put("/inquiries/{id}/read")
+def mark_inquiry_read(id: int, db: Session = Depends(get_db), current_user: models.User = Depends(get_current_active_superuser)):
+    inquiry = db.query(models.ContactMessage).filter(models.ContactMessage.id == id).first()
+    if not inquiry:
+        raise HTTPException(status_code=404, detail="Inquiry not found")
+        
+    inquiry.is_read = True
+    db.commit()
+    db.refresh(inquiry)
+    
+    return inquiry
+
 @router.put("/destinations/{id}")
 def update_destination(id: int, destination: dict = Body(...), db: Session = Depends(get_db), current_user: models.User = Depends(get_current_active_superuser)):
     dest = db.query(models.Destination).filter(models.Destination.id == id).first()
