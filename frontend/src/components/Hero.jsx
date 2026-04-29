@@ -23,16 +23,16 @@ const Hero = () => {
         <div className="absolute inset-0 bg-black/20"></div>
       </motion.div>
 
-      <div className="container mx-auto px-6 relative z-10 text-left text-white max-w-6xl mt-20">
+      <div className="container mx-auto px-6 relative z-10 text-left text-white max-w-6xl pt-24 md:pt-32">
         <motion.h1
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8 }}
-          className="text-5xl md:text-7xl font-black mb-8 leading-[0.95] tracking-tighter uppercase"
+          className="text-4xl md:text-7xl font-black mb-6 md:mb-8 leading-[1.05] md:leading-[0.95] tracking-tighter uppercase"
         >
-          Unravel the <br className="hidden lg:block" />
-          world's marvels <br className="hidden lg:block" />
-          with <span className="text-orange-500">hassle-free</span> <br className="hidden lg:block" />
+          Unravel the <br className="md:hidden" />
+          world's marvels <br className="hidden md:block" />
+          with <span className="text-orange-500">hassle-free</span> <br className="md:hidden" />
           travel bundles
         </motion.h1>
 
@@ -40,7 +40,7 @@ const Hero = () => {
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.2 }}
-          className="text-lg md:text-xl mb-12 max-w-3xl font-bold opacity-90 leading-relaxed border-l-4 border-orange-500 pl-8"
+          className="text-base md:text-xl mb-10 md:mb-12 max-w-3xl font-bold opacity-90 leading-relaxed border-l-4 border-orange-500 pl-6 md:pl-8"
         >
           Experience personalized journeys crafted with care, expertise, and a&nbsp;passion for creating unforgettable memories
         </motion.p>
@@ -51,10 +51,10 @@ const Hero = () => {
           transition={{ duration: 0.8, delay: 0.4 }}
           className="flex flex-wrap gap-4"
         >
-          <Link to="/contact" className="bg-orange-500 hover:bg-orange-600 text-white px-8 py-4 rounded-full text-lg font-semibold flex items-center gap-2 transition-all shadow-lg hover:shadow-orange-500/20">
-            Plan Your Trip <ChevronRight size={20} />
+          <Link to="/contact" className="bg-orange-500 hover:bg-orange-600 text-white px-6 py-3.5 md:px-8 md:py-4 rounded-full text-base md:text-lg font-bold flex items-center gap-2 transition-all shadow-lg hover:shadow-orange-500/20 uppercase tracking-wider">
+            Plan Your Trip <ChevronRight size={18} />
           </Link>
-          <Link to="/destinations" className="bg-white/10 hover:bg-white/20 backdrop-blur-md border border-white/30 text-white px-8 py-4 rounded-full text-lg font-semibold transition-all">
+          <Link to="/destinations" className="bg-white/10 hover:bg-white/20 backdrop-blur-md border border-white/30 text-white px-6 py-3.5 md:px-8 md:py-4 rounded-full text-base md:text-lg font-bold transition-all uppercase tracking-wider">
             Explore Destinations
           </Link>
         </motion.div>
